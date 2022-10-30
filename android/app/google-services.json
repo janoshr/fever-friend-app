@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "136991475951",
+    "project_id": "warwick-feverfriendapp",
+    "storage_bucket": "warwick-feverfriendapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:136991475951:android:9086ca4e205d747b38331a",
+        "android_client_info": {
+          "package_name": "com.example.fever_friend_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "136991475951-96guo45up66ll232i82sik6cvsvd256p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG91nFcHyI_FbScurMOo142mRW8lGnd8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "136991475951-96guo45up66ll232i82sik6cvsvd256p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
