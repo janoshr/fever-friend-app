@@ -10,7 +10,13 @@ class ISplashScreen extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('CS310 Fever Friend App'),
+          const Padding(
+            padding: EdgeInsets.only(top: 32),
+            child: Text(
+              'CS310 Fever Friend App',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+          ),
           const Icon(
             Icons.abc,
             size: 120.0,
