@@ -1,14 +1,23 @@
+import 'package:fever_friend_app/models/user.dart';
+import 'package:fever_friend_app/services/db.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'screen_definition.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-final userCreatedAction = AuthStateChangeAction<UserCreated>(((context, state) {
+final userCreatedAction =
+    AuthStateChangeAction<UserCreated>(((context, state) async {
   if (!state.credential.user!.emailVerified) {
     // TODO: change to verify
     Navigator.pushNamed(context, ScreenDefinition.root);
   } else {
     Navigator.pushReplacementNamed(context, ScreenDefinition.createPatient);
   }
+  final db = FirestoreService();
+  final user = IUser(
+      email: state.credential.user!.email!, id: state.credential.user!.uid);
+
+  await db.createUser(user);
 }));
 
 class ISignInScreen extends StatelessWidget {
@@ -80,7 +89,7 @@ class IForgotScreen extends StatelessWidget {
     final arguments =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     return ForgotPasswordScreen(
-      email: arguments?['email'],
+      email: arguments['email'],
     );
   }
 }
