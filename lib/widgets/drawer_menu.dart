@@ -1,12 +1,15 @@
 import 'package:fever_friend_app/screens/screen_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 class DrawerMenu extends StatelessWidget {
   const DrawerMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -15,7 +18,7 @@ class DrawerMenu extends StatelessWidget {
             decoration: const BoxDecoration(color: Colors.teal),
             accountName: const Text('My Account Here'),
             accountEmail: Text(
-              FirebaseAuth.instance.currentUser?.email ?? 'email not found',
+              user.email ?? 'email not found',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             currentAccountPicture: const FlutterLogo(),
