@@ -29,18 +29,6 @@ Future<void> main() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  static get initialRoute {
-    final auth = FirebaseAuth.instance;
-
-    if (auth.currentUser == null) {
-      return ScreenDefinition.splash;
-    } else if (!auth.currentUser!.emailVerified &&
-        auth.currentUser!.email != null) {
-      return ScreenDefinition.verify;
-    }
-    return ScreenDefinition.root;
-  }
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -67,36 +55,55 @@ class _MyAppState extends State<MyApp> {
       providers: [
         StreamProvider<User?>.value(
           value: FirebaseAuth.instance.authStateChanges(),
-          initialData: null
-        )
+          initialData: null,
+        ),
+        ChangeNotifierProvider(create: (_) => PatientProvider()),
       ],
-      child: MaterialApp(
-        // Remove the const from here
-        title: 'CS310 The Fever Friend App',
-        theme: ThemeData(
-          primarySwatch: Colors.teal,
+      child: const AppWidget(),
+    );
+  }
+}
+
+class AppWidget extends StatelessWidget {
+  const AppWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<User?>(context);
+    String initialRoute = user == null
+        ? ScreenDefinition.splash
+        : !user.emailVerified
+            ? ScreenDefinition.verify
+            : ScreenDefinition.root;
+
+    return MaterialApp(
+      // Remove the const from here
+      title: 'CS310 The Fever Friend App',
+      theme: ThemeData(
+          primarySwatch: Colors.orange,
           // Add the 5 lines from here...
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.teal,
+            backgroundColor: Colors.orange,
             foregroundColor: Colors.white,
           ),
           inputDecorationTheme: const InputDecorationTheme(
             border: OutlineInputBorder(),
-          )
-        ),
-        initialRoute: MyApp.initialRoute,
-        routes: {
-          ScreenDefinition.root: (context) => const IHomeScreen(),
-          ScreenDefinition.splash: (context) => const ISplashScreen(),
-          ScreenDefinition.login: (context) => const ISignInScreen(),
-          ScreenDefinition.profile: (context) => const IProfileScreen(),
-          ScreenDefinition.register: (context) => const IRegisterScreen(),
-          ScreenDefinition.verify: (context) => const IVerifyEmailScreen(),
-          ScreenDefinition.forgot: (context) => const IForgotScreen(),
-          ScreenDefinition.createPatient: (context) =>
-              const ICreatePatientScreen(),
-        },
-      ),
+          )),
+      initialRoute: initialRoute,
+      routes: {
+        ScreenDefinition.root: (context) => const IHomeScreen(),
+        ScreenDefinition.splash: (context) => const ISplashScreen(),
+        ScreenDefinition.login: (context) => const ISignInScreen(),
+        ScreenDefinition.profile: (context) => const IProfileScreen(),
+        ScreenDefinition.register: (context) => const IRegisterScreen(),
+        ScreenDefinition.verify: (context) => const IVerifyEmailScreen(),
+        ScreenDefinition.forgot: (context) => const IForgotScreen(),
+        ScreenDefinition.createPatient: (context) =>
+            const ICreatePatientScreen(),
+        ScreenDefinition.settings: (context) => const SettingScreen(),
+      },
     );
   }
 }

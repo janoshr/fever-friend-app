@@ -1,9 +1,11 @@
 import 'package:fever_friend_app/models/patient.dart';
+import 'package:fever_friend_app/providers/patient_provider.dart';
 import 'package:fever_friend_app/services/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:provider/provider.dart';
 
 class ICreatePatientScreen extends StatefulWidget {
   const ICreatePatientScreen({Key? key}) : super(key: key);
@@ -132,7 +134,8 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
                   ),
-                  onPressed: () => onSubmit(context, () {
+                  onPressed: () => onSubmit(context, (Patient patient) {
+                    context.read<PatientProvider>().changePatient(patient);
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/', (route) => false);
                   }),
@@ -146,7 +149,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
     );
   }
 
-  Future onSubmit(BuildContext context, VoidCallback onSuccess) async {
+  Future onSubmit(BuildContext context, Function onSuccess) async {
     if (_formKey.currentState == null) return;
     _formKey.currentState!.validate();
 
@@ -155,15 +158,17 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
       final fields = _formKey.currentState!.fields;
 
       try {
-        await db.createPatient(Patient(
-            id: '',
-            name: fields['name']!.value,
-            createdAt: DateTime.now(),
-            dateOfBirth: fields['dateOfBirth']!.value,
-            gender: fields['gender']!.value,
-            height: fields['height']!.value,
-            weight: fields['weight']!.value));
-        onSuccess.call();
+        Patient patient = Patient(
+          id: '',
+          name: fields['name']!.value,
+          createdAt: DateTime.now(),
+          dateOfBirth: fields['dateOfBirth']!.value,
+          gender: fields['gender']!.value,
+          height: fields['height']!.value,
+          weight: fields['weight']!.value,
+        );
+        await db.createPatient(patient);
+        onSuccess.call(patient);
       } catch (e) {
         print(e);
         _error = 'Something went wrong';

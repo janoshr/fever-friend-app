@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../models/patient.dart';
+
 class PatientProvider with ChangeNotifier {
-  String? _id;
+  Patient? _patient;
 
-  get patientId => _id;
+  get patient => _patient;
 
-  void changePatient(String id) {
-    _id = id;
+  void changePatient(Patient selectedPatient) {
+    _patient = selectedPatient;
     notifyListeners();
   }
 }
