@@ -42,4 +42,14 @@ class FirestoreService {
         .collection('patients')
         .add(patient.toJson());
   }
+
+  Stream<List<Patient>> streamPatients() {
+    return _db
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('patients')
+        .snapshots()
+        .map((list) =>
+            list.docs.map((snap) => Patient.fromFirestore(snap)).toList());
+  }
 }
