@@ -1,4 +1,9 @@
+import 'package:fever_friend_app/get_it.dart';
+import 'package:fever_friend_app/models/patient.dart';
+import 'package:fever_friend_app/providers.dart';
 import 'package:fever_friend_app/providers/patient_provider.dart';
+import 'package:fever_friend_app/routes.dart';
+import 'package:fever_friend_app/services/firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -12,6 +17,8 @@ import 'screens/screens.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  setupGetIt();
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -51,35 +58,53 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        StreamProvider<User?>.value(
-          value: FirebaseAuth.instance.authStateChanges(),
-          initialData: null,
-        ),
-        ChangeNotifierProvider(create: (_) => PatientProvider()),
-      ],
-      child: const AppWidget(),
-    );
+    return StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          String initialRoute = !snapshot.hasData
+              ? ScreenDefinition.splash
+              : !snapshot.data!.emailVerified
+                  ? ScreenDefinition.verify
+                  : ScreenDefinition.root;
+
+          return StreamProvider<List<Patient>>.value(
+            value: snapshot.data != null
+                ? getIt
+                    .get<FirestoreService>()
+                    .streamPatients(snapshot.data!.uid)
+                : Stream.value([]),
+            initialData: const [],
+            child: Consumer<List<Patient>>(
+              builder: (context, value, child) {
+                return ChangeNotifierProxyProvider<List<Patient>,
+                    PatientProvider>(
+                  create: (context) {
+                    return PatientProvider(value);
+                  },
+                  update: (context, value, previous) {
+                    if (previous == null) PatientProvider(value);
+                    return previous!.updatePatientList(value);
+                  },
+                  child: AppWidget(initialRoute: initialRoute),
+                );
+              },
+            ),
+          );
+        });
   }
 }
 
 class AppWidget extends StatelessWidget {
   const AppWidget({
     Key? key,
+    required this.initialRoute,
   }) : super(key: key);
+
+  final String initialRoute;
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User?>(context);
-    String initialRoute = user == null
-        ? ScreenDefinition.splash
-        : !user.emailVerified
-            ? ScreenDefinition.verify
-            : ScreenDefinition.root;
-
     return MaterialApp(
-      // Remove the const from here
       title: 'CS310 The Fever Friend App',
       theme: ThemeData(
           primarySwatch: Colors.orange,
@@ -92,18 +117,7 @@ class AppWidget extends StatelessWidget {
             border: OutlineInputBorder(),
           )),
       initialRoute: initialRoute,
-      routes: {
-        ScreenDefinition.root: (context) => const IHomeScreen(),
-        ScreenDefinition.splash: (context) => const ISplashScreen(),
-        ScreenDefinition.login: (context) => const ISignInScreen(),
-        ScreenDefinition.profile: (context) => const IProfileScreen(),
-        ScreenDefinition.register: (context) => const IRegisterScreen(),
-        ScreenDefinition.verify: (context) => const IVerifyEmailScreen(),
-        ScreenDefinition.forgot: (context) => const IForgotScreen(),
-        ScreenDefinition.createPatient: (context) =>
-            const ICreatePatientScreen(),
-        ScreenDefinition.settings: (context) => const SettingScreen(),
-      },
+      routes: appRoutes,
     );
   }
 }

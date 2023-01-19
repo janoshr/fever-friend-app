@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'patient.g.dart';
@@ -45,4 +46,9 @@ class Patient {
   }
 
   Map<String, dynamic> toJson() => _$PatientToJson(this);
+
+  @override
+  String toString() {
+    return 'Patient<id: $id, name: $name>';
+  }
 }

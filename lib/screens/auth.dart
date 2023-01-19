@@ -1,5 +1,6 @@
+import 'package:fever_friend_app/get_it.dart';
 import 'package:fever_friend_app/models/user.dart';
-import 'package:fever_friend_app/services/db.dart';
+import 'package:fever_friend_app/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'screen_definition.dart';
@@ -13,7 +14,7 @@ final userCreatedAction =
   } else {
     Navigator.pushReplacementNamed(context, ScreenDefinition.createPatient);
   }
-  final db = FirestoreService();
+  final db = getIt.get<FirestoreService>();
   final user = IUser(
       email: state.credential.user!.email!, id: state.credential.user!.uid);
 
