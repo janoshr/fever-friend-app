@@ -7,5 +7,6 @@ class ScreenDefinition {
   static const String forgot = '/auth/forgot';
   static const String profile = '/profile';
   static const String createPatient = '/create-patient';
+  static const String createMeasurement = '/create-measurement';
   static const String settings = '/settings';
 }

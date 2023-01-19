@@ -1,9 +1,10 @@
+import 'package:fever_friend_app/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-import '../services/db.dart';
+import '../services/firestore.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({Key? key}) : super(key: key);
@@ -53,13 +54,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
                 const SizedBox(height: 12),
                 FormBuilderCheckbox(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(
-                        label: Text('Participate in research'),
-                      ),
-                    name: 'research',
-                    title: const Text('Allow anonimised usage of your data for medical research?'),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: const InputDecoration(
+                    label: Text('Participate in research'),
                   ),
+                  name: 'research',
+                  title: const Text(
+                      'Allow anonimised usage of your data for medical research?'),
+                ),
                 const SizedBox(height: 12),
                 //const Spacer(),
                 ElevatedButton(
@@ -85,7 +87,7 @@ class _SettingScreenState extends State<SettingScreen> {
     _formKey.currentState!.validate();
 
     if (_formKey.currentState!.isValid) {
-      final db = FirestoreService();
+      final db = getIt.get<FirestoreService>();
       final fields = _formKey.currentState!.fields;
 
       try {

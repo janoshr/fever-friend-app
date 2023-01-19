@@ -1,6 +1,7 @@
+import 'package:fever_friend_app/get_it.dart';
 import 'package:fever_friend_app/models/patient.dart';
 import 'package:fever_friend_app/providers/patient_provider.dart';
-import 'package:fever_friend_app/services/db.dart';
+import 'package:fever_friend_app/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -135,7 +136,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                     minimumSize: const Size.fromHeight(50),
                   ),
                   onPressed: () => onSubmit(context, (Patient patient) {
-                    context.read<PatientProvider>().changePatient(patient);
+                    context.read<PatientProvider>().addPatient(patient);
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/', (route) => false);
                   }),
@@ -154,7 +155,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
     _formKey.currentState!.validate();
 
     if (_formKey.currentState!.isValid) {
-      final db = FirestoreService();
+      final db = getIt.get<FirestoreService>();
       final fields = _formKey.currentState!.fields;
 
       try {
