@@ -200,6 +200,7 @@ class Stepper extends StatefulWidget {
     this.controlsBuilder,
     this.elevation,
     this.margin,
+    required this.headerKeys,
   })  : assert(steps != null),
         assert(type != null),
         assert(currentStep != null),
@@ -301,6 +302,8 @@ class Stepper extends StatefulWidget {
 
   /// custom margin on vertical stepper.
   final EdgeInsetsGeometry? margin;
+
+  final List<GlobalKey> headerKeys;
 
   @override
   State<Stepper> createState() => _StepperState();
@@ -769,6 +772,7 @@ class _StepperState extends State<Stepper> with TickerProviderStateMixin {
     final List<Widget> children = <Widget>[
       for (int i = 0; i < widget.steps.length; i += 1) ...<Widget>[
         InkResponse(
+          key: widget.headerKeys[i],
           onTap: widget.steps[i].state != StepState.disabled
               ? () {
                   widget.onStepTapped?.call(i);
