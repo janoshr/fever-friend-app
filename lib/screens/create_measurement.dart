@@ -3,11 +3,11 @@ import 'package:fever_friend_app/screens/screen_definition.dart';
 import 'package:fever_friend_app/screens/screens.dart';
 import 'package:fever_friend_app/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart' hide Stepper, StepperType, Step, StepState;
+import 'package:flutter/material.dart'
+    hide Stepper, StepperType, Step, StepState;
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:im_stepper/stepper.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/form/IRadioGroup.dart';
@@ -28,6 +28,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   int activeStep = 0;
   int upperBound = 8;
+  final stepperKeys = List<GlobalKey>.generate(8, ((index) => GlobalKey()));
 
   Widget buildQuestion(BaseQuestion q) {
     switch (q.type) {
@@ -65,17 +66,38 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
 
   void nextButton() {
     if (activeStep < upperBound) {
+      int nextStep = activeStep + 1;
+      scrollToStep(nextStep);
       setState(() {
-        activeStep++;
+        activeStep = nextStep;
       });
     }
   }
 
   void prevButton() {
     if (activeStep > 0) {
+      int nextStep = activeStep - 1;
+      scrollToStep(nextStep);
       setState(() {
-        activeStep--;
+        activeStep = nextStep;
       });
+    }
+  }
+
+  void stepTapped(int step) {
+    scrollToStep(step);
+    setState(() {
+      activeStep = step;
+    });
+  }
+
+  void scrollToStep(int nextStep) {
+    if (stepperKeys[nextStep].currentContext != null) {
+      Scrollable.ensureVisible(
+        stepperKeys[nextStep].currentContext!,
+        duration: const Duration(milliseconds: 500),
+        alignment: 0.05,
+      );
     }
   }
 
@@ -90,15 +112,17 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
         child: FormBuilder(
           key: _formKey,
           child: Stepper(
+            headerKeys: stepperKeys,
             currentStep: activeStep,
             type: StepperType.horizontal,
+            onStepTapped: stepTapped,
             onStepContinue: nextButton,
             onStepCancel: prevButton,
             controlsBuilder: (context, details) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
+                  OutlinedButton(
                     onPressed:
                         details.currentStep == 0 ? null : details.onStepCancel,
                     child: const Text('Back'),
