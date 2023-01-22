@@ -1,8 +1,10 @@
+import 'package:fever_friend_app/get_it.dart';
 import 'package:fever_friend_app/models/patient.dart';
 import 'package:fever_friend_app/providers/patient_provider.dart';
 import 'package:fever_friend_app/screens/screen_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
@@ -16,6 +18,7 @@ class DrawerMenu extends StatelessWidget {
     final patientProvider = Provider.of<PatientProvider>(context);
     Patient? patient = patientProvider.patient;
     final patientList = patientProvider.patientList;
+    PackageInfo pi = getIt.get<PackageInfo>();
 
     return Drawer(
       child: ListView(
@@ -76,21 +79,21 @@ class DrawerMenu extends StatelessWidget {
                   .pushNamedAndRemoveUntil('/splash', ((route) => false));
             },
           ),
-          const AboutListTile(
+          AboutListTile(
             // <-- SEE HERE
-            icon: Icon(
+            icon: const Icon(
               Icons.info,
             ),
-            applicationIcon: Icon(
-              Icons.local_play,
+            applicationIcon: const Icon(
+              Icons.info,
             ),
-            applicationName: 'Warwick Fever Friend',
-            applicationVersion: '1.0.25',
+            applicationName: pi.appName,
+            applicationVersion: pi.version,
             applicationLegalese: '© 2023 Civil Support',
-            aboutBoxChildren: [
-              ///Content goes here...
+            aboutBoxChildren: const [
+              Text('Developer: Janos Hajdu Rafis'),
             ],
-            child: Text('About app'),
+            child: const Text('About app'),
           ),
         ],
       ),

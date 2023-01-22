@@ -6,13 +6,21 @@ class ITextField extends StatelessWidget {
   final String name;
   final String label;
   final bool isRequired;
+  final void Function(String)? onChanged;
 
   const ITextField({
     Key? key,
     required this.name,
     required this.label,
     this.isRequired = false,
+    this.onChanged,
   }) : super(key: key);
+
+  void changeHandler(dynamic val) {
+    if (onChanged != null) {
+      onChanged!(val);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +34,7 @@ class ITextField extends StatelessWidget {
         validator: FormBuilderValidators.compose([
           if (isRequired) FormBuilderValidators.required(),
         ]),
+        onChanged: changeHandler,
       ),
     );
   }

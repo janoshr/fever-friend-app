@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/models/patient.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../models/user.dart';
+
+const String USERS = 'users';
+const String PATIENTS = 'patients';
+const String ILLNESSES = 'illnesses';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -10,53 +14,60 @@ class FirestoreService {
 
   Future<IUser?> getUser() async {
     if (_auth.currentUser == null) return null;
-    final snap =
-        await _db.collection('users').doc(_auth.currentUser!.uid).get();
+    final snap = await _db.collection(USERS).doc(_auth.currentUser!.uid).get();
     return IUser.fromFirestore(snap);
   }
 
   Stream<IUser?> streamUser() {
     if (_auth.currentUser == null) return Stream.value(null);
     return _db
-        .collection('users')
+        .collection(USERS)
         .doc(_auth.currentUser!.uid)
         .snapshots()
         .map((snap) => IUser.fromFirestore(snap));
   }
 
   Future<void> updateUser(IUser updatedUser) async {
-    final ref = _db.collection('users').doc(updatedUser.id);
+    final ref = _db.collection(USERS).doc(updatedUser.id);
 
     ref.update(updatedUser.toJson());
   }
 
   Future<void> createUser(IUser newUser) async {
-    return await _db.collection('users').doc(newUser.id).set(newUser.toJson());
+    return await _db.collection(USERS).doc(newUser.id).set(newUser.toJson());
   }
 
   Future createPatient(Patient patient) async {
     return await _db
-        .collection('users')
+        .collection(USERS)
         .doc(_auth.currentUser!.uid)
-        .collection('patients')
+        .collection(PATIENTS)
         .add(patient.toJson());
   }
 
+  Future createFeverMeasurement(
+      FeverMeasurement measurement, String patientId) async {
+    // TODO connect measurement to illness
+    return await _db
+        .collection(USERS)
+        .doc(_auth.currentUser!.uid)
+        .collection(PATIENTS)
+        .doc(patientId)
+        .collection(ILLNESSES)
+        .add(measurement.toJson());
+  }
+
   Stream<List<Patient>> streamPatients(String id) {
-    return _db
-        .collection('users')
-        .doc(id)
-        .collection('patients')
-        .snapshots()
-        .map((list) =>
+    return _db.collection(USERS).doc(id).collection(PATIENTS).snapshots().map(
+        (list) =>
             list.docs.map((snap) => Patient.fromFirestore(snap)).toList());
   }
 
   Future<Patient?> getFirstPatient() async {
     final ref = await _db
-        .collection('users')
+        .collection(USERS)
         .doc(_auth.currentUser!.uid)
-        .collection('patients')
+        .collection(PATIENTS)
         .limit(1)
         .get();
     return Patient.fromFirestore(ref.docs.first);

@@ -114,7 +114,16 @@ class AppWidget extends StatelessWidget {
             foregroundColor: Colors.white,
           ),
           inputDecorationTheme: const InputDecorationTheme(
-            border: OutlineInputBorder(),
+            border: UnderlineInputBorder(
+              // borderRadius: BorderRadius.all(Radius.circular(32)),
+              // borderSide: BorderSide(
+              //   style: BorderStyle.none,
+              //   width: 0.0,
+              // ),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            
           )),
       initialRoute: initialRoute,
       routes: appRoutes,
