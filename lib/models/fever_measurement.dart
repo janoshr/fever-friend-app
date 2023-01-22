@@ -1,7 +1,84 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fever_friend_app/get_it.dart';
+import 'package:fever_friend_app/models/models.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 part 'fever_measurement.g.dart';
+
+enum FormSteps {
+  fever,
+  medication,
+  hydration,
+  respiration,
+  skin,
+  pulse,
+  general,
+  caregiver
+}
+
+enum FeverFields {
+  thermometerUsed,
+  measurementLocation,
+  temperature,
+  feverDuration,
+}
+
+enum MedicationFields {
+  antipyretic,
+  antipyreticWhat,
+  antipyreticHowMany,
+  antipyreticHowMuch,
+  antipyreticReason,
+  antibiotics,
+  antibioticsWhat,
+  antibioticsHowMany,
+  antibioticsHowMuch,
+}
+
+enum HydrationFields {
+  lastUrination,
+  skinTurgor,
+  crying,
+  tearsWhenCrying,
+  tongue,
+  drinking,
+  diarrhea,
+  vomit,
+}
+
+enum RespirationFields { respiratoryRate, stridor, dyspnea }
+
+enum SkinFields {
+  skinColor,
+  rash,
+  glassTest,
+}
+
+enum PulseFields {
+  pulse,
+}
+
+enum GeneralFields {
+  lastTimeEating,
+  painfulUrination,
+  smellyUrine,
+  awareness,
+  vaccinationIn14days,
+  vaccinationIn14daysHowManyHoursAgo,
+  exoticTrip,
+  vaccinationWhat,
+  seizure,
+  wryNeck,
+  pain,
+}
+
+enum CaregiverFields {
+  parentFeel,
+  parentThink,
+  parentConfident,
+}
 
 @JsonSerializable(explicitToJson: true)
 class FeverMeasurement {
@@ -29,6 +106,85 @@ class FeverMeasurement {
     return _$FeverMeasurementFromJson(data);
   }
 
+  factory FeverMeasurement.fromFormBuilder(
+      FormBuilderState formState, Patient patient) {
+    PackageInfo pi = getIt.get<PackageInfo>();
+    final data = FeverMeasurementData(
+      antibiotics: formState.value[MedicationFields.antibiotics.name],
+      antibioticsHowManyTimes:
+          formState.value[MedicationFields.antibioticsHowMuch.name],
+      antibioticsHowMuch:
+          formState.value[MedicationFields.antibioticsHowMuch.name],
+      antibioticsWhat: formState.value[MedicationFields.antibioticsWhat.name],
+      antipyreticMedication: formState.value[MedicationFields.antipyretic.name],
+      antipyreticMedicationHowManyTimes:
+          formState.value[MedicationFields.antipyreticHowMany.name],
+      antipyreticMedicationHowMuch:
+          formState.value[MedicationFields.antipyreticHowMuch.name],
+      antipyreticMedicationWhat:
+          formState.value[MedicationFields.antipyreticWhat.name],
+      awareness: formState.value[GeneralFields.awareness.name],
+      crying: formState.value[HydrationFields.crying.name],
+      diarrhea: formState.value[HydrationFields.diarrhea.name],
+      drinking: formState.value[HydrationFields.drinking.name],
+      dyspnea: formState.value[RespirationFields.dyspnea.name],
+      exoticTripInTheLast12Months:
+          formState.value[GeneralFields.exoticTrip.name],
+      febrileSeizure: formState.value[GeneralFields.seizure.name],
+      feverDuration: formState.value[FeverFields.feverDuration.name],
+      feverMeasurementLocation:
+          formState.value[FeverFields.measurementLocation.name],
+      glassTest: formState.value[SkinFields.glassTest.name],
+      lastTimeEating: formState.value[GeneralFields.lastTimeEating.name],
+      lastUrination: formState.value[HydrationFields.lastUrination.name],
+      pain: formState.value[GeneralFields.pain.name],
+      painfulUrination: formState.value[GeneralFields.painfulUrination.name],
+      parentConfident: formState.value[CaregiverFields.parentConfident.name],
+      parentFeel: formState.value[CaregiverFields.parentFeel.name],
+      parentThink: formState.value[CaregiverFields.parentThink.name],
+      // TODO add patientName to screen and here
+      patientName: null,
+      // TODO use model to predict patientState
+      patientState: null,
+      pulse: formState.value[PulseFields.pulse.name],
+      rash: formState.value[SkinFields.rash.name],
+      respiratoryRate: formState.value[RespirationFields.respiratoryRate.name],
+      skinColor: formState.value[SkinFields.skinColor.name],
+      // TODO add this field
+      skinTurgor: null,
+      smellyUrine: formState.value[GeneralFields.smellyUrine.name],
+      tearsWhenCrying: formState.value[HydrationFields.tearsWhenCrying.name],
+      temperature: formState.value[FeverFields.temperature.name],
+      // TODO add calculating logic to screen
+      temperatureAdjusted: null,
+      thermometerUsed: formState.value[FeverFields.thermometerUsed.name],
+      tongue: formState.value[HydrationFields.tongue.name],
+      vaccinationsHowManyHoursAgo: formState
+          .value[GeneralFields.vaccinationIn14daysHowManyHoursAgo.name],
+      vaccinationsWithIn14days:
+          formState.value[GeneralFields.vaccinationIn14days.name],
+      vaccinationsUsedVaccination:
+          formState.value[GeneralFields.vaccinationWhat.name],
+      vomit: formState.value[HydrationFields.vomit.name],
+      wheezing: formState.value[RespirationFields.stridor.name],
+      wryNeck: formState.value[GeneralFields.wryNeck.name],
+    );
+    final meta = FeverMeasurementMeta(
+      createdAt: DateTime.now(),
+      lang: 'en',
+      // TODO calculate
+      numberOfQuestions: 0,
+      // TODO calculate
+      anseredQuestions: 0,
+      appVersion: pi.version,
+      autosaved: false,
+      progressPercent: 1 / 1,
+      saved: true,
+      updatedAt: null,
+    );
+    return FeverMeasurement(id: 'n/a', data: data, meta: meta);
+  }
+
   Map<String, dynamic> toJson() => _$FeverMeasurementToJson(this);
 
   static toNull(_) => null;
@@ -42,6 +198,11 @@ class FeverMeasurementMeta {
   int anseredQuestions;
   double progressPercent;
   String fcmToken;
+
+  String? notificationIllnessReviewTask;
+  String? notificationTask;
+
+  String? lang;
 
   DateTime createdAt;
   DateTime? updatedAt;
@@ -58,6 +219,7 @@ class FeverMeasurementMeta {
     this.autosaved = false,
     this.saved = false,
     this.updatedAt,
+    this.lang,
   });
 
   factory FeverMeasurementMeta.fromJson(Map<String, dynamic> json) =>
@@ -79,184 +241,104 @@ class FeverMeasurementMeta {
 class FeverMeasurementData {
   String? antibiotics;
   String? antibioticsHowManyTimes;
-  String? antibioticsHowManyTimesState;
   String? antibioticsHowMuch;
-  String? antibioticsState;
   String? antibioticsWhat;
 
   String? antipyreticMedication;
-  String? antipyreticMedicationHowManyTimesState;
   String? antipyreticMedicationHowManyTimes;
   String? antipyreticMedicationHowMuch;
-  String? antipyreticMedicationState;
   String? antipyreticMedicationWhat;
 
   String? awareness;
-  String? awarenessState;
 
   String? bulgingFontanelleMax18MOld;
-  String? bulgingFontanelleMax18MOldState;
 
   String? crying;
-  String? cryingState;
 
   String? diarrhea;
-  String? diarrheaState;
   String? drinking;
-  String? drinkingState;
   String? dyspnea;
-  String? dyspneaState;
 
   String? exoticTripInTheLast12Months;
-  String? exoticTripInTheLast12MonthsState;
   String? febrileSeizure;
-  String? febrileSeizureState;
   String? feverDuration;
-  String? feverDurationState;
   String? feverMeasurementLocation;
-  String? feverMeasurementLocationState;
   String? glassTest;
-  String? glassTestState;
-  String? lang;
   String? lastTimeEating;
-  String? lastTimeEatingState;
   String? lastUrination;
-  String? lastUrinationState;
-  String? notificationIllnessReviewTask;
-  String? notificationTask;
   String? pain;
-  String? painState;
   String? painfulUrination;
-  String? painfulUrinationState;
 
   String? parentConfident;
-  String? parentConfidentState;
   String? parentFeel;
-  String? parentFeelState;
   String? parentThink;
-  String? parentThinkState;
 
   String? patientName;
   String? patientState;
   String? pulse;
-  String? pulseState;
   String? rash;
-  String? rashState;
   String? respiratoryRate;
-  String? respiratoryRateState;
   String? skinColor;
-  String? skinColorState;
   String? skinTurgor;
-  String? skinTurgorState;
   String? smellyUrine;
-  String? smellyUrineState;
   String? tearsWhenCrying;
-  String? tearsWhenCryingState;
   String? temperature;
   String? temperatureAdjusted;
-  String? temperatureState;
   String? thermometerUsed;
-  String? thermometerUsedState;
   String? tongue;
-  String? tongueState;
   String? vaccinationsWithIn14days;
-  String? vaccinationsWithIn14daysState;
   String? vaccinationsHowManyHoursAgo;
-  String? vaccinationsHowManyHoursAgoState;
   String? vaccinationsUsedVaccination;
   String? vomit;
-  String? vomitState;
   String? wheezing;
-  String? wheezingState;
   String? wryNeck;
-  String? wryNeckState;
 
   FeverMeasurementData({
     this.antibiotics,
     this.antibioticsHowManyTimes,
-    this.antibioticsHowManyTimesState,
     this.antibioticsHowMuch,
-    this.antibioticsState,
     this.antibioticsWhat,
     this.antipyreticMedication,
     this.antipyreticMedicationHowManyTimes,
-    this.antipyreticMedicationHowManyTimesState,
     this.antipyreticMedicationHowMuch,
-    this.antipyreticMedicationState,
     this.antipyreticMedicationWhat,
     this.awareness,
-    this.awarenessState,
     this.bulgingFontanelleMax18MOld,
-    this.bulgingFontanelleMax18MOldState,
     this.crying,
-    this.cryingState,
     this.diarrhea,
-    this.diarrheaState,
     this.drinking,
-    this.drinkingState,
     this.dyspnea,
-    this.dyspneaState,
     this.exoticTripInTheLast12Months,
     this.thermometerUsed,
-    this.exoticTripInTheLast12MonthsState,
     this.febrileSeizure,
-    this.febrileSeizureState,
     this.feverDuration,
-    this.feverDurationState,
     this.feverMeasurementLocation,
-    this.feverMeasurementLocationState,
     this.glassTest,
-    this.glassTestState,
-    this.lang,
     this.lastTimeEating,
-    this.lastTimeEatingState,
     this.lastUrination,
-    this.lastUrinationState,
-    this.notificationIllnessReviewTask,
-    this.notificationTask,
     this.pain,
-    this.painState,
     this.painfulUrination,
-    this.painfulUrinationState,
     this.parentConfident,
-    this.parentConfidentState,
     this.parentFeel,
-    this.parentFeelState,
     this.parentThink,
-    this.parentThinkState,
     this.patientName,
     this.patientState,
     this.pulse,
-    this.pulseState,
     this.rash,
-    this.rashState,
     this.respiratoryRate,
-    this.respiratoryRateState,
     this.skinColor,
-    this.skinColorState,
     this.skinTurgor,
-    this.skinTurgorState,
     this.smellyUrine,
-    this.smellyUrineState,
     this.tearsWhenCrying,
-    this.tearsWhenCryingState,
     this.temperature,
     this.temperatureAdjusted,
-    this.temperatureState,
-    this.thermometerUsedState,
     this.tongue,
-    this.tongueState,
     this.vaccinationsHowManyHoursAgo,
-    this.vaccinationsHowManyHoursAgoState,
     this.vaccinationsUsedVaccination,
     this.vaccinationsWithIn14days,
-    this.vaccinationsWithIn14daysState,
     this.vomit,
-    this.vomitState,
     this.wheezing,
-    this.wheezingState,
     this.wryNeck,
-    this.wryNeckState,
   });
 
   factory FeverMeasurementData.fromJson(Map<String, dynamic> json) =>

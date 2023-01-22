@@ -9,6 +9,8 @@ class INumberInputField extends StatelessWidget {
   final double min;
   final double max;
   final bool isRequired;
+  final String? unit;
+  final void Function(num)? onChanged;
 
   const INumberInputField({
     Key? key,
@@ -17,7 +19,18 @@ class INumberInputField extends StatelessWidget {
     required this.max,
     required this.min,
     this.isRequired = false,
+    this.onChanged,
+    this.unit,
   }) : super(key: key);
+
+  void changeHandler(dynamic val) {
+    if (onChanged == null) return;
+    if (val is num) {
+      onChanged!(val);
+    } else if (val is String) {
+      onChanged!(num.parse(val));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +40,14 @@ class INumberInputField extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           label: Text(label),
+          suffixText: unit,
         ),
         name: name,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r"^\d{0,3}(\.\d{0,2})?"))
         ],
+        onChanged: changeHandler,
         validator: FormBuilderValidators.compose([
           if (isRequired) FormBuilderValidators.required(),
           FormBuilderValidators.min(min),
