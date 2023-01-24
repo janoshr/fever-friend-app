@@ -7,11 +7,11 @@ import 'package:flutter/material.dart'
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/form/checkbox.dart';
-import '../widgets/form/number_field.dart';
-import '../widgets/form/radio_group.dart';
-import '../widgets/form/text_field.dart';
-import '../widgets/stepper.dart';
+import '../ui/widgets/form/checkbox.dart';
+import '../ui/widgets/form/number_field.dart';
+import '../ui/widgets/form/radio_group.dart';
+import '../ui/widgets/form/text_field.dart';
+import '../ui/widgets/stepper.dart';
 
 class ICreateMeasurementScreen extends StatefulWidget {
   const ICreateMeasurementScreen({Key? key}) : super(key: key);
