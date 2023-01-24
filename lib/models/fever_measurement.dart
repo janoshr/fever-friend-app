@@ -142,16 +142,14 @@ class FeverMeasurement {
       parentConfident: formState.value[CaregiverFields.parentConfident.name],
       parentFeel: formState.value[CaregiverFields.parentFeel.name],
       parentThink: formState.value[CaregiverFields.parentThink.name],
-      // TODO add patientName to screen and here
-      patientName: null,
+      patientName: patient.name,
       // TODO use model to predict patientState
       patientState: null,
       pulse: formState.value[PulseFields.pulse.name],
       rash: formState.value[SkinFields.rash.name],
       respiratoryRate: formState.value[RespirationFields.respiratoryRate.name],
       skinColor: formState.value[SkinFields.skinColor.name],
-      // TODO add this field
-      skinTurgor: null,
+      skinTurgor: formState.value[HydrationFields.skinTurgor.name],
       smellyUrine: formState.value[GeneralFields.smellyUrine.name],
       tearsWhenCrying: formState.value[HydrationFields.tearsWhenCrying.name],
       temperature: formState.value[FeverFields.temperature.name],
@@ -240,13 +238,13 @@ class FeverMeasurementMeta {
 @JsonSerializable()
 class FeverMeasurementData {
   String? antibiotics;
-  String? antibioticsHowManyTimes;
-  String? antibioticsHowMuch;
+  int? antibioticsHowManyTimes;
+  double? antibioticsHowMuch;
   String? antibioticsWhat;
 
   String? antipyreticMedication;
-  String? antipyreticMedicationHowManyTimes;
-  String? antipyreticMedicationHowMuch;
+  int? antipyreticMedicationHowManyTimes;
+  double? antipyreticMedicationHowMuch;
   String? antipyreticMedicationWhat;
 
   String? awareness;
@@ -266,7 +264,7 @@ class FeverMeasurementData {
   String? glassTest;
   String? lastTimeEating;
   String? lastUrination;
-  String? pain;
+  List<String>? pain;
   String? painfulUrination;
 
   String? parentConfident;
@@ -275,15 +273,21 @@ class FeverMeasurementData {
 
   String? patientName;
   String? patientState;
-  String? pulse;
+
+  double? pulse;
+
   String? rash;
-  String? respiratoryRate;
+
+  double? respiratoryRate;
+
   String? skinColor;
   String? skinTurgor;
   String? smellyUrine;
   String? tearsWhenCrying;
-  String? temperature;
-  String? temperatureAdjusted;
+
+  double? temperature;
+  double? temperatureAdjusted;
+
   String? thermometerUsed;
   String? tongue;
   String? vaccinationsWithIn14days;
