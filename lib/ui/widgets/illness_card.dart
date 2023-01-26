@@ -1,6 +1,5 @@
 import 'package:fever_friend_app/ui/widgets/pulse_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:fever_friend_app/ui/shared/utils.dart';
 
 import '../../models/illness.dart';

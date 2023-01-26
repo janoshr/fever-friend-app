@@ -35,7 +35,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 if (_error != null) ...[
                   Text(
                     _error!,
-                    style: TextStyle(color: Theme.of(context).errorColor),
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
                   )
                 ],
                 FormBuilderDropdown(
@@ -94,7 +94,7 @@ class _SettingScreenState extends State<SettingScreen> {
         // TODO: save user settings
         onSuccess.call();
       } catch (e) {
-        print(e);
+        debugPrint(e.toString());
         _error = 'Something went wrong';
       }
     }

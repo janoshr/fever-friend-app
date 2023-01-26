@@ -4,5 +4,5 @@ export 'home.dart';
 export 'profile.dart';
 export 'splash.dart';
 export 'settings.dart';
-export 'create_measurement.dart';
+export 'measurement/create_illness.dart';
 export 'screen_definition.dart';

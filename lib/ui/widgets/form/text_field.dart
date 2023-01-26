@@ -7,6 +7,8 @@ class ITextField extends StatelessWidget {
   final String label;
   final bool isRequired;
   final void Function(String)? onChanged;
+  final Icon? prefixIcon;
+  final String? suffixText;
 
   const ITextField({
     Key? key,
@@ -14,6 +16,8 @@ class ITextField extends StatelessWidget {
     required this.label,
     this.isRequired = false,
     this.onChanged,
+    this.prefixIcon,
+    this.suffixText,
   }) : super(key: key);
 
   void changeHandler(dynamic val) {
@@ -27,9 +31,12 @@ class ITextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: FormBuilderTextField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         name: name,
         decoration: InputDecoration(
           label: Text(label),
+          prefixIcon: prefixIcon,
+          suffixText: suffixText,
         ),
         validator: FormBuilderValidators.compose([
           if (isRequired) FormBuilderValidators.required(),

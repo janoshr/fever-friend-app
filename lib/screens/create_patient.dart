@@ -2,8 +2,9 @@ import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/patient.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/services/firestore.dart';
+import 'package:fever_friend_app/ui/shared/constants.dart';
+import 'package:fever_friend_app/ui/widgets/form/form.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
@@ -37,76 +38,43 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                 if (_error != null) ...[
                   Text(
                     _error!,
-                    style: TextStyle(color: Theme.of(context).errorColor),
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
                   )
                 ],
-                FormBuilderTextField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(
-                    label: Text('Name *'),
-                    prefixIcon: Icon(Icons.face),
-                  ),
+                const ITextField(
                   name: 'name',
-                  initialValue: '',
-                  validator: FormBuilderValidators.required(),
+                  label: 'Name *',
+                  prefixIcon: Icon(Icons.face),
+                  isRequired: true,
                 ),
                 const SizedBox(height: 12),
-                FormBuilderDateTimePicker(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(
-                        label: Text('Date of Birth *'),
-                        prefixIcon: Icon(Icons.cake)),
-                    name: 'dateOfBirth',
-                    inputType: InputType.date,
-                    initialDate: DateTime.now(),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                      (value) {
-                        if (value != null && DateTime.now().isBefore(value)) {
-                          return 'Future dates are not allowed';
-                        }
-                      },
-                    ])),
+                IDatePicker(
+                  name: 'dateOfBirth',
+                  label: 'Date of Birth *',
+                  isRequired: true,
+                  pastOnly: true,
+                  prefixIcon: const Icon(Icons.cake),
+                  initialDate: DateTime.now(),
+                ),
                 const SizedBox(height: 12),
-                FormBuilderTextField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(
-                    label: Text('Height *'),
-                    prefixIcon: Icon(Icons.height),
-                    suffixText: 'cm',
-                  ),
+                INumberInputField(
                   name: 'height',
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r"^\d{0,3}(\.\d{0,2})?"))
-                  ],
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.min(0),
-                    FormBuilderValidators.max(250),
-                  ]),
+                  label: 'Height *',
+                  isRequired: true,
+                  prefixIcon: const Icon(Icons.height),
+                  unit: 'cm',
+                  min: HEIGHT_MIN,
+                  max: HEIGHT_MAX,
                 ),
                 const SizedBox(height: 12),
-                FormBuilderTextField(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(
-                    label: Text('Weight *'),
-                    prefixIcon: Icon(Icons.scale),
-                    suffixText: 'kg',
-                  ),
+                INumberInputField(
                   name: 'weight',
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(
-                        RegExp(r"^\d{0,3}(\.\d{0,2})?"))
-                  ],
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                    FormBuilderValidators.min(0),
-                    FormBuilderValidators.max(250),
-                  ]),
+                  label: 'Weight *',
+                  max: WEIGHT_MAX,
+                  min: WEIGHT_MIN,
+                  isRequired: true,
+                  unit: 'kg',
+                  prefixIcon: const Icon(Icons.scale),
                 ),
                 const SizedBox(height: 12),
                 FormBuilderChoiceChip<String>(
@@ -171,7 +139,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
         await db.createPatient(patient);
         onSuccess.call(patient);
       } catch (e) {
-        print(e);
+        debugPrint(e.toString());
         _error = 'Something went wrong';
       }
     }
