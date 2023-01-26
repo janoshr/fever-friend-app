@@ -87,7 +87,7 @@ class ICheckbox extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: FormBuilderCheckbox(
         name: name,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
             // label: Text(label),
             ),
         title: Text(label),

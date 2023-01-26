@@ -4,7 +4,6 @@ import 'package:fever_friend_app/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'screen_definition.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 final userCreatedAction =
     AuthStateChangeAction<UserCreated>(((context, state) async {

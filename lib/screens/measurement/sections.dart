@@ -1,233 +1,19 @@
-import 'package:fever_friend_app/services/get_it.dart';
-import 'package:fever_friend_app/models/models.dart';
-import 'package:fever_friend_app/services/patient_provider.dart';
-import 'package:fever_friend_app/services/firestore.dart';
-import 'package:flutter/material.dart'
-    hide Stepper, StepperType, Step, StepState;
+import 'package:fever_friend_app/ui/shared/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:provider/provider.dart';
 
-import '../ui/widgets/form/checkbox.dart';
-import '../ui/widgets/form/number_field.dart';
-import '../ui/widgets/form/radio_group.dart';
-import '../ui/widgets/form/text_field.dart';
-import '../ui/widgets/stepper.dart';
+import '../../models/fever_measurement.dart';
+import '../../ui/widgets/form/form.dart';
 
-class ICreateMeasurementScreen extends StatefulWidget {
-  const ICreateMeasurementScreen({Key? key}) : super(key: key);
-
-  @override
-  _ICreateMeasurementScreenState createState() =>
-      _ICreateMeasurementScreenState();
-}
-
-class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
-  int activeStep = 0;
-  int upperBound = FormSteps.values.length + 1;
-  final stepperKeys = List<GlobalKey>.generate(
-      FormSteps.values.length + 1, ((index) => GlobalKey()));
-
-  void nextButton() {
-    _formKey.currentState?.saveAndValidate();
-    if (activeStep < upperBound) {
-      int nextStep = activeStep + 1;
-      scrollToStep(nextStep);
-      setState(() {
-        activeStep = nextStep;
-      });
-    }
-  }
-
-  void prevButton() {
-    if (activeStep > 0) {
-      int nextStep = activeStep - 1;
-      scrollToStep(nextStep);
-      setState(() {
-        activeStep = nextStep;
-      });
-    }
-  }
-
-  void stepTapped(int step) {
-    scrollToStep(step);
-    setState(() {
-      activeStep = step;
-    });
-  }
-
-  void scrollToStep(int nextStep) {
-    if (stepperKeys[nextStep].currentContext != null) {
-      Scrollable.ensureVisible(
-        stepperKeys[nextStep].currentContext!,
-        duration: const Duration(milliseconds: 500),
-        alignment: 0.05,
-      );
-    }
-  }
-
-  void Function() onSubmit(Patient patient,
-          {required Function() error, required Function() success}) =>
-      () async {
-        if (_formKey.currentState == null) {
-          error.call();
-        }
-        _formKey.currentState!.saveAndValidate();
-        if (_formKey.currentState!.isValid) {
-          final db = getIt.get<FirestoreService>();
-          final measurement = FeverMeasurement.fromFormBuilder(
-            _formKey.currentState!,
-            patient,
-          );
-
-          success.call();
-        }
-      };
-
-  StepState getStepState<T extends Enum>(int stepNumber, List<T> values) {
-    if (stepNumber == activeStep) {
-      return StepState.editing;
-    }
-
-    if (values.any((element) =>
-        _formKey.currentState?.fields[element.name]?.hasError ?? false)) {
-      return StepState.error;
-    }
-
-    if (activeStep > stepNumber) {
-      return StepState.complete;
-    }
-
-    return StepState.indexed;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final patient = Provider.of<PatientProvider>(context).patient;
-
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Create New Measurement'),
-      ),
-      body: SafeArea(
-        child: FormBuilder(
-          key: _formKey,
-          child: Stepper(
-            headerKeys: stepperKeys,
-            currentStep: activeStep,
-            type: StepperType.horizontal,
-            onStepTapped: stepTapped,
-            onStepContinue: nextButton,
-            onStepCancel: prevButton,
-            controlsBuilder: (context, details) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  OutlinedButton(
-                    onPressed:
-                        details.currentStep == 0 ? null : details.onStepCancel,
-                    child: const Text('Back'),
-                  ),
-                  ElevatedButton(
-                    onPressed: details.currentStep == upperBound - 1
-                        ? null
-                        : details.onStepContinue,
-                    child: const Text('Next'),
-                  )
-                ],
-              );
-            },
-            steps: <Step>[
-              Step(
-                isActive: activeStep == FormSteps.fever.index,
-                state: getStepState(FormSteps.fever.index, FeverFields.values),
-                title: const Text('Fever'),
-                content: StepFever(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.medication.index,
-                state: getStepState(
-                    FormSteps.medication.index, MedicationFields.values),
-                title: const Text('Medication'),
-                content: StepMedication(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.hydration.index,
-                state: getStepState(
-                    FormSteps.hydration.index, HydrationFields.values),
-                title: const Text('Hydration'),
-                content: StepHydration(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.respiration.index,
-                state: getStepState(
-                    FormSteps.respiration.index, RespirationFields.values),
-                title: const Text('Respiration'),
-                content: StepRespiration(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.skin.index,
-                state: getStepState(FormSteps.skin.index, SkinFields.values),
-                title: const Text('Skin condition'),
-                content: StepSkin(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.pulse.index,
-                state: getStepState(FormSteps.pulse.index, PulseFields.values),
-                title: const Text('Pulse'),
-                content: StepPulse(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.general.index,
-                state:
-                    getStepState(FormSteps.general.index, GeneralFields.values),
-                title: const Text('General condition'),
-                content: StepGeneral(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.caregiver.index,
-                state: getStepState(
-                    FormSteps.caregiver.index, CaregiverFields.values),
-                title: const Text('caregiver'),
-                content: Stepcaregiver(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == 8,
-                title: const Text('Overview'),
-                content: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: onSubmit(
-                        patient!,
-                        error: () => ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Something went wrong')),
-                        ),
-                        success: () {},
-                      ),
-                      child: const Text('Submit'),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class StepFever extends StatefulWidget {
+class SectionFever extends StatefulWidget {
   final FormBuilderState? formState;
-  const StepFever({Key? key, required this.formState}) : super(key: key);
+  const SectionFever({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _StepFeverState createState() => _StepFeverState();
+  _SectionFeverState createState() => _SectionFeverState();
 }
 
-class _StepFeverState extends State<StepFever> {
+class _SectionFeverState extends State<SectionFever> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -235,42 +21,42 @@ class _StepFeverState extends State<StepFever> {
         IRadioGroup(
           name: FeverFields.thermometerUsed.name,
           label: 'Thermometer used?',
-          answer: ['Digital', 'Chemical', 'Infra', 'Other'],
+          answer: const ['Digital', 'Chemical', 'Infra', 'Other'],
           isRequired: true,
         ),
         IRadioGroup(
           name: FeverFields.measurementLocation.name,
           label: 'Measurement location?',
-          answer: ['Forehead', 'Ear', 'Rectal', 'Oral', 'Armpit'],
+          answer: const ['Forehead', 'Ear', 'Rectal', 'Oral', 'Armpit'],
           isRequired: true,
-          disabled: ['Forehead'],
+          disabled: const ['Forehead'],
         ),
         INumberInputField(
           name: FeverFields.temperature.name,
           label: 'Temperature?',
-          min: 34.0,
-          max: 45.0,
+          min: TEMPERATURE_MIN,
+          max: TEMPERATURE_MAX,
           isRequired: true,
         ),
         IRadioGroup(
           name: FeverFields.feverDuration.name,
           label: 'Fever duration?',
-          answer: ['Less than 3 days', '3-5 days', 'More than 5 days'],
+          answer: const ['Less than 3 days', '3-5 days', 'More than 5 days'],
         )
       ],
     );
   }
 }
 
-class StepMedication extends StatefulWidget {
+class SectionMedication extends StatefulWidget {
   final FormBuilderState? formState;
-  const StepMedication({Key? key, required this.formState}) : super(key: key);
+  const SectionMedication({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _StepMedicationState createState() => _StepMedicationState();
+  _SectionMedicationState createState() => _SectionMedicationState();
 }
 
-class _StepMedicationState extends State<StepMedication> {
+class _SectionMedicationState extends State<SectionMedication> {
   bool showAntipyreticQs = false;
   bool showAntibioticQs = false;
 
@@ -282,7 +68,7 @@ class _StepMedicationState extends State<StepMedication> {
           name: MedicationFields.antipyretic.name,
           label:
               'Has the patient got "fever-reducing" medication in the past 24 hours?',
-          answer: ['Yes', 'No'],
+          answer: const ['Yes', 'No'],
           onChanged: (val) {
             if (val == 'Yes' && !showAntipyreticQs) {
               setState(() {
@@ -330,7 +116,7 @@ class _StepMedicationState extends State<StepMedication> {
               IRadioGroup(
                 name: MedicationFields.antipyreticReason.name,
                 label: 'Reason for administering?',
-                answer: ['Fear', 'For better comfort', 'Other'],
+                answer: const ['Fear', 'For better comfort', 'Other'],
                 isRequired: showAntipyreticQs,
               ),
             ],
@@ -339,7 +125,7 @@ class _StepMedicationState extends State<StepMedication> {
         IRadioGroup(
           name: MedicationFields.antibiotics.name,
           label: 'Has the patient got antibiotics in the past 24 hours?',
-          answer: ['Yes', 'No'],
+          answer: const ['Yes', 'No'],
           onChanged: (value) {
             if (value == 'Yes' && !showAntibioticQs) {
               setState(() {
@@ -385,15 +171,15 @@ class _StepMedicationState extends State<StepMedication> {
   }
 }
 
-class StepHydration extends StatefulWidget {
+class SectionHydration extends StatefulWidget {
   final FormBuilderState? formState;
-  const StepHydration({Key? key, required this.formState}) : super(key: key);
+  const SectionHydration({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _StepHydrationState createState() => _StepHydrationState();
+  _SectionHydrationState createState() => _SectionHydrationState();
 }
 
-class _StepHydrationState extends State<StepHydration> {
+class _SectionHydrationState extends State<SectionHydration> {
   bool showCryingQ = false;
   bool showVomitQ = false;
 
@@ -404,7 +190,7 @@ class _StepHydrationState extends State<StepHydration> {
         IRadioGroup(
           name: HydrationFields.lastUrination.name,
           label: 'Last urination how many hours ago?',
-          answer: [
+          answer: const [
             'Less than 6 hours ago',
             '6-12 hours ago',
             'More than 12 hours ago'
@@ -413,12 +199,12 @@ class _StepHydrationState extends State<StepHydration> {
         IRadioGroup(
           name: HydrationFields.skinTurgor.name,
           label: 'Skin turgor?',
-          answer: ['Normal', 'Somewhat decreased', 'Severely decreased'],
+          answer: const ['Normal', 'Somewhat decreased', 'Severely decreased'],
         ),
         IRadioGroup(
           name: HydrationFields.crying.name,
           label: 'Crying?',
-          answer: [
+          answer: const [
             'Doesn\'t cry',
             'Normal, bold crying',
             'Continuous with unusually high pitch',
@@ -441,18 +227,18 @@ class _StepHydrationState extends State<StepHydration> {
           child: IRadioGroup(
             name: HydrationFields.tearsWhenCrying.name,
             label: 'Tears when crying?',
-            answer: ['Yes', 'Not so much', 'No'],
+            answer: const ['Yes', 'Not so much', 'No'],
           ),
         ),
         IRadioGroup(
           name: HydrationFields.tongue.name,
           label: 'Tongue?',
-          answer: ['Wet', 'Dry'],
+          answer: const ['Wet', 'Dry'],
         ),
         IRadioGroup(
           name: HydrationFields.drinking.name,
           label: 'Drinking?',
-          answer: [
+          answer: const [
             'As much as normally or more',
             'Less than normal',
             'Nothing in the last 12 hours'
@@ -461,7 +247,7 @@ class _StepHydrationState extends State<StepHydration> {
         IRadioGroup(
           name: HydrationFields.diarrhea.name,
           label: 'Diarrhea for more than 12 hours?',
-          answer: ['No or slight', 'Frequent', 'Frequent and bloody'],
+          answer: const ['No or slight', 'Frequent', 'Frequent and bloody'],
         ),
         ICheckbox(
           name: 'vomit_logic',
@@ -483,7 +269,7 @@ class _StepHydrationState extends State<StepHydration> {
           child: ICheckboxGroup(
             name: HydrationFields.vomit.name,
             label: 'Vomiting?',
-            answer: [
+            answer: const [
               // * notice the answer 'No' has been replaced by a checkbox
               'Slight',
               'Frequent',
@@ -498,15 +284,15 @@ class _StepHydrationState extends State<StepHydration> {
   }
 }
 
-class StepRespiration extends StatefulWidget {
+class SectionRespiration extends StatefulWidget {
   final FormBuilderState? formState;
-  const StepRespiration({Key? key, required this.formState}) : super(key: key);
+  const SectionRespiration({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _StepRespirationState createState() => _StepRespirationState();
+  _SectionRespirationState createState() => _SectionRespirationState();
 }
 
-class _StepRespirationState extends State<StepRespiration> {
+class _SectionRespirationState extends State<SectionRespiration> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -514,18 +300,18 @@ class _StepRespirationState extends State<StepRespiration> {
         INumberInputField(
           name: RespirationFields.respiratoryRate.name,
           label: 'Respiratory rate?',
-          min: 0,
-          max: 100,
+          min: RRATE_MIN,
+          max: RRATE_MAX,
         ),
         IRadioGroup(
           name: RespirationFields.stridor.name,
           label: 'Nature of breathing',
-          answer: ['Normal', 'Slightly wheezing', 'Strong wheezing (stridor)'],
+          answer: const ['Normal', 'Slightly wheezing', 'Strong wheezing (stridor)'],
         ),
         IRadioGroup(
           name: RespirationFields.dyspnea.name,
           label: 'Dyspnea?',
-          answer: ['1', '2', '3', '4', '5'],
+          answer: const ['1', '2', '3', '4', '5'],
           orientation: OptionsOrientation.horizontal,
         ),
       ],
@@ -533,15 +319,15 @@ class _StepRespirationState extends State<StepRespiration> {
   }
 }
 
-class StepSkin extends StatefulWidget {
+class SectionSkin extends StatefulWidget {
   final FormBuilderState? formState;
-  const StepSkin({Key? key, required this.formState}) : super(key: key);
+  const SectionSkin({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _StepSkinState createState() => _StepSkinState();
+  _SectionSkinState createState() => _SectionSkinState();
 }
 
-class _StepSkinState extends State<StepSkin> {
+class _SectionSkinState extends State<SectionSkin> {
   bool showRashQ = false;
 
   @override
@@ -551,12 +337,12 @@ class _StepSkinState extends State<StepSkin> {
         IRadioGroup(
           name: SkinFields.skinColor.name,
           label: 'Skin color?',
-          answer: ['Normal or slightly pale', 'Pale', 'Grey, bluish, purplish'],
+          answer: const ['Normal or slightly pale', 'Pale', 'Grey, bluish, purplish'],
         ),
         IRadioGroup(
           name: SkinFields.rash.name,
           label: 'Rash?',
-          answer: ['No', 'Yes'],
+          answer: const ['No', 'Yes'],
           onChanged: (value) {
             if (value == 'Yes' && !showRashQ) {
               setState(() {
@@ -575,7 +361,7 @@ class _StepSkinState extends State<StepSkin> {
             name: SkinFields.glassTest.name,
             label:
                 'Glass Test: when pressing on the rash with a transparent object like glass.',
-            answer: [
+            answer: const [
               'The red disappears on pressure seen through the glass',
               'The red remains clearly demarcated and string on pressure seen through the glass'
             ],
@@ -587,15 +373,15 @@ class _StepSkinState extends State<StepSkin> {
   }
 }
 
-class StepPulse extends StatefulWidget {
+class SectionPulse extends StatefulWidget {
   final FormBuilderState? formState;
-  const StepPulse({Key? key, required this.formState}) : super(key: key);
+  const SectionPulse({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _StepPulseState createState() => _StepPulseState();
+  _SectionPulseState createState() => _SectionPulseState();
 }
 
-class _StepPulseState extends State<StepPulse> {
+class _SectionPulseState extends State<SectionPulse> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -603,23 +389,23 @@ class _StepPulseState extends State<StepPulse> {
         INumberInputField(
           name: PulseFields.pulse.name,
           label: 'Pulse rate?',
-          min: 40,
-          max: 250,
+          min: PULSE_MIN,
+          max: PULSE_MAX,
         ),
       ],
     );
   }
 }
 
-class StepGeneral extends StatefulWidget {
+class SectionGeneral extends StatefulWidget {
   final FormBuilderState? formState;
-  const StepGeneral({Key? key, required this.formState}) : super(key: key);
+  const SectionGeneral({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _StepGeneralState createState() => _StepGeneralState();
+  _SectionGeneralState createState() => _SectionGeneralState();
 }
 
-class _StepGeneralState extends State<StepGeneral> {
+class _SectionGeneralState extends State<SectionGeneral> {
   bool showVaccinationQs = false;
 
   @override
@@ -629,7 +415,7 @@ class _StepGeneralState extends State<StepGeneral> {
         IRadioGroup(
           name: GeneralFields.lastTimeEating.name,
           label: 'Last time eating?',
-          answer: [
+          answer: const [
             'Less than 12 hours ago',
             'More than 12, but less than 24 hours ago',
             'More than 24 hours ago'
@@ -638,17 +424,17 @@ class _StepGeneralState extends State<StepGeneral> {
         IRadioGroup(
           name: GeneralFields.painfulUrination.name,
           label: 'Painful urination?',
-          answer: ['No', 'Yes'],
+          answer: const ['No', 'Yes'],
         ),
         IRadioGroup(
           name: GeneralFields.smellyUrine.name,
           label: 'Smelly urine?',
-          answer: ['No', 'Yes'],
+          answer: const ['No', 'Yes'],
         ),
         IRadioGroup(
           name: GeneralFields.awareness.name,
           label: 'Awareness?',
-          answer: [
+          answer: const [
             'Normal',
             'Sleepy, odd for more than 5 hours, or having feverish nightmares',
             'No reactions, no awareness'
@@ -657,7 +443,7 @@ class _StepGeneralState extends State<StepGeneral> {
         IRadioGroup(
           name: GeneralFields.vaccinationIn14days.name,
           label: 'Vacination within 14 days?',
-          answer: ['No', 'Yes'],
+          answer: const ['No', 'Yes'],
         ),
         Visibility(
           visible: showVaccinationQs,
@@ -666,7 +452,7 @@ class _StepGeneralState extends State<StepGeneral> {
               IRadioGroup(
                 name: GeneralFields.vaccinationIn14daysHowManyHoursAgo.name,
                 label: 'How many hours ago?',
-                answer: ['Within 48', 'Beyond 48 hours'],
+                answer: const ['Within 48', 'Beyond 48 hours'],
                 isRequired: showVaccinationQs,
               ),
               ITextField(
@@ -680,22 +466,22 @@ class _StepGeneralState extends State<StepGeneral> {
         IRadioGroup(
           name: GeneralFields.exoticTrip.name,
           label: 'Exotic trip in the past 12 months?',
-          answer: ['Yes', 'No'],
+          answer: const ['Yes', 'No'],
         ),
         IRadioGroup(
           name: GeneralFields.seizure.name,
           label: 'Feverish seizure',
-          answer: ['No', 'Yes'],
+          answer: const ['No', 'Yes'],
         ),
         IRadioGroup(
           name: GeneralFields.wryNeck.name,
           label: 'Stiff neck?',
-          answer: ['No', 'Yes'],
+          answer: const ['No', 'Yes'],
         ),
         ICheckboxGroup(
           name: GeneralFields.pain.name,
           label: 'Pain?',
-          answer: [
+          answer: const [
             'No',
             'Feeling bad, general discomfort, muscle pain',
             'Headache',
@@ -708,15 +494,15 @@ class _StepGeneralState extends State<StepGeneral> {
   }
 }
 
-class Stepcaregiver extends StatefulWidget {
+class SectionCaregiver extends StatefulWidget {
   final FormBuilderState? formState;
-  const Stepcaregiver({Key? key, required this.formState}) : super(key: key);
+  const SectionCaregiver({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _StepcaregiverState createState() => _StepcaregiverState();
+  _SectionCaregiverState createState() => _SectionCaregiverState();
 }
 
-class _StepcaregiverState extends State<Stepcaregiver> {
+class _SectionCaregiverState extends State<SectionCaregiver> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -724,18 +510,18 @@ class _StepcaregiverState extends State<Stepcaregiver> {
         IRadioGroup(
           name: CaregiverFields.parentFeel.name,
           label: 'How do you feel about the progress of your patient\'s fever?',
-          answer: ['Optimal', 'Not sure', 'Very worried'],
+          answer: const ['Optimal', 'Not sure', 'Very worried'],
         ),
         IRadioGroup(
           name: CaregiverFields.parentThink.name,
           label: 'How severe do you think your patient\' condition is?',
-          answer: ['Not severe', 'Somewhat severe', 'Very severe'],
+          answer: const ['Not severe', 'Somewhat severe', 'Very severe'],
         ),
         IRadioGroup(
           name: CaregiverFields.parentConfident.name,
           label:
               'How confident do you feel yourselves in managing the patient\'s feverish illness?',
-          answer: [
+          answer: const [
             'Completely',
             'Somewhat confident',
             'Not really',

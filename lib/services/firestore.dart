@@ -1,7 +1,8 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/models/notification.dart';
-import 'package:fever_friend_app/models/patient.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 const String USERS = 'users';

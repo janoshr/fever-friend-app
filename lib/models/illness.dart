@@ -10,7 +10,10 @@ class Illness {
   @JsonKey(toJson: toNull, includeIfNull: false)
   String id;
   
+  @JsonKey(toJson: toNull, includeIfNull: false)
   List<FeverMeasurement> feverMeasurements;
+
+  @JsonKey(toJson: toNull, includeIfNull: false)
   IllnessReview? illnessReview;
 
   Illness({

@@ -11,6 +11,7 @@ class INumberInputField extends StatelessWidget {
   final bool isRequired;
   final String? unit;
   final void Function(num)? onChanged;
+  final Icon? prefixIcon;
 
   const INumberInputField({
     Key? key,
@@ -21,6 +22,7 @@ class INumberInputField extends StatelessWidget {
     this.isRequired = false,
     this.onChanged,
     this.unit,
+    this.prefixIcon,
   }) : super(key: key);
 
   void changeHandler(dynamic val) {
@@ -41,6 +43,7 @@ class INumberInputField extends StatelessWidget {
         decoration: InputDecoration(
           label: Text(label),
           suffixText: unit,
+          prefixIcon: prefixIcon,
         ),
         name: name,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
