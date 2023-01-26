@@ -1,4 +1,4 @@
-import 'package:fever_friend_app/get_it.dart';
+import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/user.dart';
 import 'package:fever_friend_app/services/firestore.dart';
 import 'package:flutter/material.dart';

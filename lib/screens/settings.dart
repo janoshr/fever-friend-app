@@ -1,4 +1,4 @@
-import 'package:fever_friend_app/get_it.dart';
+import 'package:fever_friend_app/services/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';

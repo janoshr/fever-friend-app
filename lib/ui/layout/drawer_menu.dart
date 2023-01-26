@@ -1,20 +1,19 @@
-import 'package:fever_friend_app/get_it.dart';
+import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/patient.dart';
-import 'package:fever_friend_app/providers/patient_provider.dart';
+import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/screens/screen_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'dart:math' as math;
+import 'package:fever_friend_app/ui/shared/utils.dart';
 
 class DrawerMenu extends StatelessWidget {
   const DrawerMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final formatter = DateFormat('yyyy/MM/DD');
     final patientProvider = Provider.of<PatientProvider>(context);
     Patient? patient = patientProvider.patient;
     final patientList = patientProvider.patientList;
@@ -28,7 +27,7 @@ class DrawerMenu extends StatelessWidget {
             decoration: BoxDecoration(color: Theme.of(context).primaryColor),
             accountName: Text(patient?.name ?? 'Loading...'),
             accountEmail: Text(patient?.dateOfBirth != null
-                ? formatter.format(patient!.dateOfBirth)
+                ? dateFYYYYMMDD.format(patient!.dateOfBirth)
                 : 'Loading...'),
             currentAccountPicture: Icon(
               Icons.account_circle,
@@ -37,16 +36,18 @@ class DrawerMenu extends StatelessWidget {
             ),
           ),
           ...patientList
-              .map((p) => ListTile(
-                    dense: true,
-                    subtitle: Text(formatter.format(p.dateOfBirth)),
-                    leading: const Icon(Icons.account_circle),
-                    title: Text(p.name),
-                    iconColor: getIconColor(p.name),
-                    onTap: () {
-                      patientProvider.setPatientByID(p.id);
-                    },
-                  ))
+              .map(
+                (p) => ListTile(
+                  dense: true,
+                  subtitle: Text(dateFYYYYMMDD.format(p.dateOfBirth)),
+                  leading: const Icon(Icons.account_circle),
+                  title: Text(p.name),
+                  iconColor: getIconColor(p.name),
+                  onTap: () {
+                    patientProvider.setPatientByID(p.id);
+                  },
+                ),
+              )
               .toList(),
           const Divider(),
           ListTile(
@@ -98,13 +99,5 @@ class DrawerMenu extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color getIconColor(String name) {
-    return Color((math.Random(name.codeUnits
-                    .reduce((value, element) => value + element)).nextDouble() *
-                0xFFFFFF)
-            .toInt())
-        .withOpacity(1.0);
   }
 }
