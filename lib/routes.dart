@@ -1,3 +1,4 @@
+import 'package:fever_friend_app/screens/notification.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/screens.dart';
@@ -14,4 +15,5 @@ Map<String, WidgetBuilder> appRoutes = <String, WidgetBuilder>{
   ScreenDefinition.settings: (context) => const SettingScreen(),
   ScreenDefinition.createMeasurement: (context) =>
       const ICreateMeasurementScreen(),
+  ScreenDefinition.notification: (context) => const NotificationScreen(),
 };

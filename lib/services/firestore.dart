@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fever_friend_app/models/models.dart';
+import 'package:fever_friend_app/models/notification.dart';
 import 'package:fever_friend_app/models/patient.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 
 const String USERS = 'users';
 const String PATIENTS = 'patients';
 const String ILLNESSES = 'illnesses';
+const String NOTIFICATIONS = 'notifications';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -71,5 +72,17 @@ class FirestoreService {
         .limit(1)
         .get();
     return Patient.fromFirestore(ref.docs.first);
+  }
+
+  Stream<List<INotification>> streamNotifications() {
+    return _db
+        .collection(USERS)
+        .doc(_auth.currentUser!.uid)
+        .collection(NOTIFICATIONS)
+        .limit(20)
+        .snapshots()
+        .map((list) => list.docs
+            .map((snap) => INotification.fromFirestore(snap))
+            .toList());
   }
 }

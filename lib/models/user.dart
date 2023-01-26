@@ -22,7 +22,7 @@ class IUser {
     required this.id,
     this.lang = 'en',
     this.participateInResearch = true,
-  }) : assert(id != null);
+  });
 
   static toNull(_) => null;
 

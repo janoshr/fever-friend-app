@@ -1,6 +1,6 @@
-import 'package:fever_friend_app/get_it.dart';
+import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/models.dart';
-import 'package:fever_friend_app/providers/patient_provider.dart';
+import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/services/firestore.dart';
 import 'package:flutter/material.dart'
     hide Stepper, StepperType, Step, StepState;

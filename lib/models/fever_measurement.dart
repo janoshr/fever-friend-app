@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fever_friend_app/get_it.dart';
+import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/models.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:json_annotation/json_annotation.dart';

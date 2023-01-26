@@ -9,4 +9,5 @@ class ScreenDefinition {
   static const String createPatient = '/create-patient';
   static const String createMeasurement = '/create-measurement';
   static const String settings = '/settings';
+  static const String notification = '/notification';
 }

@@ -1,4 +1,3 @@
-import 'package:fever_friend_app/services/firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../models/patient.dart';
