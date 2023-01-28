@@ -9,37 +9,43 @@ import '../ui/widgets/illness_card.dart';
 
 // TODO remove dummy data
 final illness = Illness(id: 'asdf', feverMeasurements: [
-  FeverMeasurement(
+  MeasurementModel(
     id: 'num1',
-    data: FeverMeasurementData(
-      patientState: 'good',
-      temperature: 37.8,
+    data: MeasurementModelData(
+      feverSection: FeverSectionModel(
+        temperature: 37.8,
+      ),
+      patientState: PatientState.good,
     ),
-    meta: FeverMeasurementMeta(
+    meta: MeasurementModelMeta(
       createdAt: DateTime.now(),
       numberOfQuestions: 3,
     ),
   ),
-  FeverMeasurement(
-    id: 'num2',
-    data: FeverMeasurementData(
-      patientState: 'caution',
-      temperature: 39.0,
+  MeasurementModel(
+    id: 'num1',
+    data: MeasurementModelData(
+      feverSection: FeverSectionModel(
+        temperature: 37.8,
+      ),
+      patientState: PatientState.danger,
     ),
-    meta: FeverMeasurementMeta(
-      createdAt: DateTime.now().subtract(const Duration(hours: 5)),
-      numberOfQuestions: 5,
+    meta: MeasurementModelMeta(
+      createdAt: DateTime.now(),
+      numberOfQuestions: 3,
     ),
   ),
-  FeverMeasurement(
-    id: 'num3',
-    data: FeverMeasurementData(
-      patientState: 'good',
-      temperature: 37.3,
+  MeasurementModel(
+    id: 'num1',
+    data: MeasurementModelData(
+      feverSection: FeverSectionModel(
+        temperature: 37.8,
+      ),
+      patientState: PatientState.caution,
     ),
-    meta: FeverMeasurementMeta(
+    meta: MeasurementModelMeta(
       createdAt: DateTime.now(),
-      numberOfQuestions: 6,
+      numberOfQuestions: 3,
     ),
   ),
 ]);

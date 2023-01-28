@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'util.dart';
+
 part 'patient.g.dart';
 
 @JsonSerializable()
@@ -12,10 +14,20 @@ class Patient {
   String weight;
   String height;
   String gender;
+
+  @JsonKey(fromJson: fromTimestampToDate, toJson: fromDateToTimestamp)
   DateTime dateOfBirth;
+
   int? siblings;
+
+  @JsonKey(fromJson: fromTimestampToDate, toJson: fromDateToTimestamp)
   DateTime createdAt;
+
+  @JsonKey(
+      fromJson: fromTimestampToDateNullable,
+      toJson: fromDateToTimestampNullable)
   DateTime? updatedAt;
+
   List<String> chronicDiseases;
 
   Patient({

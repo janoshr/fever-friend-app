@@ -20,7 +20,7 @@ class IllnessCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final temperatureString =
-        illness.feverMeasurements.first.data.temperature?.toStringAsFixed(1);
+        illness.feverMeasurements.first.data.feverSection?.temperature?.toStringAsFixed(1);
 
     return Card(
       elevation: 3,

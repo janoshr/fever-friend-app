@@ -4,16 +4,17 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../../models/fever_measurement.dart';
 import '../../ui/widgets/form/form.dart';
+import '../../models/models.dart';
 
-class SectionFever extends StatefulWidget {
+class FeverSectionView extends StatefulWidget {
   final FormBuilderState? formState;
-  const SectionFever({Key? key, required this.formState}) : super(key: key);
+  const FeverSectionView({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _SectionFeverState createState() => _SectionFeverState();
+  _FeverSectionViewState createState() => _FeverSectionViewState();
 }
 
-class _SectionFeverState extends State<SectionFever> {
+class _FeverSectionViewState extends State<FeverSectionView> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -48,15 +49,15 @@ class _SectionFeverState extends State<SectionFever> {
   }
 }
 
-class SectionMedication extends StatefulWidget {
+class MedicationSectionView extends StatefulWidget {
   final FormBuilderState? formState;
-  const SectionMedication({Key? key, required this.formState}) : super(key: key);
+  const MedicationSectionView({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _SectionMedicationState createState() => _SectionMedicationState();
+  _MedicationSectionViewState createState() => _MedicationSectionViewState();
 }
 
-class _SectionMedicationState extends State<SectionMedication> {
+class _MedicationSectionViewState extends State<MedicationSectionView> {
   bool showAntipyreticQs = false;
   bool showAntibioticQs = false;
 
@@ -171,15 +172,15 @@ class _SectionMedicationState extends State<SectionMedication> {
   }
 }
 
-class SectionHydration extends StatefulWidget {
+class HydrationSectionView extends StatefulWidget {
   final FormBuilderState? formState;
-  const SectionHydration({Key? key, required this.formState}) : super(key: key);
+  const HydrationSectionView({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _SectionHydrationState createState() => _SectionHydrationState();
+  _HydrationSectionViewState createState() => _HydrationSectionViewState();
 }
 
-class _SectionHydrationState extends State<SectionHydration> {
+class _HydrationSectionViewState extends State<HydrationSectionView> {
   bool showCryingQ = false;
   bool showVomitQ = false;
 
@@ -284,15 +285,15 @@ class _SectionHydrationState extends State<SectionHydration> {
   }
 }
 
-class SectionRespiration extends StatefulWidget {
+class RespirationSectionView extends StatefulWidget {
   final FormBuilderState? formState;
-  const SectionRespiration({Key? key, required this.formState}) : super(key: key);
+  const RespirationSectionView({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _SectionRespirationState createState() => _SectionRespirationState();
+  _RespirationSectionViewState createState() => _RespirationSectionViewState();
 }
 
-class _SectionRespirationState extends State<SectionRespiration> {
+class _RespirationSectionViewState extends State<RespirationSectionView> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -304,7 +305,7 @@ class _SectionRespirationState extends State<SectionRespiration> {
           max: RRATE_MAX,
         ),
         IRadioGroup(
-          name: RespirationFields.stridor.name,
+          name: RespirationFields.wheezing.name,
           label: 'Nature of breathing',
           answer: const ['Normal', 'Slightly wheezing', 'Strong wheezing (stridor)'],
         ),
@@ -319,15 +320,15 @@ class _SectionRespirationState extends State<SectionRespiration> {
   }
 }
 
-class SectionSkin extends StatefulWidget {
+class SkinSectionView extends StatefulWidget {
   final FormBuilderState? formState;
-  const SectionSkin({Key? key, required this.formState}) : super(key: key);
+  const SkinSectionView({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _SectionSkinState createState() => _SectionSkinState();
+  _SkinSectionViewState createState() => _SkinSectionViewState();
 }
 
-class _SectionSkinState extends State<SectionSkin> {
+class _SkinSectionViewState extends State<SkinSectionView> {
   bool showRashQ = false;
 
   @override
@@ -373,15 +374,15 @@ class _SectionSkinState extends State<SectionSkin> {
   }
 }
 
-class SectionPulse extends StatefulWidget {
+class PulseSectionView extends StatefulWidget {
   final FormBuilderState? formState;
-  const SectionPulse({Key? key, required this.formState}) : super(key: key);
+  const PulseSectionView({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _SectionPulseState createState() => _SectionPulseState();
+  _PulseSectionViewState createState() => _PulseSectionViewState();
 }
 
-class _SectionPulseState extends State<SectionPulse> {
+class _PulseSectionViewState extends State<PulseSectionView> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -397,15 +398,15 @@ class _SectionPulseState extends State<SectionPulse> {
   }
 }
 
-class SectionGeneral extends StatefulWidget {
+class GeneralSectionView extends StatefulWidget {
   final FormBuilderState? formState;
-  const SectionGeneral({Key? key, required this.formState}) : super(key: key);
+  const GeneralSectionView({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _SectionGeneralState createState() => _SectionGeneralState();
+  _GeneralSectionViewState createState() => _GeneralSectionViewState();
 }
 
-class _SectionGeneralState extends State<SectionGeneral> {
+class _GeneralSectionViewState extends State<GeneralSectionView> {
   bool showVaccinationQs = false;
 
   @override
@@ -450,7 +451,7 @@ class _SectionGeneralState extends State<SectionGeneral> {
           child: Column(
             children: [
               IRadioGroup(
-                name: GeneralFields.vaccinationIn14daysHowManyHoursAgo.name,
+                name: GeneralFields.vaccinationHowManyHoursAgo.name,
                 label: 'How many hours ago?',
                 answer: const ['Within 48', 'Beyond 48 hours'],
                 isRequired: showVaccinationQs,
@@ -494,15 +495,15 @@ class _SectionGeneralState extends State<SectionGeneral> {
   }
 }
 
-class SectionCaregiver extends StatefulWidget {
+class CaregiverSectionView extends StatefulWidget {
   final FormBuilderState? formState;
-  const SectionCaregiver({Key? key, required this.formState}) : super(key: key);
+  const CaregiverSectionView({Key? key, required this.formState}) : super(key: key);
 
   @override
-  _SectionCaregiverState createState() => _SectionCaregiverState();
+  _CaregiverSectionViewState createState() => _CaregiverSectionViewState();
 }
 
-class _SectionCaregiverState extends State<SectionCaregiver> {
+class _CaregiverSectionViewState extends State<CaregiverSectionView> {
   @override
   Widget build(BuildContext context) {
     return Column(
