@@ -104,7 +104,6 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                     minimumSize: const Size.fromHeight(50),
                   ),
                   onPressed: () => onSubmit(context, (Patient patient) {
-                    context.read<PatientProvider>().addPatient(patient);
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/', (route) => false);
                   }),
