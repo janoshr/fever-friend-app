@@ -11,7 +11,7 @@ class Illness {
   String id;
   
   @JsonKey(toJson: toNull, includeIfNull: false)
-  List<FeverMeasurement> feverMeasurements;
+  List<MeasurementModel> feverMeasurements;
 
   @JsonKey(toJson: toNull, includeIfNull: false)
   IllnessReview? illnessReview;

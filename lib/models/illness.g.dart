@@ -9,7 +9,7 @@ part of 'illness.dart';
 Illness _$IllnessFromJson(Map<String, dynamic> json) => Illness(
       id: json['id'] as String,
       feverMeasurements: (json['feverMeasurements'] as List<dynamic>?)
-              ?.map((e) => FeverMeasurement.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => MeasurementModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
       illnessReview: json['illnessReview'] == null
@@ -28,7 +28,7 @@ Map<String, dynamic> _$IllnessToJson(Illness instance) {
   }
 
   writeNotNull('id', Illness.toNull(instance.id));
-  val['feverMeasurements'] = instance.feverMeasurements;
-  val['illnessReview'] = instance.illnessReview;
+  writeNotNull('feverMeasurements', Illness.toNull(instance.feverMeasurements));
+  writeNotNull('illnessReview', Illness.toNull(instance.illnessReview));
   return val;
 }

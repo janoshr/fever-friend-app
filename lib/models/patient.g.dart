@@ -9,8 +9,8 @@ part of 'patient.dart';
 Patient _$PatientFromJson(Map<String, dynamic> json) => Patient(
       id: json['id'] as String,
       name: json['name'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      dateOfBirth: DateTime.parse(json['dateOfBirth'] as String),
+      createdAt: fromTimestampToDate(json['createdAt'] as Timestamp),
+      dateOfBirth: fromTimestampToDate(json['dateOfBirth'] as Timestamp),
       gender: json['gender'] as String,
       height: json['height'] as String,
       weight: json['weight'] as String,
@@ -19,9 +19,7 @@ Patient _$PatientFromJson(Map<String, dynamic> json) => Patient(
               .toList() ??
           const [],
       siblings: json['siblings'] as int?,
-      updatedAt: json['updatedAt'] == null
-          ? null
-          : DateTime.parse(json['updatedAt'] as String),
+      updatedAt: fromTimestampToDateNullable(json['updatedAt'] as Timestamp?),
     );
 
 Map<String, dynamic> _$PatientToJson(Patient instance) {
@@ -38,10 +36,10 @@ Map<String, dynamic> _$PatientToJson(Patient instance) {
   val['weight'] = instance.weight;
   val['height'] = instance.height;
   val['gender'] = instance.gender;
-  val['dateOfBirth'] = instance.dateOfBirth.toIso8601String();
+  val['dateOfBirth'] = fromDateToTimestamp(instance.dateOfBirth);
   val['siblings'] = instance.siblings;
-  val['createdAt'] = instance.createdAt.toIso8601String();
-  val['updatedAt'] = instance.updatedAt?.toIso8601String();
+  val['createdAt'] = fromDateToTimestamp(instance.createdAt);
+  val['updatedAt'] = fromDateToTimestampNullable(instance.updatedAt);
   val['chronicDiseases'] = instance.chronicDiseases;
   return val;
 }

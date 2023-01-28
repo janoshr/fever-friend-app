@@ -14,8 +14,8 @@ INotification _$INotificationFromJson(Map<String, dynamic> json) {
   return INotification(
     title: json['title'] as String,
     id: json['id'] as String,
-    createdAt: DateTime.parse(json['createdAt'] as String),
-    scheduledAt: DateTime.parse(json['scheduledAt'] as String),
+    createdAt: fromTimestampToDate(json['createdAt'] as Timestamp),
+    scheduledAt: fromTimestampToDate(json['scheduledAt'] as Timestamp),
     content: json['content'] as String? ?? '',
     sent: json['sent'] as bool? ?? true,
     patientId: json['patientId'] as String?,
@@ -35,8 +35,8 @@ Map<String, dynamic> _$INotificationToJson(INotification instance) {
   val['title'] = instance.title;
   val['content'] = instance.content;
   val['patientId'] = instance.patientId;
-  val['createdAt'] = instance.createdAt.toIso8601String();
-  val['scheduledAt'] = instance.scheduledAt.toIso8601String();
+  val['createdAt'] = fromDateToTimestamp(instance.createdAt);
+  val['scheduledAt'] = fromDateToTimestamp(instance.scheduledAt);
   val['sent'] = instance.sent;
   return val;
 }

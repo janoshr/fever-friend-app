@@ -48,7 +48,7 @@ class FirestoreService {
   }
 
   Future createFeverMeasurement(
-      FeverMeasurement measurement, String patientId) async {
+      MeasurementModel measurement, String patientId) async {
     // TODO connect measurement to illness
     return await _db
         .collection(USERS)

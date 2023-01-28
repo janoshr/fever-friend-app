@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'util.dart';
+
 part 'notification.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -15,8 +17,10 @@ class INotification {
 
   final String? patientId;
 
+  @JsonKey(fromJson: fromTimestampToDate, toJson: fromDateToTimestamp)
   final DateTime createdAt;
 
+  @JsonKey(fromJson: fromTimestampToDate, toJson: fromDateToTimestamp)
   final DateTime scheduledAt;
 
   final bool sent;

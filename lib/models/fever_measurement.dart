@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fever_friend_app/models/util.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/models.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -7,169 +8,108 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 part 'fever_measurement.g.dart';
 
-enum FormSteps {
-  fever,
-  medication,
-  hydration,
-  respiration,
-  skin,
-  pulse,
-  general,
-  caregiver
-}
-
-enum FeverFields {
-  thermometerUsed,
-  measurementLocation,
-  temperature,
-  feverDuration,
-}
-
-enum MedicationFields {
-  antipyretic,
-  antipyreticWhat,
-  antipyreticHowMany,
-  antipyreticHowMuch,
-  antipyreticReason,
-  antibiotics,
-  antibioticsWhat,
-  antibioticsHowMany,
-  antibioticsHowMuch,
-}
-
-enum HydrationFields {
-  lastUrination,
-  skinTurgor,
-  crying,
-  tearsWhenCrying,
-  tongue,
-  drinking,
-  diarrhea,
-  vomit,
-}
-
-enum RespirationFields { respiratoryRate, stridor, dyspnea }
-
-enum SkinFields {
-  skinColor,
-  rash,
-  glassTest,
-}
-
-enum PulseFields {
-  pulse,
-}
-
-enum GeneralFields {
-  lastTimeEating,
-  painfulUrination,
-  smellyUrine,
-  awareness,
-  vaccinationIn14days,
-  vaccinationIn14daysHowManyHoursAgo,
-  exoticTrip,
-  vaccinationWhat,
-  seizure,
-  wryNeck,
-  pain,
-}
-
-enum CaregiverFields {
-  parentFeel,
-  parentThink,
-  parentConfident,
-}
-
 @JsonSerializable(explicitToJson: true)
-class FeverMeasurement {
+class MeasurementModel {
   @JsonKey(toJson: toNull, includeIfNull: false)
   String id;
 
-  FeverMeasurementMeta meta;
-  FeverMeasurementData data;
+  MeasurementModelMeta meta;
+  MeasurementModelData data;
 
-  FeverMeasurement({
+  MeasurementModel({
     required this.id,
     required this.data,
     required this.meta,
   });
 
-  factory FeverMeasurement.fromJson(Map<String, dynamic> json) =>
-      _$FeverMeasurementFromJson(json);
+  factory MeasurementModel.fromJson(Map<String, dynamic> json) =>
+      _$MeasurementModelFromJson(json);
 
-  factory FeverMeasurement.fromFirestore(
+  factory MeasurementModel.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> doc) {
     Map<String, dynamic> data = doc.data()!;
 
     data['id'] = doc.id;
 
-    return _$FeverMeasurementFromJson(data);
+    return _$MeasurementModelFromJson(data);
   }
 
-  factory FeverMeasurement.fromFormBuilder(
+  factory MeasurementModel.fromFormBuilder(
       FormBuilderState formState, Patient patient) {
     PackageInfo pi = getIt.get<PackageInfo>();
-    final data = FeverMeasurementData(
-      antibiotics: formState.value[MedicationFields.antibiotics.name],
-      antibioticsHowManyTimes:
-          formState.value[MedicationFields.antibioticsHowMuch.name],
-      antibioticsHowMuch:
-          formState.value[MedicationFields.antibioticsHowMuch.name],
-      antibioticsWhat: formState.value[MedicationFields.antibioticsWhat.name],
-      antipyreticMedication: formState.value[MedicationFields.antipyretic.name],
-      antipyreticMedicationHowManyTimes:
-          formState.value[MedicationFields.antipyreticHowMany.name],
-      antipyreticMedicationHowMuch:
-          formState.value[MedicationFields.antipyreticHowMuch.name],
-      antipyreticMedicationWhat:
-          formState.value[MedicationFields.antipyreticWhat.name],
-      awareness: formState.value[GeneralFields.awareness.name],
-      crying: formState.value[HydrationFields.crying.name],
-      diarrhea: formState.value[HydrationFields.diarrhea.name],
-      drinking: formState.value[HydrationFields.drinking.name],
-      dyspnea: formState.value[RespirationFields.dyspnea.name],
-      exoticTripInTheLast12Months:
-          formState.value[GeneralFields.exoticTrip.name],
-      febrileSeizure: formState.value[GeneralFields.seizure.name],
-      feverDuration: formState.value[FeverFields.feverDuration.name],
-      feverMeasurementLocation:
-          formState.value[FeverFields.measurementLocation.name],
-      glassTest: formState.value[SkinFields.glassTest.name],
-      lastTimeEating: formState.value[GeneralFields.lastTimeEating.name],
-      lastUrination: formState.value[HydrationFields.lastUrination.name],
-      pain: formState.value[GeneralFields.pain.name],
-      painfulUrination: formState.value[GeneralFields.painfulUrination.name],
-      parentConfident: formState.value[CaregiverFields.parentConfident.name],
-      parentFeel: formState.value[CaregiverFields.parentFeel.name],
-      parentThink: formState.value[CaregiverFields.parentThink.name],
-      patientName: patient.name,
-      // TODO use model to predict patientState
-      patientState: null,
-      pulse: formState.value[PulseFields.pulse.name],
-      rash: formState.value[SkinFields.rash.name],
-      respiratoryRate: formState.value[RespirationFields.respiratoryRate.name],
-      skinColor: formState.value[SkinFields.skinColor.name],
-      skinTurgor: formState.value[HydrationFields.skinTurgor.name],
-      smellyUrine: formState.value[GeneralFields.smellyUrine.name],
-      tearsWhenCrying: formState.value[HydrationFields.tearsWhenCrying.name],
-      temperature: formState.value[FeverFields.temperature.name],
-      // TODO add calculating logic to screen
-      temperatureAdjusted: null,
-      thermometerUsed: formState.value[FeverFields.thermometerUsed.name],
-      tongue: formState.value[HydrationFields.tongue.name],
-      vaccinationsHowManyHoursAgo: formState
-          .value[GeneralFields.vaccinationIn14daysHowManyHoursAgo.name],
-      vaccinationsWithIn14days:
-          formState.value[GeneralFields.vaccinationIn14days.name],
-      vaccinationsUsedVaccination:
-          formState.value[GeneralFields.vaccinationWhat.name],
-      vomit: formState.value[HydrationFields.vomit.name],
-      wheezing: formState.value[RespirationFields.stridor.name],
-      wryNeck: formState.value[GeneralFields.wryNeck.name],
+    final data = MeasurementModelData(
+      feverSection: FeverSectionModel(
+        feverDuration: formState.value[FeverFields.feverDuration.name],
+        feverMeasurementLocation:
+            formState.value[FeverFields.measurementLocation.name],
+        temperature: formState.value[FeverFields.temperature.name],
+        // TODO add calculating logic to screen
+        temperatureAdjusted: null,
+        thermometerUsed: formState.value[FeverFields.thermometerUsed.name],
+      ),
+      medicationSection: MedicationSectionModel(
+        antibiotics: formState.value[MedicationFields.antibiotics.name],
+        antibioticsHowMany:
+            formState.value[MedicationFields.antibioticsHowMuch.name],
+        antibioticsHowMuch:
+            formState.value[MedicationFields.antibioticsHowMuch.name],
+        antibioticsWhat: formState.value[MedicationFields.antibioticsWhat.name],
+        antipyretic: formState.value[MedicationFields.antipyretic.name],
+        antipyreticHowMany:
+            formState.value[MedicationFields.antipyreticHowMany.name],
+        antipyreticHowMuch:
+            formState.value[MedicationFields.antipyreticHowMuch.name],
+        antipyreticReason:
+            formState.value[MedicationFields.antipyreticReason.name],
+        antipyreticWhat: formState.value[MedicationFields.antipyreticWhat],
+      ),
+      hydrationSection: HydrationSectionModel(
+        crying: formState.value[HydrationFields.crying.name],
+        diarrhea: formState.value[HydrationFields.diarrhea.name],
+        drinking: formState.value[HydrationFields.drinking.name],
+        lastUrination: formState.value[HydrationFields.lastUrination.name],
+        skinTurgor: formState.value[HydrationFields.skinTurgor.name],
+        tearsWhenCrying: formState.value[HydrationFields.tearsWhenCrying.name],
+        tongue: formState.value[HydrationFields.tongue.name],
+        vomit: formState.value[HydrationFields.vomit.name],
+      ),
+      respirationSection: RespirationSectionModel(
+        dyspnea: formState.value[RespirationFields.dyspnea.name],
+        respiratoryRate:
+            formState.value[RespirationFields.respiratoryRate.name],
+        wheezing: formState.value[RespirationFields.wheezing.name],
+      ),
+      skinSection: SkinSectionModel(
+        glassTest: formState.value[SkinFields.glassTest.name],
+        rash: formState.value[SkinFields.rash.name],
+        skinColor: formState.value[SkinFields.skinColor.name],
+      ),
+      pulseSection: PulseSectionModel(
+        pulse: formState.value[PulseFields.pulse.name],
+      ),
+      generalSection: GeneralSectionModel(
+        awareness: formState.value[GeneralFields.awareness.name],
+        exoticTrip: formState.value[GeneralFields.exoticTrip.name],
+        seizure: formState.value[GeneralFields.seizure.name],
+        lastTimeEating: formState.value[GeneralFields.lastTimeEating.name],
+        pain: formState.value[GeneralFields.pain.name],
+        painfulUrination: formState.value[GeneralFields.painfulUrination.name],
+        smellyUrine: formState.value[GeneralFields.smellyUrine.name],
+        vaccinationHowManyHoursAgo:
+            formState.value[GeneralFields.vaccinationHowManyHoursAgo.name],
+        vaccinationIn14days:
+            formState.value[GeneralFields.vaccinationIn14days.name],
+        vaccinationWhat: formState.value[GeneralFields.vaccinationWhat.name],
+        wryNeck: formState.value[GeneralFields.wryNeck.name],
+      ),
+      caregiverSection: CaregiverSectionModel(
+        parentConfident: formState.value[CaregiverFields.parentConfident.name],
+        parentFeel: formState.value[CaregiverFields.parentFeel.name],
+        parentThink: formState.value[CaregiverFields.parentThink.name],
+      ),
     );
-    final meta = FeverMeasurementMeta(
+    final meta = MeasurementModelMeta(
       createdAt: DateTime.now(),
-      lang: 'en',
       // TODO calculate
       numberOfQuestions: 0,
       // TODO calculate
@@ -180,182 +120,266 @@ class FeverMeasurement {
       saved: true,
       updatedAt: null,
     );
-    return FeverMeasurement(id: 'n/a', data: data, meta: meta);
+    return MeasurementModel(id: 'n/a', data: data, meta: meta);
   }
 
-  Map<String, dynamic> toJson() => _$FeverMeasurementToJson(this);
+  Map<String, dynamic> toJson() => _$MeasurementModelToJson(this);
 
   static toNull(_) => null;
 }
 
 @JsonSerializable()
-class FeverMeasurementMeta {
+class MeasurementModelMeta {
   // https://stackoverflow.com/a/53672255/13280594
   String appVersion;
   int numberOfQuestions;
   int anseredQuestions;
   double progressPercent;
-  String fcmToken;
 
   String? notificationIllnessReviewTask;
   String? notificationTask;
 
-  String? lang;
-
+  @JsonKey(fromJson: fromTimestampToDate, toJson: fromDateToTimestamp)
   DateTime createdAt;
+
+  @JsonKey(
+      fromJson: fromTimestampToDateNullable,
+      toJson: fromDateToTimestampNullable)
   DateTime? updatedAt;
   bool autosaved;
   bool saved;
 
-  FeverMeasurementMeta({
+  MeasurementModelMeta({
     required this.createdAt,
     required this.numberOfQuestions,
     this.appVersion = 'dev',
-    this.fcmToken = '',
     this.anseredQuestions = 0,
     this.progressPercent = 0.0,
     this.autosaved = false,
     this.saved = false,
     this.updatedAt,
-    this.lang,
   });
 
-  factory FeverMeasurementMeta.fromJson(Map<String, dynamic> json) =>
-      _$FeverMeasurementMetaFromJson(json);
+  factory MeasurementModelMeta.fromJson(Map<String, dynamic> json) =>
+      _$MeasurementModelMetaFromJson(json);
 
-  factory FeverMeasurementMeta.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> doc) {
-    Map<String, dynamic> data = doc.data()!;
-
-    data['id'] = doc.id;
-
-    return _$FeverMeasurementMetaFromJson(data);
-  }
-
-  Map<String, dynamic> toJson() => _$FeverMeasurementMetaToJson(this);
+  Map<String, dynamic> toJson() => _$MeasurementModelMetaToJson(this);
 }
 
 @JsonSerializable()
-class FeverMeasurementData {
-  String? antibiotics;
-  int? antibioticsHowManyTimes;
-  double? antibioticsHowMuch;
-  String? antibioticsWhat;
+class MeasurementModelData {
+  FeverSectionModel? feverSection;
+  MedicationSectionModel? medicationSection;
+  HydrationSectionModel? hydrationSection;
+  RespirationSectionModel? respirationSection;
+  SkinSectionModel? skinSection;
+  PulseSectionModel? pulseSection;
+  GeneralSectionModel? generalSection;
+  CaregiverSectionModel? caregiverSection;
 
-  String? antipyreticMedication;
-  int? antipyreticMedicationHowManyTimes;
-  double? antipyreticMedicationHowMuch;
-  String? antipyreticMedicationWhat;
+  PatientState? patientState;
 
-  String? awareness;
+  MeasurementModelData({
+    this.feverSection,
+    this.medicationSection,
+    this.hydrationSection,
+    this.respirationSection,
+    this.skinSection,
+    this.pulseSection,
+    this.generalSection,
+    this.caregiverSection,
+    this.patientState,
+  });
 
-  String? bulgingFontanelleMax18MOld;
+  factory MeasurementModelData.fromJson(Map<String, dynamic> json) =>
+      _$MeasurementModelDataFromJson(json);
 
-  String? crying;
+  Map<String, dynamic> toJson() => _$MeasurementModelDataToJson(this);
+}
 
-  String? diarrhea;
-  String? drinking;
-  String? dyspnea;
-
-  String? exoticTripInTheLast12Months;
-  String? febrileSeizure;
+@JsonSerializable()
+class FeverSectionModel {
   String? feverDuration;
   String? feverMeasurementLocation;
-  String? glassTest;
-  String? lastTimeEating;
-  String? lastUrination;
-  List<String>? pain;
-  String? painfulUrination;
-
-  String? parentConfident;
-  String? parentFeel;
-  String? parentThink;
-
-  String? patientName;
-  String? patientState;
-
-  double? pulse;
-
-  String? rash;
-
-  double? respiratoryRate;
-
-  String? skinColor;
-  String? skinTurgor;
-  String? smellyUrine;
-  String? tearsWhenCrying;
 
   double? temperature;
   double? temperatureAdjusted;
 
   String? thermometerUsed;
-  String? tongue;
-  String? vaccinationsWithIn14days;
-  String? vaccinationsHowManyHoursAgo;
-  String? vaccinationsUsedVaccination;
-  String? vomit;
-  String? wheezing;
-  String? wryNeck;
 
-  FeverMeasurementData({
+  FeverSectionModel({
+    this.thermometerUsed,
+    this.feverDuration,
+    this.feverMeasurementLocation,
+    this.temperature,
+    this.temperatureAdjusted,
+  });
+
+  factory FeverSectionModel.fromJson(Map<String, dynamic> json) =>
+      _$FeverSectionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FeverSectionModelToJson(this);
+}
+
+@JsonSerializable()
+class MedicationSectionModel {
+  String? antibiotics;
+  int? antibioticsHowMany;
+  double? antibioticsHowMuch;
+  String? antibioticsWhat;
+
+  String? antipyretic;
+  int? antipyreticHowMany;
+  double? antipyreticHowMuch;
+  String? antipyreticReason;
+  String? antipyreticWhat;
+
+  MedicationSectionModel({
     this.antibiotics,
-    this.antibioticsHowManyTimes,
+    this.antibioticsHowMany,
     this.antibioticsHowMuch,
     this.antibioticsWhat,
-    this.antipyreticMedication,
-    this.antipyreticMedicationHowManyTimes,
-    this.antipyreticMedicationHowMuch,
-    this.antipyreticMedicationWhat,
-    this.awareness,
-    this.bulgingFontanelleMax18MOld,
+    this.antipyretic,
+    this.antipyreticHowMany,
+    this.antipyreticHowMuch,
+    this.antipyreticReason,
+    this.antipyreticWhat,
+  });
+
+  factory MedicationSectionModel.fromJson(Map<String, dynamic> json) =>
+      _$MedicationSectionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MedicationSectionModelToJson(this);
+}
+
+@JsonSerializable()
+class HydrationSectionModel {
+  String? crying;
+  String? diarrhea;
+  String? drinking;
+  String? lastUrination;
+  String? skinTurgor;
+  String? tearsWhenCrying;
+  String? tongue;
+  String? vomit;
+
+  HydrationSectionModel({
     this.crying,
     this.diarrhea,
     this.drinking,
-    this.dyspnea,
-    this.exoticTripInTheLast12Months,
-    this.thermometerUsed,
-    this.febrileSeizure,
-    this.feverDuration,
-    this.feverMeasurementLocation,
-    this.glassTest,
-    this.lastTimeEating,
     this.lastUrination,
+    this.skinTurgor,
+    this.tearsWhenCrying,
+    this.tongue,
+    this.vomit,
+  });
+
+  factory HydrationSectionModel.fromJson(Map<String, dynamic> json) =>
+      _$HydrationSectionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$HydrationSectionModelToJson(this);
+}
+
+@JsonSerializable()
+class RespirationSectionModel {
+  String? dyspnea;
+  double? respiratoryRate;
+  String? wheezing;
+
+  RespirationSectionModel({
+    this.dyspnea,
+    this.respiratoryRate,
+    this.wheezing,
+  });
+
+  factory RespirationSectionModel.fromJson(Map<String, dynamic> json) =>
+      _$RespirationSectionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RespirationSectionModelToJson(this);
+}
+
+@JsonSerializable()
+class SkinSectionModel {
+  String? glassTest;
+  String? rash;
+  String? skinColor;
+
+  SkinSectionModel({
+    this.glassTest,
+    this.rash,
+    this.skinColor,
+  });
+
+  factory SkinSectionModel.fromJson(Map<String, dynamic> json) =>
+      _$SkinSectionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SkinSectionModelToJson(this);
+}
+
+@JsonSerializable()
+class PulseSectionModel {
+  double? pulse;
+
+  PulseSectionModel({
+    this.pulse,
+  });
+
+  factory PulseSectionModel.fromJson(Map<String, dynamic> json) =>
+      _$PulseSectionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PulseSectionModelToJson(this);
+}
+
+@JsonSerializable()
+class GeneralSectionModel {
+  String? awareness;
+  String? bulgingFontanelleMax18MOld;
+  String? exoticTrip;
+  String? lastTimeEating;
+  List<String>? pain;
+  String? painfulUrination;
+  String? seizure;
+  String? smellyUrine;
+  String? vaccinationIn14days;
+  String? vaccinationHowManyHoursAgo;
+  String? vaccinationWhat;
+  String? wryNeck;
+
+  GeneralSectionModel({
+    this.awareness,
+    this.bulgingFontanelleMax18MOld,
+    this.exoticTrip,
+    this.lastTimeEating,
     this.pain,
     this.painfulUrination,
-    this.parentConfident,
-    this.parentFeel,
-    this.parentThink,
-    this.patientName,
-    this.patientState,
-    this.pulse,
-    this.rash,
-    this.respiratoryRate,
-    this.skinColor,
-    this.skinTurgor,
+    this.seizure,
     this.smellyUrine,
-    this.tearsWhenCrying,
-    this.temperature,
-    this.temperatureAdjusted,
-    this.tongue,
-    this.vaccinationsHowManyHoursAgo,
-    this.vaccinationsUsedVaccination,
-    this.vaccinationsWithIn14days,
-    this.vomit,
-    this.wheezing,
+    this.vaccinationHowManyHoursAgo,
+    this.vaccinationIn14days,
+    this.vaccinationWhat,
     this.wryNeck,
   });
 
-  factory FeverMeasurementData.fromJson(Map<String, dynamic> json) =>
-      _$FeverMeasurementDataFromJson(json);
+  factory GeneralSectionModel.fromJson(Map<String, dynamic> json) =>
+      _$GeneralSectionModelFromJson(json);
 
-  factory FeverMeasurementData.fromFirestore(
-      DocumentSnapshot<Map<String, dynamic>> doc) {
-    Map<String, dynamic> data = doc.data()!;
+  Map<String, dynamic> toJson() => _$GeneralSectionModelToJson(this);
+}
 
-    data['id'] = doc.id;
+@JsonSerializable()
+class CaregiverSectionModel {
+  String? parentConfident;
+  String? parentFeel;
+  String? parentThink;
 
-    return _$FeverMeasurementDataFromJson(data);
-  }
+  CaregiverSectionModel({
+    this.parentConfident,
+    this.parentFeel,
+    this.parentThink,
+  });
 
-  Map<String, dynamic> toJson() => _$FeverMeasurementDataToJson(this);
+  factory CaregiverSectionModel.fromJson(Map<String, dynamic> json) =>
+      _$CaregiverSectionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CaregiverSectionModelToJson(this);
 }
