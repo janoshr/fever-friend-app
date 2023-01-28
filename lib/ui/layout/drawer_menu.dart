@@ -30,7 +30,7 @@ class DrawerMenu extends StatelessWidget {
                 : 'Loading...'),
             currentAccountPicture: Icon(
               Icons.account_circle,
-              color: getIconColor(patient!.name),
+              color: getIconColor(patient?.name ?? 'n/a'),
               size: 48,
             ),
           ),
