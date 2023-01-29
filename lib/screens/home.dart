@@ -1,9 +1,13 @@
 import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/models/notification.dart';
 import 'package:fever_friend_app/screens/screen_definition.dart';
+import 'package:fever_friend_app/services/firestore.dart';
+import 'package:fever_friend_app/services/patient_provider.dart';
+import 'package:fever_friend_app/ui/widgets/illness_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../services/get_it.dart';
 import '../ui/layout/drawer_menu.dart';
 import '../ui/widgets/illness_card.dart';
 
@@ -15,7 +19,7 @@ final illness = Illness(id: 'asdf', feverMeasurements: [
       feverSection: FeverSectionModel(
         temperature: 37.8,
       ),
-      patientState: PatientState.good,
+      patientState: PatientState.caution,
     ),
     meta: MeasurementModelMeta(
       createdAt: DateTime.now(),
@@ -50,6 +54,139 @@ final illness = Illness(id: 'asdf', feverMeasurements: [
   ),
 ]);
 
+final illnesses = <Illness>[
+  Illness(id: 'asdf', feverMeasurements: [
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        hydrationSection: HydrationSectionModel(),
+        caregiverSection: CaregiverSectionModel(),
+        medicationSection: MedicationSectionModel(),
+        respirationSection: RespirationSectionModel(),
+        generalSection: GeneralSectionModel(),
+        skinSection: SkinSectionModel(),
+        pulseSection: PulseSectionModel(),
+        patientState: PatientState.good,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 5)),
+        numberOfQuestions: 3,
+      ),
+    ),
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        patientState: PatientState.good,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 6)),
+        numberOfQuestions: 3,
+      ),
+    ),
+  ]),
+  Illness(id: 'asdf2', feverMeasurements: [
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        patientState: PatientState.caution,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 22)),
+        numberOfQuestions: 3,
+      ),
+    ),
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        patientState: PatientState.good,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 22)),
+        numberOfQuestions: 3,
+      ),
+    ),
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        patientState: PatientState.caution,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 24)),
+        numberOfQuestions: 3,
+      ),
+    ),
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        patientState: PatientState.caution,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 25)),
+        numberOfQuestions: 3,
+      ),
+    ),
+  ]),
+  Illness(id: 'asdf3', feverMeasurements: [
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        patientState: PatientState.good,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 56)),
+        numberOfQuestions: 3,
+      ),
+    ),
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        patientState: PatientState.danger,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 57)),
+        numberOfQuestions: 3,
+      ),
+    ),
+    MeasurementModel(
+      id: 'num1',
+      data: MeasurementModelData(
+        feverSection: FeverSectionModel(
+          temperature: 37.8,
+        ),
+        patientState: PatientState.caution,
+      ),
+      meta: MeasurementModelMeta(
+        createdAt: DateTime.now().subtract(const Duration(days: 58)),
+        numberOfQuestions: 3,
+      ),
+    ),
+  ]),
+];
+
 class IHomeScreen extends StatefulWidget {
   const IHomeScreen({Key? key}) : super(key: key);
 
@@ -61,6 +198,7 @@ class _IHomeScreenState extends State<IHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final notis = Provider.of<List<INotification>>(context);
+    final patient = Provider.of<PatientProvider>(context).patient;
 
     return Scaffold(
       appBar: AppBar(
@@ -79,12 +217,25 @@ class _IHomeScreenState extends State<IHomeScreen> {
         ],
       ),
       drawer: const DrawerMenu(),
-      body: SafeArea(
-        child: Column(children: [
-          IllnessCard(
-            illness: illness,
-          )
-        ]),
+      body: FutureProvider<List<Illness>>.value(
+        initialData: const [],
+        value: getIt.get<FirestoreService>().getIllnesses(patient!.id),
+        child: Consumer<List<Illness>>(
+          builder: (context, value, _) {
+            return SafeArea(
+              child: Column(children: [
+                IllnessCard(
+                  illness: illness,
+                ),
+                Expanded(
+                  child: IllnessList(
+                    illnessList: illnesses,
+                  ),
+                ),
+              ]),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
