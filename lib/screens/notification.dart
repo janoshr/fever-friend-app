@@ -17,15 +17,21 @@ class NotificationScreen extends StatelessWidget {
         builder: (context, value, child) {
           if (value.isEmpty) {
             return SafeArea(
-                child: Column(
-              children: const [
-                Icon(Icons.notifications_none),
-                Text(
-                  'No notifications for now',
-                  style: TextStyle(color: Colors.grey),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Center(
+                  child: Column(
+                    children: const [
+                      Icon(Icons.notifications_none),
+                      Text(
+                        'No notifications for now',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ));
+              ),
+            );
           }
 
           final data = value;

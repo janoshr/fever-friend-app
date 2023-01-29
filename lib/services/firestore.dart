@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 const String USERS = 'users';
 const String PATIENTS = 'patients';
 const String ILLNESSES = 'illnesses';
+const String MEASUREMENTS = 'measurements';
 const String NOTIFICATIONS = 'notifications';
 
 class FirestoreService {
@@ -85,5 +86,39 @@ class FirestoreService {
         .map((list) => list.docs
             .map((snap) => INotification.fromFirestore(snap))
             .toList());
+  }
+
+  Future<List<Illness>> getIllnesses(String patientId) async {
+    final ref = await _db
+        .collection(USERS)
+        .doc(_auth.currentUser!.uid)
+        .collection(PATIENTS)
+        .doc(patientId)
+        .collection(ILLNESSES)
+        .get();
+    final illnesses =
+        ref.docs.map((event) => Illness.fromFirestore(event)).toList();
+
+    return await Future.wait(illnesses.map((il) async {
+      final measurements = await _getMeasurements(patientId, il.id);
+      il.feverMeasurements = measurements;
+      return il;
+    }).toList());
+  }
+
+  Future<List<MeasurementModel>> _getMeasurements(
+      String patientId, String illnessId) async {
+    final ref = await _db
+        .collection(USERS)
+        .doc(_auth.currentUser!.uid)
+        .collection(PATIENTS)
+        .doc(patientId)
+        .collection(ILLNESSES)
+        .doc(illnessId)
+        .collection(MEASUREMENTS)
+        .get();
+    return ref.docs
+        .map((snapshot) => MeasurementModel.fromFirestore(snapshot))
+        .toList();
   }
 }

@@ -5,6 +5,9 @@ import 'dart:math' as math;
 /// Formats date like `MMM d, hh:mm`
 DateFormat dateFMMMDDHmm = DateFormat('MMM d, hh:mm');
 
+/// Formats date like `MMM d`
+DateFormat dateFMMMDD = DateFormat('MMM d');
+
 /// Formats date like `yyyy/MM/dd`
 DateFormat dateFYYYYMMDD = DateFormat('yyyy/MM/dd');
 
