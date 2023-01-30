@@ -17,6 +17,10 @@ class PatientProvider with ChangeNotifier {
 
   PatientProvider updatePatientList(List<Patient> list) {
     _patients = list;
+    if (list.isNotEmpty && _patient == null) {
+      _patient = list.first;
+    }
+    notifyListeners();
     return this;
   }
 

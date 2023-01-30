@@ -21,6 +21,7 @@ class IllnessList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO add empty/loading indicator
     return ListView.separated(
       itemBuilder: (context, i) {
         final illness = illnessList[i];
