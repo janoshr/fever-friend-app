@@ -88,7 +88,11 @@ class FirestoreService {
             .toList());
   }
 
-  Future<List<Illness>> getIllnesses(String patientId) async {
+  Future<List<Illness>> getIllnesses(String? patientId) async {
+    if (patientId == null) {
+      return Future.value([]);
+    }
+    
     final ref = await _db
         .collection(USERS)
         .doc(_auth.currentUser!.uid)
