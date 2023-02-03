@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/models/notification.dart';
+import 'package:fever_friend_app/screens/screens.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 const String USERS = 'users';
@@ -50,25 +51,36 @@ class FirestoreService {
 
   Future createFeverMeasurement(
       MeasurementModel measurement, String patientId) async {
-    // First create an illness
-    final doc = await _db
-        .collection(USERS)
-        .doc(_auth.currentUser!.uid)
-        .collection(PATIENTS)
-        .doc(patientId)
-        .collection(ILLNESSES)
-        .add(Illness(id: '', createdAt: DateTime.now()).toJson());
+    final res = await _db.runTransaction((transaction) async {
+      // First create an illness
+      final illnessRef = _db
+          .collection(USERS)
+          .doc(_auth.currentUser!.uid)
+          .collection(PATIENTS)
+          .doc(patientId)
+          .collection(ILLNESSES)
+          .doc();
+      transaction.set(
+          illnessRef, Illness(id: '', createdAt: DateTime.now()).toJson());
+      illness.id = illnessRef.id;
 
-    // Add first measurement
-    return await _db
-        .collection(USERS)
-        .doc(_auth.currentUser!.uid)
-        .collection(PATIENTS)
-        .doc(patientId)
-        .collection(ILLNESSES)
-        .doc(doc.id)
-        .collection(MEASUREMENTS)
-        .add(measurement.toJson());
+      // Add first measurement
+      final measurementRef = _db
+          .collection(USERS)
+          .doc(_auth.currentUser!.uid)
+          .collection(PATIENTS)
+          .doc(patientId)
+          .collection(ILLNESSES)
+          .doc(illnessRef.id)
+          .collection(MEASUREMENTS)
+          .doc();
+      transaction.set(measurementRef, measurement.toJson());
+      measurement.id = measurementRef.id;
+
+      return [illness, measurement];
+    });
+
+    return res;
   }
 
   Future addMeasurement(MeasurementModel measurementModel, String patientId,
@@ -76,31 +88,37 @@ class FirestoreService {
     if (!illness.isActive) {
       throw InactiveIllnessException('in addMeasurement');
     }
-    final batch = _db.batch();
-    // update timestamp
-    illness.updatedAt = DateTime.now();
-    final illnessRef = _db
-        .collection(USERS)
-        .doc(_auth.currentUser!.uid)
-        .collection(PATIENTS)
-        .doc(patientId)
-        .collection(ILLNESSES)
-        .doc(illness.id);
+    final res = await _db.runTransaction((transaction) async {
+      // update timestamp
+      illness.updatedAt = DateTime.now();
+      final illnessRef = _db
+          .collection(USERS)
+          .doc(_auth.currentUser!.uid)
+          .collection(PATIENTS)
+          .doc(patientId)
+          .collection(ILLNESSES)
+          .doc(illness.id);
 
-    batch.update(illnessRef, illness.toJson());
+      transaction.update(illnessRef, illness.toJson());
 
-    final measurementsRef = _db
-        .collection(USERS)
-        .doc(_auth.currentUser!.uid)
-        .collection(PATIENTS)
-        .doc(patientId)
-        .collection(ILLNESSES)
-        .doc(illness.id)
-        .collection(MEASUREMENTS)
-        .doc();
+      final measurementsRef = _db
+          .collection(USERS)
+          .doc(_auth.currentUser!.uid)
+          .collection(PATIENTS)
+          .doc(patientId)
+          .collection(ILLNESSES)
+          .doc(illness.id)
+          .collection(MEASUREMENTS)
+          .doc();
 
-    batch.set(measurementsRef, measurementModel.toJson());
-    return await batch.commit();
+      transaction.set(measurementsRef, measurementModel.toJson());
+      measurementModel.id = measurementsRef.id;
+      illness.feverMeasurements.add(measurementModel);
+
+      return illness;
+    });
+
+    return res;
   }
 
   Stream<List<Patient>> streamPatients(String id) {
