@@ -6,11 +6,12 @@ part of 'fever_measurement.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-MeasurementModel _$MeasurementModelFromJson(Map<String, dynamic> json) =>
-    MeasurementModel(
+MeasurementModel _$MeasurementModelFromJson(Map json) => MeasurementModel(
       id: json['id'] as String,
-      data: MeasurementModelData.fromJson(json['data'] as Map<String, dynamic>),
-      meta: MeasurementModelMeta.fromJson(json['meta'] as Map<String, dynamic>),
+      data: MeasurementModelData.fromJson(
+          Map<String, dynamic>.from(json['data'] as Map)),
+      meta: MeasurementModelMeta.fromJson(
+          Map<String, dynamic>.from(json['meta'] as Map)),
     );
 
 Map<String, dynamic> _$MeasurementModelToJson(MeasurementModel instance) {
@@ -28,8 +29,7 @@ Map<String, dynamic> _$MeasurementModelToJson(MeasurementModel instance) {
   return val;
 }
 
-MeasurementModelMeta _$MeasurementModelMetaFromJson(
-        Map<String, dynamic> json) =>
+MeasurementModelMeta _$MeasurementModelMetaFromJson(Map json) =>
     MeasurementModelMeta(
       createdAt: fromTimestampToDate(json['createdAt'] as Timestamp),
       numberOfQuestions: json['numberOfQuestions'] as int,
@@ -59,41 +59,40 @@ Map<String, dynamic> _$MeasurementModelMetaToJson(
       'saved': instance.saved,
     };
 
-MeasurementModelData _$MeasurementModelDataFromJson(
-        Map<String, dynamic> json) =>
+MeasurementModelData _$MeasurementModelDataFromJson(Map json) =>
     MeasurementModelData(
       feverSection: json['feverSection'] == null
           ? null
           : FeverSectionModel.fromJson(
-              json['feverSection'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['feverSection'] as Map)),
       medicationSection: json['medicationSection'] == null
           ? null
           : MedicationSectionModel.fromJson(
-              json['medicationSection'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['medicationSection'] as Map)),
       hydrationSection: json['hydrationSection'] == null
           ? null
           : HydrationSectionModel.fromJson(
-              json['hydrationSection'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['hydrationSection'] as Map)),
       respirationSection: json['respirationSection'] == null
           ? null
           : RespirationSectionModel.fromJson(
-              json['respirationSection'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['respirationSection'] as Map)),
       skinSection: json['skinSection'] == null
           ? null
           : SkinSectionModel.fromJson(
-              json['skinSection'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['skinSection'] as Map)),
       pulseSection: json['pulseSection'] == null
           ? null
           : PulseSectionModel.fromJson(
-              json['pulseSection'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['pulseSection'] as Map)),
       generalSection: json['generalSection'] == null
           ? null
           : GeneralSectionModel.fromJson(
-              json['generalSection'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['generalSection'] as Map)),
       caregiverSection: json['caregiverSection'] == null
           ? null
           : CaregiverSectionModel.fromJson(
-              json['caregiverSection'] as Map<String, dynamic>),
+              Map<String, dynamic>.from(json['caregiverSection'] as Map)),
       patientState:
           $enumDecodeNullable(_$PatientStateEnumMap, json['patientState']),
     );
@@ -101,14 +100,14 @@ MeasurementModelData _$MeasurementModelDataFromJson(
 Map<String, dynamic> _$MeasurementModelDataToJson(
         MeasurementModelData instance) =>
     <String, dynamic>{
-      'feverSection': instance.feverSection,
-      'medicationSection': instance.medicationSection,
-      'hydrationSection': instance.hydrationSection,
-      'respirationSection': instance.respirationSection,
-      'skinSection': instance.skinSection,
-      'pulseSection': instance.pulseSection,
-      'generalSection': instance.generalSection,
-      'caregiverSection': instance.caregiverSection,
+      'feverSection': instance.feverSection?.toJson(),
+      'medicationSection': instance.medicationSection?.toJson(),
+      'hydrationSection': instance.hydrationSection?.toJson(),
+      'respirationSection': instance.respirationSection?.toJson(),
+      'skinSection': instance.skinSection?.toJson(),
+      'pulseSection': instance.pulseSection?.toJson(),
+      'generalSection': instance.generalSection?.toJson(),
+      'caregiverSection': instance.caregiverSection?.toJson(),
       'patientState': _$PatientStateEnumMap[instance.patientState],
     };
 
@@ -118,8 +117,7 @@ const _$PatientStateEnumMap = {
   PatientState.danger: 'danger',
 };
 
-FeverSectionModel _$FeverSectionModelFromJson(Map<String, dynamic> json) =>
-    FeverSectionModel(
+FeverSectionModel _$FeverSectionModelFromJson(Map json) => FeverSectionModel(
       thermometerUsed: json['thermometerUsed'] as String?,
       feverDuration: json['feverDuration'] as String?,
       feverMeasurementLocation: json['feverMeasurementLocation'] as String?,
@@ -136,8 +134,7 @@ Map<String, dynamic> _$FeverSectionModelToJson(FeverSectionModel instance) =>
       'thermometerUsed': instance.thermometerUsed,
     };
 
-MedicationSectionModel _$MedicationSectionModelFromJson(
-        Map<String, dynamic> json) =>
+MedicationSectionModel _$MedicationSectionModelFromJson(Map json) =>
     MedicationSectionModel(
       antibiotics: json['antibiotics'] as String?,
       antibioticsHowMany: json['antibioticsHowMany'] as int?,
@@ -164,8 +161,7 @@ Map<String, dynamic> _$MedicationSectionModelToJson(
       'antipyreticWhat': instance.antipyreticWhat,
     };
 
-HydrationSectionModel _$HydrationSectionModelFromJson(
-        Map<String, dynamic> json) =>
+HydrationSectionModel _$HydrationSectionModelFromJson(Map json) =>
     HydrationSectionModel(
       crying: json['crying'] as String?,
       diarrhea: json['diarrhea'] as String?,
@@ -174,7 +170,8 @@ HydrationSectionModel _$HydrationSectionModelFromJson(
       skinTurgor: json['skinTurgor'] as String?,
       tearsWhenCrying: json['tearsWhenCrying'] as String?,
       tongue: json['tongue'] as String?,
-      vomit: json['vomit'] as String?,
+      vomit:
+          (json['vomit'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$HydrationSectionModelToJson(
@@ -190,8 +187,7 @@ Map<String, dynamic> _$HydrationSectionModelToJson(
       'vomit': instance.vomit,
     };
 
-RespirationSectionModel _$RespirationSectionModelFromJson(
-        Map<String, dynamic> json) =>
+RespirationSectionModel _$RespirationSectionModelFromJson(Map json) =>
     RespirationSectionModel(
       dyspnea: json['dyspnea'] as String?,
       respiratoryRate: (json['respiratoryRate'] as num?)?.toDouble(),
@@ -206,8 +202,7 @@ Map<String, dynamic> _$RespirationSectionModelToJson(
       'wheezing': instance.wheezing,
     };
 
-SkinSectionModel _$SkinSectionModelFromJson(Map<String, dynamic> json) =>
-    SkinSectionModel(
+SkinSectionModel _$SkinSectionModelFromJson(Map json) => SkinSectionModel(
       glassTest: json['glassTest'] as String?,
       rash: json['rash'] as String?,
       skinColor: json['skinColor'] as String?,
@@ -220,8 +215,7 @@ Map<String, dynamic> _$SkinSectionModelToJson(SkinSectionModel instance) =>
       'skinColor': instance.skinColor,
     };
 
-PulseSectionModel _$PulseSectionModelFromJson(Map<String, dynamic> json) =>
-    PulseSectionModel(
+PulseSectionModel _$PulseSectionModelFromJson(Map json) => PulseSectionModel(
       pulse: (json['pulse'] as num?)?.toDouble(),
     );
 
@@ -230,7 +224,7 @@ Map<String, dynamic> _$PulseSectionModelToJson(PulseSectionModel instance) =>
       'pulse': instance.pulse,
     };
 
-GeneralSectionModel _$GeneralSectionModelFromJson(Map<String, dynamic> json) =>
+GeneralSectionModel _$GeneralSectionModelFromJson(Map json) =>
     GeneralSectionModel(
       awareness: json['awareness'] as String?,
       bulgingFontanelleMax18MOld: json['bulgingFontanelleMax18MOld'] as String?,
@@ -263,8 +257,7 @@ Map<String, dynamic> _$GeneralSectionModelToJson(
       'wryNeck': instance.wryNeck,
     };
 
-CaregiverSectionModel _$CaregiverSectionModelFromJson(
-        Map<String, dynamic> json) =>
+CaregiverSectionModel _$CaregiverSectionModelFromJson(Map json) =>
     CaregiverSectionModel(
       parentConfident: json['parentConfident'] as String?,
       parentFeel: json['parentFeel'] as String?,

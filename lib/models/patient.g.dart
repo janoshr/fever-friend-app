@@ -6,7 +6,7 @@ part of 'patient.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Patient _$PatientFromJson(Map<String, dynamic> json) => Patient(
+Patient _$PatientFromJson(Map json) => Patient(
       id: json['id'] as String,
       name: json['name'] as String,
       createdAt: fromTimestampToDate(json['createdAt'] as Timestamp),

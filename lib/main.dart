@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fever_friend_app/models/illness.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/notification.dart';
 import 'package:fever_friend_app/models/patient.dart';
@@ -130,7 +131,15 @@ class _MyAppState extends State<MyApp> {
                   if (previous == null) PatientProvider(value);
                   return previous!.updatePatientList(value);
                 },
-                child: AppWidget(initialRoute: initialRoute),
+                child: Consumer<PatientProvider>(
+                  builder: (context, patientProvider, _) {
+                    return FutureProvider<List<Illness>>.value(
+                      value: db.getIllnesses(patientProvider.patient?.id),
+                      initialData: const [],
+                      child: AppWidget(initialRoute: initialRoute),
+                    );
+                  },
+                ),
               );
             },
           ),

@@ -50,14 +50,57 @@ class FirestoreService {
 
   Future createFeverMeasurement(
       MeasurementModel measurement, String patientId) async {
-    // TODO connect measurement to illness
+    // First create an illness
+    final doc = await _db
+        .collection(USERS)
+        .doc(_auth.currentUser!.uid)
+        .collection(PATIENTS)
+        .doc(patientId)
+        .collection(ILLNESSES)
+        .add(Illness(id: '', createdAt: DateTime.now()).toJson());
+
+    // Add first measurement
     return await _db
         .collection(USERS)
         .doc(_auth.currentUser!.uid)
         .collection(PATIENTS)
         .doc(patientId)
         .collection(ILLNESSES)
+        .doc(doc.id)
+        .collection(MEASUREMENTS)
         .add(measurement.toJson());
+  }
+
+  Future addMeasurement(MeasurementModel measurementModel, String patientId,
+      Illness illness) async {
+    if (!illness.isActive) {
+      throw InactiveIllnessException('in addMeasurement');
+    }
+    final batch = _db.batch();
+    // update timestamp
+    illness.updatedAt = DateTime.now();
+    final illnessRef = _db
+        .collection(USERS)
+        .doc(_auth.currentUser!.uid)
+        .collection(PATIENTS)
+        .doc(patientId)
+        .collection(ILLNESSES)
+        .doc(illness.id);
+
+    batch.update(illnessRef, illness.toJson());
+
+    final measurementsRef = _db
+        .collection(USERS)
+        .doc(_auth.currentUser!.uid)
+        .collection(PATIENTS)
+        .doc(patientId)
+        .collection(ILLNESSES)
+        .doc(illness.id)
+        .collection(MEASUREMENTS)
+        .doc();
+
+    batch.set(measurementsRef, measurementModel.toJson());
+    return await batch.commit();
   }
 
   Stream<List<Patient>> streamPatients(String id) {
@@ -92,7 +135,7 @@ class FirestoreService {
     if (patientId == null) {
       return Future.value([]);
     }
-    
+
     final ref = await _db
         .collection(USERS)
         .doc(_auth.currentUser!.uid)
@@ -124,5 +167,15 @@ class FirestoreService {
     return ref.docs
         .map((snapshot) => MeasurementModel.fromFirestore(snapshot))
         .toList();
+  }
+}
+
+class InactiveIllnessException implements Exception {
+  final String? message;
+  InactiveIllnessException(this.message);
+
+  @override
+  String toString() {
+    return 'InactiveIllnessException: $message';
   }
 }

@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 Color COLOR_GOOD = Colors.lightGreenAccent[400]!;
 Color COLOR_CAUTION = Colors.amber[800]!;
 Color COLOR_DANGER = Colors.red;
+Color COLOR_NEUTRAL = Colors.blueGrey[100]!;
 
-Color stateToColor(PatientState state) {
+Color stateToColor(PatientState? state) {
   if (state == PatientState.good) {
     return COLOR_GOOD;
   } else if (state == PatientState.caution) {
@@ -15,7 +16,7 @@ Color stateToColor(PatientState state) {
   } else if (state == PatientState.danger) {
     return COLOR_DANGER;
   } else {
-    throw Exception('State $state is not a predefined state');
+    return COLOR_NEUTRAL;
   }
 }
 
