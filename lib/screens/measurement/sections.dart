@@ -91,7 +91,7 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
           child: Column(
             children: [
               ICheckboxGroup(
-                name: MedicationFields.antibioticsWhat.name,
+                name: MedicationFields.antipyreticWhat.name,
                 label: 'What?',
                 answer: const [
                   'Paracetamol',
@@ -113,8 +113,8 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
               INumberInputField(
                 name: MedicationFields.antipyreticHowMuch.name,
                 label: 'How much all together in the past 24 hours (mg)?',
-                max: 0,
-                min: 600,
+                min: 0,
+                max: 600,
                 unit: 'mg',
                 isRequired: showAntipyreticQs,
               ),
@@ -148,10 +148,9 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
           visible: showAntibioticQs,
           child: Column(
             children: [
-              ICheckboxGroup(
+              ITextField(
                 name: MedicationFields.antibioticsWhat.name,
                 label: 'What?',
-                answer: const [],
                 isRequired: showAntibioticQs,
               ),
               INumberInputField(
@@ -164,8 +163,8 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
               INumberInputField(
                 name: MedicationFields.antibioticsHowMuch.name,
                 label: 'How much all together in the past 24 hours (mg)?',
-                max: 0,
-                min: 600,
+                min: 0,
+                max: 600,
                 unit: 'mg',
                 isRequired: showAntibioticQs,
               ),

@@ -54,4 +54,13 @@ class Illness {
   Map<String, dynamic> toJson() => _$IllnessToJson(this);
 
   static toNull(_) => null;
+
+  /// If the illness has not be closed and
+  /// if the illness has been created in the last 48 hours
+  /// or if the illness has been updated in the last 48 hours
+  bool get isActive =>
+      closedAt == null &&
+      ((createdAt.difference(DateTime.now()).inHours < 48) ||
+          (updatedAt != null &&
+              updatedAt!.difference(DateTime.now()).inHours < 48));
 }

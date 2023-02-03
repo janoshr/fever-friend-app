@@ -6,7 +6,7 @@ part of 'user.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-IUser _$IUserFromJson(Map<String, dynamic> json) {
+IUser _$IUserFromJson(Map json) {
   $checkKeys(
     json,
     requiredKeys: const ['email'],

@@ -6,7 +6,7 @@ part of 'notification.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-INotification _$INotificationFromJson(Map<String, dynamic> json) {
+INotification _$INotificationFromJson(Map json) {
   $checkKeys(
     json,
     requiredKeys: const ['title'],

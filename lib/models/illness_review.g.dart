@@ -6,8 +6,7 @@ part of 'illness_review.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-IllnessReview _$IllnessReviewFromJson(Map<String, dynamic> json) =>
-    IllnessReview(
+IllnessReview _$IllnessReviewFromJson(Map json) => IllnessReview(
       createdAt: DateTime.parse(json['createdAt'] as String),
       id: json['id'] as String,
       illnessState: json['illnessState'] as String,

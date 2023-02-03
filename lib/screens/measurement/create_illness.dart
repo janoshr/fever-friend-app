@@ -77,6 +77,8 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
             patient,
           );
 
+          db.createFeverMeasurement(measurement, patient.id);
+
           success.call();
         }
       };
@@ -148,7 +150,8 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                 state: getStepState(
                     FormSteps.medication.index, MedicationFields.values),
                 title: const Text('Medication'),
-                content: MedicationSectionView(formState: _formKey.currentState),
+                content:
+                    MedicationSectionView(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == FormSteps.hydration.index,
@@ -162,7 +165,8 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                 state: getStepState(
                     FormSteps.respiration.index, RespirationFields.values),
                 title: const Text('Respiration'),
-                content: RespirationSectionView(formState: _formKey.currentState),
+                content:
+                    RespirationSectionView(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == FormSteps.skin.index,

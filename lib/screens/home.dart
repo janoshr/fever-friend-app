@@ -217,51 +217,38 @@ class _IHomeScreenState extends State<IHomeScreen> {
         ],
       ),
       drawer: const DrawerMenu(),
-      body: FutureProvider<List<Illness>>.value(
-        // TODO store illnesses
-        initialData: const [],
-        value: getIt.get<FirestoreService>().getIllnesses(patient?.id),
-        child: Consumer<List<Illness>>(
-          builder: (context, value, _) {
-            if (value.isEmpty) {
-              return SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Center(
-                    child: Column(
-                      children: const [
-                        Icon(Icons.info_outline),
-                        Text('No measruements to display')
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }
-
-            final bool active =
-                value.first.createdAt.difference(DateTime.now()).inHours < 48 ||
-                    (value.first.updatedAt != null &&
-                        value.first.updatedAt!
-                                .difference(DateTime.now())
-                                .inHours <
-                            48);
-            // TODO check for active illness
+      body: Consumer<List<Illness>>(
+        builder: (context, value, _) {
+          if (value.isEmpty) {
             return SafeArea(
-              child: Column(children: [
-                if (active)
-                  IllnessCard(
-                    illness: value.first,
-                  ),
-                Expanded(
-                  child: IllnessList(
-                    illnessList: value.skip(1).toList(),
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Center(
+                  child: Column(
+                    children: const [
+                      Icon(Icons.info_outline),
+                      Text('No measruements to display')
+                    ],
                   ),
                 ),
-              ]),
+              ),
             );
-          },
-        ),
+          }
+
+          return SafeArea(
+            child: Column(children: [
+              if (value.first.isActive)
+                IllnessCard(
+                  illness: value.first,
+                ),
+              Expanded(
+                child: IllnessList(
+                  illnessList: value.skip(1).toList(),
+                ),
+              ),
+            ]),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

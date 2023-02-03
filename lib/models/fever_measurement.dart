@@ -42,7 +42,8 @@ class MeasurementModel {
         feverDuration: formState.value[FeverFields.feverDuration.name],
         feverMeasurementLocation:
             formState.value[FeverFields.measurementLocation.name],
-        temperature: formState.value[FeverFields.temperature.name],
+        temperature:
+            double.parse(formState.value[FeverFields.temperature.name]),
         // TODO add calculating logic to screen
         temperatureAdjusted: null,
         thermometerUsed: formState.value[FeverFields.thermometerUsed.name],
@@ -50,15 +51,27 @@ class MeasurementModel {
       medicationSection: MedicationSectionModel(
         antibiotics: formState.value[MedicationFields.antibiotics.name],
         antibioticsHowMany:
-            formState.value[MedicationFields.antibioticsHowMuch.name],
+            formState.value[MedicationFields.antibioticsHowMuch.name] != null
+                ? int.tryParse(
+                    formState.value[MedicationFields.antibioticsHowMuch.name])
+                : null,
         antibioticsHowMuch:
-            formState.value[MedicationFields.antibioticsHowMuch.name],
+            formState.value[MedicationFields.antibioticsHowMuch.name] != null
+                ? double.tryParse(
+                    formState.value[MedicationFields.antibioticsHowMuch.name])
+                : null,
         antibioticsWhat: formState.value[MedicationFields.antibioticsWhat.name],
         antipyretic: formState.value[MedicationFields.antipyretic.name],
         antipyreticHowMany:
-            formState.value[MedicationFields.antipyreticHowMany.name],
+            formState.value[MedicationFields.antipyreticHowMany.name] != null
+                ? int.tryParse(
+                    formState.value[MedicationFields.antipyreticHowMany.name])
+                : null,
         antipyreticHowMuch:
-            formState.value[MedicationFields.antipyreticHowMuch.name],
+            formState.value[MedicationFields.antipyreticHowMuch.name] != null
+                ? double.tryParse(
+                    formState.value[MedicationFields.antipyreticHowMuch.name])
+                : null,
         antipyreticReason:
             formState.value[MedicationFields.antipyreticReason.name],
         antipyreticWhat: formState.value[MedicationFields.antipyreticWhat],
@@ -71,12 +84,17 @@ class MeasurementModel {
         skinTurgor: formState.value[HydrationFields.skinTurgor.name],
         tearsWhenCrying: formState.value[HydrationFields.tearsWhenCrying.name],
         tongue: formState.value[HydrationFields.tongue.name],
-        vomit: formState.value[HydrationFields.vomit.name],
+        vomit: formState.value[HydrationFields.vomit.name] != null
+            ? List<String>.from(formState.value[HydrationFields.vomit.name])
+            : null,
       ),
       respirationSection: RespirationSectionModel(
         dyspnea: formState.value[RespirationFields.dyspnea.name],
         respiratoryRate:
-            formState.value[RespirationFields.respiratoryRate.name],
+            formState.value[RespirationFields.respiratoryRate.name] != null
+                ? double.tryParse(
+                    formState.value[RespirationFields.respiratoryRate.name])
+                : null,
         wheezing: formState.value[RespirationFields.wheezing.name],
       ),
       skinSection: SkinSectionModel(
@@ -85,14 +103,18 @@ class MeasurementModel {
         skinColor: formState.value[SkinFields.skinColor.name],
       ),
       pulseSection: PulseSectionModel(
-        pulse: formState.value[PulseFields.pulse.name],
+        pulse: formState.value[PulseFields.pulse.name] != null
+            ? double.tryParse(formState.value[PulseFields.pulse.name])
+            : null,
       ),
       generalSection: GeneralSectionModel(
         awareness: formState.value[GeneralFields.awareness.name],
         exoticTrip: formState.value[GeneralFields.exoticTrip.name],
         seizure: formState.value[GeneralFields.seizure.name],
         lastTimeEating: formState.value[GeneralFields.lastTimeEating.name],
-        pain: formState.value[GeneralFields.pain.name],
+        pain: formState.value[GeneralFields.pain.name] != null
+            ? List<String>.from(formState.value[GeneralFields.pain.name])
+            : null,
         painfulUrination: formState.value[GeneralFields.painfulUrination.name],
         smellyUrine: formState.value[GeneralFields.smellyUrine.name],
         vaccinationHowManyHoursAgo:
@@ -261,7 +283,7 @@ class HydrationSectionModel {
   String? skinTurgor;
   String? tearsWhenCrying;
   String? tongue;
-  String? vomit;
+  List<String>? vomit;
 
   HydrationSectionModel({
     this.crying,
