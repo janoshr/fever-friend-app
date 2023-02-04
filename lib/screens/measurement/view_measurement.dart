@@ -9,9 +9,52 @@ class ViewMeasurement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = measurementModel.data;
+    final data = measurementModel.data.sectionMap;
 
     const formActionState = FormActionState.view;
+
+    Map<MeasurementSections, Widget Function(dynamic)> formTypes = {
+      MeasurementSections.fever: (model) => FeverSectionForm(
+            formState: null,
+            feverSectionModel: model,
+            formActionState: formActionState,
+          ),
+      MeasurementSections.medication: (model) => MedicationSectionForm(
+            formState: null,
+            medicationSectionModel: model,
+            formActionState: formActionState,
+          ),
+      MeasurementSections.hydration: (model) => HydrationSectionForm(
+            formState: null,
+            hydrationSectionModel: model,
+            formActionState: formActionState,
+          ),
+      MeasurementSections.respiration: (model) => RespirationSectionForm(
+            formState: null,
+            respirationSectionModel: model,
+            formActionState: formActionState,
+          ),
+      MeasurementSections.skin: (model) => SkinSectionForm(
+            formState: null,
+            skinSectionModel: model,
+            formActionState: formActionState,
+          ),
+      MeasurementSections.pulse: (model) => PulseSectionForm(
+            formState: null,
+            pulseSectionModel: model,
+            formActionState: formActionState,
+          ),
+      MeasurementSections.general: (model) => GeneralSectionForm(
+            formState: null,
+            generalSectionModel: model,
+            formActionState: formActionState,
+          ),
+      MeasurementSections.caregiver: (model) => CaregiverSectionForm(
+            formState: null,
+            caregiverSectionModel: model,
+            formActionState: formActionState,
+          ),
+    };
 
     return DefaultTabController(
       length: measurementModel.data.sectionCount,
@@ -22,140 +65,25 @@ class ViewMeasurement extends StatelessWidget {
           bottom: TabBar(
             isScrollable: true,
             tabs: <Tab>[
-              if (data.feverSection != null)
-                Tab(
-                  text: sectionConfigMap[MeasurementSections.fever]!.title,
-                  icon: sectionConfigMap[MeasurementSections.fever]!.icon,
-                ),
-              if (data.medicationSection != null)
-                Tab(
-                  text: sectionConfigMap[MeasurementSections.medication]!.title,
-                  icon: sectionConfigMap[MeasurementSections.medication]!.icon,
-                ),
-              if (data.hydrationSection != null)
-                Tab(
-                  text: sectionConfigMap[MeasurementSections.hydration]!.title,
-                  icon: sectionConfigMap[MeasurementSections.hydration]!.icon,
-                ),
-              if (data.respirationSection != null)
-                Tab(
-                  text:
-                      sectionConfigMap[MeasurementSections.respiration]!.title,
-                  icon: sectionConfigMap[MeasurementSections.respiration]!.icon,
-                ),
-              if (data.skinSection != null)
-                Tab(
-                  text: sectionConfigMap[MeasurementSections.skin]!.title,
-                  icon: sectionConfigMap[MeasurementSections.skin]!.icon,
-                ),
-              if (data.pulseSection != null)
-                Tab(
-                  text: sectionConfigMap[MeasurementSections.pulse]!.title,
-                  icon: sectionConfigMap[MeasurementSections.pulse]!.icon,
-                ),
-              if (data.generalSection != null)
-                Tab(
-                  text: sectionConfigMap[MeasurementSections.general]!.title,
-                  icon: sectionConfigMap[MeasurementSections.general]!.icon,
-                ),
-              if (data.caregiverSection != null)
-                Tab(
-                  text: sectionConfigMap[MeasurementSections.caregiver]!.title,
-                  icon: sectionConfigMap[MeasurementSections.caregiver]!.icon,
-                ),
+              for (final section in MeasurementSections.values)
+                if (data[section] != null)
+                  Tab(
+                    text: sectionConfigMap[section]!.title,
+                    icon: sectionConfigMap[section]!.icon,
+                  ),
             ],
           ),
         ),
         body: TabBarView(
           children: <Widget>[
-            if (data.feverSection != null)
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FeverSectionForm(
-                    formState: null,
-                    feverSectionModel: data.feverSection,
-                    formActionState: formActionState,
+            for (final entry in formTypes.entries)
+              if (data[entry.key] != null)
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: entry.value(data[entry.key]),
                   ),
                 ),
-              ),
-            if (data.medicationSection != null)
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MedicationSectionForm(
-                    formState: null,
-                    medicationSectionModel: data.medicationSection,
-                    formActionState: formActionState,
-                  ),
-                ),
-              ),
-            if (data.hydrationSection != null)
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: HydrationSectionForm(
-                    formState: null,
-                    hydrationSectionModel: data.hydrationSection,
-                    formActionState: formActionState,
-                  ),
-                ),
-              ),
-            if (data.respirationSection != null)
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RespirationSectionForm(
-                    formState: null,
-                    formActionState: formActionState,
-                    respirationSectionModel: data.respirationSection,
-                  ),
-                ),
-              ),
-            if (data.skinSection != null)
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SkinSectionForm(
-                    formState: null,
-                    formActionState: formActionState,
-                    skinSectionModel: data.skinSection,
-                  ),
-                ),
-              ),
-            if (data.pulseSection != null)
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PulseSectionForm(
-                    formState: null,
-                    formActionState: formActionState,
-                    pulseSectionModel: data.pulseSection,
-                  ),
-                ),
-              ),
-            if (data.generalSection != null)
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GeneralSectionForm(
-                    formState: null,
-                    formActionState: formActionState,
-                    generalSectionModel: data.generalSection,
-                  ),
-                ),
-              ),
-            if (data.caregiverSection != null)
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CaregiverSectionForm(
-                    formState: null,
-                    formActionState: formActionState,
-                    caregiverSectionModel: data.caregiverSection,
-                  ),
-                ),
-              ),
           ],
         ),
       ),
