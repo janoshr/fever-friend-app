@@ -1,3 +1,4 @@
+import 'package:fever_friend_app/screens/illness.dart';
 import 'package:fever_friend_app/ui/widgets/pulse_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:fever_friend_app/ui/shared/utils.dart';
@@ -12,11 +13,6 @@ class IllnessCard extends StatelessWidget {
     required this.illness,
   }) : super(key: key);
 
-  void handleTap() {
-    debugPrint('Tapped');
-    // TODO navigate to illness
-  }
-
   @override
   Widget build(BuildContext context) {
     final temperatureString = illness
@@ -26,7 +22,10 @@ class IllnessCard extends StatelessWidget {
     return Card(
       elevation: 3,
       child: InkWell(
-        onTap: handleTap,
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => IllnessScreen(illness: illness)));
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

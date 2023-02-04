@@ -98,18 +98,26 @@ MeasurementModelData _$MeasurementModelDataFromJson(Map json) =>
     );
 
 Map<String, dynamic> _$MeasurementModelDataToJson(
-        MeasurementModelData instance) =>
-    <String, dynamic>{
-      'feverSection': instance.feverSection?.toJson(),
-      'medicationSection': instance.medicationSection?.toJson(),
-      'hydrationSection': instance.hydrationSection?.toJson(),
-      'respirationSection': instance.respirationSection?.toJson(),
-      'skinSection': instance.skinSection?.toJson(),
-      'pulseSection': instance.pulseSection?.toJson(),
-      'generalSection': instance.generalSection?.toJson(),
-      'caregiverSection': instance.caregiverSection?.toJson(),
-      'patientState': _$PatientStateEnumMap[instance.patientState],
-    };
+    MeasurementModelData instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('feverSection', instance.feverSection?.toJson());
+  writeNotNull('medicationSection', instance.medicationSection?.toJson());
+  writeNotNull('hydrationSection', instance.hydrationSection?.toJson());
+  writeNotNull('respirationSection', instance.respirationSection?.toJson());
+  writeNotNull('skinSection', instance.skinSection?.toJson());
+  writeNotNull('pulseSection', instance.pulseSection?.toJson());
+  writeNotNull('generalSection', instance.generalSection?.toJson());
+  writeNotNull('caregiverSection', instance.caregiverSection?.toJson());
+  val['patientState'] = _$PatientStateEnumMap[instance.patientState];
+  return val;
+}
 
 const _$PatientStateEnumMap = {
   PatientState.good: 'good',

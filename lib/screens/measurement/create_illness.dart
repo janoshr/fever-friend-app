@@ -63,7 +63,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
     }
   }
 
-  void Function() onSubmit(Patient patient,
+  void Function() onSubmit(Patient patient, Illness? illness,
           {required Function() error, required Function() success}) =>
       () async {
         if (_formKey.currentState == null) {
@@ -77,7 +77,11 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
             patient,
           );
 
-          db.createFeverMeasurement(measurement, patient.id);
+          if (illness != null) {
+            db.addMeasurement(measurement, patient.id, illness);
+          } else {
+            db.createFeverMeasurement(measurement, patient.id);
+          }
 
           success.call();
         }
@@ -103,12 +107,15 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
   @override
   Widget build(BuildContext context) {
     final patient = Provider.of<PatientProvider>(context).patient;
+    final illnessArg = ModalRoute.of(context)!.settings.arguments as Illness?;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('New Illness'),
+        title: illnessArg != null
+            ? const Text('Add Measurement')
+            : const Text('New Illness'),
       ),
       body: SafeArea(
         child: FormBuilder(
@@ -202,10 +209,13 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                     ElevatedButton(
                       onPressed: onSubmit(
                         patient!,
+                        illnessArg,
                         error: () => ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Something went wrong')),
                         ),
-                        success: () {},
+                        success: () {
+                          Navigator.of(context).pop();
+                        },
                       ),
                       child: const Text('Submit'),
                     )
