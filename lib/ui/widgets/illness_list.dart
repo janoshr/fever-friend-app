@@ -12,7 +12,6 @@ class IllnessList extends StatelessWidget {
 
   void Function() navigateToIllness(BuildContext context, Illness illness) =>
       () {
-        debugPrint('Tapped ${illness.id}');
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -37,7 +36,7 @@ class IllnessList extends StatelessWidget {
                       '${dateFMMMDD.format(illness.feverMeasurements.first.meta.createdAt)} - ${dateFMMMDD.format(illness.feverMeasurements.last.meta.createdAt)}'),
                   Text(
                     '${illness.feverMeasurements.first.meta.createdAt.difference(illness.feverMeasurements.last.meta.createdAt).inDays} days',
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   )
                 ],
               ),

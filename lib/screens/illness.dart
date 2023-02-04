@@ -34,7 +34,7 @@ class _IllnessScreenState extends State<IllnessScreen> {
         return ListTile(
           leading: Icon(
             Icons.circle,
-            color: stateToColor(measurement.data.patientState!),
+            color: stateToColor(measurement.data.patientState),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -42,7 +42,7 @@ class _IllnessScreenState extends State<IllnessScreen> {
               Text(dateFMMMDDHmm.format(measurement.meta.createdAt)),
               Text(measurement.data.feverSection != null &&
                       measurement.data.feverSection!.temperature != null
-                  ? '${measurement.data.feverSection!.temperature!.toStringAsFixed(2)} °C'
+                  ? '${measurement.data.feverSection!.temperature!.toStringAsFixed(1)} °C'
                   : 'n/a'),
             ],
           ),

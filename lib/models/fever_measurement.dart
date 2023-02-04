@@ -190,13 +190,28 @@ class MeasurementModelMeta {
 
 @JsonSerializable()
 class MeasurementModelData {
+  @JsonKey(includeIfNull: false)
   FeverSectionModel? feverSection;
+
+  @JsonKey(includeIfNull: false)
   MedicationSectionModel? medicationSection;
+  
+  @JsonKey(includeIfNull: false)
   HydrationSectionModel? hydrationSection;
+
+  @JsonKey(includeIfNull: false)
   RespirationSectionModel? respirationSection;
+  
+  @JsonKey(includeIfNull: false)
   SkinSectionModel? skinSection;
+
+  @JsonKey(includeIfNull: false)
   PulseSectionModel? pulseSection;
+  
+  @JsonKey(includeIfNull: false)
   GeneralSectionModel? generalSection;
+
+  @JsonKey(includeIfNull: false)
   CaregiverSectionModel? caregiverSection;
 
   PatientState? patientState;

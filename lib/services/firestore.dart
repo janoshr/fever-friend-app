@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/models/notification.dart';
-import 'package:fever_friend_app/screens/screens.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 const String USERS = 'users';
@@ -60,9 +59,8 @@ class FirestoreService {
           .doc(patientId)
           .collection(ILLNESSES)
           .doc();
-      transaction.set(
-          illnessRef, Illness(id: '', createdAt: DateTime.now()).toJson());
-      illness.id = illnessRef.id;
+      final illness = Illness(id: illnessRef.id, createdAt: DateTime.now());
+      transaction.set(illnessRef, illness.toJson());
 
       // Add first measurement
       final measurementRef = _db
@@ -160,6 +158,7 @@ class FirestoreService {
         .collection(PATIENTS)
         .doc(patientId)
         .collection(ILLNESSES)
+        .orderBy('createdAt', descending: true)
         .get();
     final illnesses =
         ref.docs.map((event) => Illness.fromFirestore(event)).toList();
@@ -181,6 +180,7 @@ class FirestoreService {
         .collection(ILLNESSES)
         .doc(illnessId)
         .collection(MEASUREMENTS)
+        .orderBy('meta.createdAt', descending: true)
         .get();
     return ref.docs
         .map((snapshot) => MeasurementModel.fromFirestore(snapshot))

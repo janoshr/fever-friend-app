@@ -57,7 +57,7 @@ class DrawerMenu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add_circle_outline),
+            leading: const Icon(Icons.person_add),
             title: const Text('Add Patient'),
             onTap: () {
               Navigator.pushNamed(context, ScreenDefinition.createPatient);
@@ -81,17 +81,25 @@ class DrawerMenu extends StatelessWidget {
           ),
           AboutListTile(
             // <-- SEE HERE
-            icon: const Icon(
-              Icons.info,
-            ),
-            applicationIcon: const Icon(
-              Icons.info,
-            ),
+            icon: const Icon(Icons.info),
+            applicationIcon: const Icon(Icons.info),
             applicationName: pi.appName,
             applicationVersion: pi.version,
             applicationLegalese: '© 2023 Civil Support',
-            aboutBoxChildren: const [
-              Text('Developer: Janos Hajdu Rafis'),
+            aboutBoxChildren: [
+              const Text('Developer: Janos Hajdu Rafis'),
+              TextButton(
+                onPressed: () {},
+                onLongPress: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            content:
+                                SelectableText('Patient ID: ${patient?.id}'),
+                          ));
+                },
+                child: const Text('ID info'),
+              ),
             ],
             child: const Text('About app'),
           ),
