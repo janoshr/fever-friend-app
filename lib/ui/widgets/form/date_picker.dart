@@ -10,6 +10,8 @@ class IDatePicker extends StatelessWidget {
   final Icon? prefixIcon;
   final DateTime? initialDate;
   final bool pastOnly;
+  final DateTime? initialValue;
+  final bool enabled;
 
   const IDatePicker({
     super.key,
@@ -20,6 +22,8 @@ class IDatePicker extends StatelessWidget {
     this.prefixIcon,
     this.initialDate,
     this.pastOnly = false,
+    this.enabled = true,
+    this.initialValue,
   });
 
   @override
@@ -32,6 +36,8 @@ class IDatePicker extends StatelessWidget {
       ),
       name: name,
       inputType: InputType.date,
+      enabled: enabled,
+      initialValue: initialValue,
       initialDate: initialDate,
       validator: FormBuilderValidators.compose(
         [

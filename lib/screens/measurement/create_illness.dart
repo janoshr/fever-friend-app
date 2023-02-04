@@ -21,9 +21,9 @@ class ICreateMeasurementScreen extends StatefulWidget {
 class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   int activeStep = 0;
-  int upperBound = FormSteps.values.length + 1;
+  int upperBound = MeasurementSections.values.length + 1;
   final stepperKeys = List<GlobalKey>.generate(
-      FormSteps.values.length + 1, ((index) => GlobalKey()));
+      MeasurementSections.values.length + 1, ((index) => GlobalKey()));
 
   void nextButton() {
     _formKey.currentState?.saveAndValidate();
@@ -147,59 +147,62 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
             },
             steps: <Step>[
               Step(
-                isActive: activeStep == FormSteps.fever.index,
-                state: getStepState(FormSteps.fever.index, FeverFields.values),
+                isActive: activeStep == MeasurementSections.fever.index,
+                state: getStepState(
+                    MeasurementSections.fever.index, FeverFields.values),
                 title: const Text('Fever'),
-                content: FeverSectionView(formState: _formKey.currentState),
+                content: FeverSectionForm(formState: _formKey.currentState),
               ),
               Step(
-                isActive: activeStep == FormSteps.medication.index,
-                state: getStepState(
-                    FormSteps.medication.index, MedicationFields.values),
+                isActive: activeStep == MeasurementSections.medication.index,
+                state: getStepState(MeasurementSections.medication.index,
+                    MedicationFields.values),
                 title: const Text('Medication'),
                 content:
-                    MedicationSectionView(formState: _formKey.currentState),
+                    MedicationSectionForm(formState: _formKey.currentState),
               ),
               Step(
-                isActive: activeStep == FormSteps.hydration.index,
-                state: getStepState(
-                    FormSteps.hydration.index, HydrationFields.values),
+                isActive: activeStep == MeasurementSections.hydration.index,
+                state: getStepState(MeasurementSections.hydration.index,
+                    HydrationFields.values),
                 title: const Text('Hydration'),
-                content: HydrationSectionView(formState: _formKey.currentState),
+                content: HydrationSectionForm(formState: _formKey.currentState),
               ),
               Step(
-                isActive: activeStep == FormSteps.respiration.index,
-                state: getStepState(
-                    FormSteps.respiration.index, RespirationFields.values),
+                isActive: activeStep == MeasurementSections.respiration.index,
+                state: getStepState(MeasurementSections.respiration.index,
+                    RespirationFields.values),
                 title: const Text('Respiration'),
                 content:
-                    RespirationSectionView(formState: _formKey.currentState),
+                    RespirationSectionForm(formState: _formKey.currentState),
               ),
               Step(
-                isActive: activeStep == FormSteps.skin.index,
-                state: getStepState(FormSteps.skin.index, SkinFields.values),
-                title: const Text('Skin condition'),
-                content: SkinSectionView(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.pulse.index,
-                state: getStepState(FormSteps.pulse.index, PulseFields.values),
-                title: const Text('Pulse'),
-                content: PulseSectionView(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.general.index,
-                state:
-                    getStepState(FormSteps.general.index, GeneralFields.values),
-                title: const Text('General condition'),
-                content: GeneralSectionView(formState: _formKey.currentState),
-              ),
-              Step(
-                isActive: activeStep == FormSteps.caregiver.index,
+                isActive: activeStep == MeasurementSections.skin.index,
                 state: getStepState(
-                    FormSteps.caregiver.index, CaregiverFields.values),
+                    MeasurementSections.skin.index, SkinFields.values),
+                title: const Text('Skin condition'),
+                content: SkinSectionForm(formState: _formKey.currentState),
+              ),
+              Step(
+                isActive: activeStep == MeasurementSections.pulse.index,
+                state: getStepState(
+                    MeasurementSections.pulse.index, PulseFields.values),
+                title: const Text('Pulse'),
+                content: PulseSectionForm(formState: _formKey.currentState),
+              ),
+              Step(
+                isActive: activeStep == MeasurementSections.general.index,
+                state: getStepState(
+                    MeasurementSections.general.index, GeneralFields.values),
+                title: const Text('General condition'),
+                content: GeneralSectionForm(formState: _formKey.currentState),
+              ),
+              Step(
+                isActive: activeStep == MeasurementSections.caregiver.index,
+                state: getStepState(MeasurementSections.caregiver.index,
+                    CaregiverFields.values),
                 title: const Text('caregiver'),
-                content: CaregiverSectionView(formState: _formKey.currentState),
+                content: CaregiverSectionForm(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == 8,

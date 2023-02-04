@@ -152,7 +152,9 @@ MedicationSectionModel _$MedicationSectionModelFromJson(Map json) =>
       antipyreticHowMany: json['antipyreticHowMany'] as int?,
       antipyreticHowMuch: (json['antipyreticHowMuch'] as num?)?.toDouble(),
       antipyreticReason: json['antipyreticReason'] as String?,
-      antipyreticWhat: json['antipyreticWhat'] as String?,
+      antipyreticWhat: (json['antipyreticWhat'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$MedicationSectionModelToJson(
