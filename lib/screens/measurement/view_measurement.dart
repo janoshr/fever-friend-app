@@ -2,6 +2,51 @@ import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/screens/measurement/sections.dart';
 import 'package:flutter/material.dart';
 
+const formActionState = FormActionState.view;
+
+Map<MeasurementSections, Widget Function(dynamic)> formTypes = {
+  MeasurementSections.fever: (model) => FeverSectionForm(
+        formState: null,
+        feverSectionModel: model,
+        formActionState: formActionState,
+      ),
+  MeasurementSections.medication: (model) => MedicationSectionForm(
+        formState: null,
+        medicationSectionModel: model,
+        formActionState: formActionState,
+      ),
+  MeasurementSections.hydration: (model) => HydrationSectionForm(
+        formState: null,
+        hydrationSectionModel: model,
+        formActionState: formActionState,
+      ),
+  MeasurementSections.respiration: (model) => RespirationSectionForm(
+        formState: null,
+        respirationSectionModel: model,
+        formActionState: formActionState,
+      ),
+  MeasurementSections.skin: (model) => SkinSectionForm(
+        formState: null,
+        skinSectionModel: model,
+        formActionState: formActionState,
+      ),
+  MeasurementSections.pulse: (model) => PulseSectionForm(
+        formState: null,
+        pulseSectionModel: model,
+        formActionState: formActionState,
+      ),
+  MeasurementSections.general: (model) => GeneralSectionForm(
+        formState: null,
+        generalSectionModel: model,
+        formActionState: formActionState,
+      ),
+  MeasurementSections.caregiver: (model) => CaregiverSectionForm(
+        formState: null,
+        caregiverSectionModel: model,
+        formActionState: formActionState,
+      ),
+};
+
 class ViewMeasurement extends StatelessWidget {
   final MeasurementModel measurementModel;
   const ViewMeasurement({Key? key, required this.measurementModel})
@@ -10,51 +55,6 @@ class ViewMeasurement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = measurementModel.data.sectionMap;
-
-    const formActionState = FormActionState.view;
-
-    Map<MeasurementSections, Widget Function(dynamic)> formTypes = {
-      MeasurementSections.fever: (model) => FeverSectionForm(
-            formState: null,
-            feverSectionModel: model,
-            formActionState: formActionState,
-          ),
-      MeasurementSections.medication: (model) => MedicationSectionForm(
-            formState: null,
-            medicationSectionModel: model,
-            formActionState: formActionState,
-          ),
-      MeasurementSections.hydration: (model) => HydrationSectionForm(
-            formState: null,
-            hydrationSectionModel: model,
-            formActionState: formActionState,
-          ),
-      MeasurementSections.respiration: (model) => RespirationSectionForm(
-            formState: null,
-            respirationSectionModel: model,
-            formActionState: formActionState,
-          ),
-      MeasurementSections.skin: (model) => SkinSectionForm(
-            formState: null,
-            skinSectionModel: model,
-            formActionState: formActionState,
-          ),
-      MeasurementSections.pulse: (model) => PulseSectionForm(
-            formState: null,
-            pulseSectionModel: model,
-            formActionState: formActionState,
-          ),
-      MeasurementSections.general: (model) => GeneralSectionForm(
-            formState: null,
-            generalSectionModel: model,
-            formActionState: formActionState,
-          ),
-      MeasurementSections.caregiver: (model) => CaregiverSectionForm(
-            formState: null,
-            caregiverSectionModel: model,
-            formActionState: formActionState,
-          ),
-    };
 
     return DefaultTabController(
       length: measurementModel.data.sectionCount,
