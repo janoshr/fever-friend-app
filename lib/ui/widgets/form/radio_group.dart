@@ -10,6 +10,8 @@ class IRadioGroup<T> extends StatelessWidget {
   final ValueChanged<T>? onChanged;
   final List<T>? disabled;
   final OptionsOrientation orientation;
+  final bool enabled;
+  final String? initialValue;
 
   const IRadioGroup({
     Key? key,
@@ -20,6 +22,8 @@ class IRadioGroup<T> extends StatelessWidget {
     this.onChanged,
     this.disabled,
     this.orientation = OptionsOrientation.vertical,
+    this.enabled = true,
+    this.initialValue,
   }) : super(key: key);
 
   void changeHandler(dynamic val) {
@@ -46,6 +50,8 @@ class IRadioGroup<T> extends StatelessWidget {
         ]),
         onChanged: changeHandler,
         disabled: disabled,
+        enabled: enabled,
+        initialValue: initialValue,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         orientation: orientation,
         options: List<FormBuilderChipOption>.from(

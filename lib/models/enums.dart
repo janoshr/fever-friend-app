@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-enum FormSteps {
+enum MeasurementSections {
   fever,
   medication,
   hydration,

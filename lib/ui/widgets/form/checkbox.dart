@@ -8,6 +8,8 @@ class ICheckboxGroup<T> extends StatelessWidget {
   final List<T> answer;
   final bool isRequired;
   final void Function(List<T>?)? onChanged;
+  final bool enabled;
+  final List<T>? initialValue;
 
   const ICheckboxGroup({
     Key? key,
@@ -16,6 +18,8 @@ class ICheckboxGroup<T> extends StatelessWidget {
     required this.answer,
     this.isRequired = false,
     this.onChanged,
+    this.enabled = true,
+    this.initialValue,
   }) : super(key: key);
 
   void changeHandler(List<dynamic>? vals) {
@@ -31,6 +35,8 @@ class ICheckboxGroup<T> extends StatelessWidget {
       child: FormBuilderCheckboxGroup(
         materialTapTargetSize: MaterialTapTargetSize.padded,
         name: name,
+        enabled: enabled,
+        initialValue: initialValue,
         decoration: InputDecoration(
           label: Text(label),
         ),
@@ -66,14 +72,18 @@ class ICheckbox extends StatelessWidget {
   final String label;
   final bool isRequired;
   final void Function(bool)? onChanged;
+  final bool enabled;
+  final bool? initialValue;
 
-  const ICheckbox(
-      {Key? key,
-      required this.name,
-      required this.label,
-      this.isRequired = false,
-      this.onChanged})
-      : super(key: key);
+  const ICheckbox({
+    Key? key,
+    required this.name,
+    required this.label,
+    this.isRequired = false,
+    this.onChanged,
+    this.enabled = true,
+    this.initialValue,
+  }) : super(key: key);
 
   void changeHandler(dynamic val) {
     if (onChanged != null) {
@@ -87,6 +97,8 @@ class ICheckbox extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: FormBuilderCheckbox(
         name: name,
+        enabled: enabled,
+        initialValue: initialValue,
         decoration: const InputDecoration(
             // label: Text(label),
             ),

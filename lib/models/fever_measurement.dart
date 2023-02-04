@@ -195,19 +195,19 @@ class MeasurementModelData {
 
   @JsonKey(includeIfNull: false)
   MedicationSectionModel? medicationSection;
-  
+
   @JsonKey(includeIfNull: false)
   HydrationSectionModel? hydrationSection;
 
   @JsonKey(includeIfNull: false)
   RespirationSectionModel? respirationSection;
-  
+
   @JsonKey(includeIfNull: false)
   SkinSectionModel? skinSection;
 
   @JsonKey(includeIfNull: false)
   PulseSectionModel? pulseSection;
-  
+
   @JsonKey(includeIfNull: false)
   GeneralSectionModel? generalSection;
 
@@ -227,6 +227,20 @@ class MeasurementModelData {
     this.caregiverSection,
     this.patientState,
   });
+
+  int get sectionCount => sectionMap.entries
+      .fold(0, (value, element) => element.value != null ? value + 1 : value);
+
+  Map<MeasurementSections, dynamic> get sectionMap => {
+        MeasurementSections.fever: feverSection,
+        MeasurementSections.medication: medicationSection,
+        MeasurementSections.hydration: hydrationSection,
+        MeasurementSections.respiration: respirationSection,
+        MeasurementSections.skin: skinSection,
+        MeasurementSections.pulse: pulseSection,
+        MeasurementSections.general: generalSection,
+        MeasurementSections.caregiver: caregiverSection,
+      };
 
   factory MeasurementModelData.fromJson(Map<String, dynamic> json) =>
       _$MeasurementModelDataFromJson(json);
@@ -269,7 +283,7 @@ class MedicationSectionModel {
   int? antipyreticHowMany;
   double? antipyreticHowMuch;
   String? antipyreticReason;
-  String? antipyreticWhat;
+  List<String>? antipyreticWhat;
 
   MedicationSectionModel({
     this.antibiotics,

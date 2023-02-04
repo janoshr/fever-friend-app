@@ -1,4 +1,5 @@
 import 'package:fever_friend_app/models/fever_measurement.dart';
+import 'package:fever_friend_app/screens/measurement/view_measurement.dart';
 import 'package:fever_friend_app/ui/shared/constants.dart';
 import 'package:fever_friend_app/ui/shared/utils.dart';
 import 'package:flutter/material.dart';
@@ -53,27 +54,40 @@ class _IllnessScreenState extends State<IllnessScreen> {
           },
         );
       },
-      body: ListTile(
-        title: Text('Sections'),
-        subtitle: Wrap(
-          alignment: WrapAlignment.start,
-          children: [
-            if (measurement.data.feverSection != null)
-              const SmallChip(text: 'Fever'),
-            if (measurement.data.medicationSection != null)
-              const SmallChip(text: 'Medication'),
-            if (measurement.data.hydrationSection != null)
-              const SmallChip(text: 'Hydration'),
-            if (measurement.data.respirationSection != null)
-              const SmallChip(text: 'Respiration'),
-            if (measurement.data.skinSection != null)
-              const SmallChip(text: 'Skin'),
-            if (measurement.data.generalSection != null)
-              const SmallChip(text: 'General'),
-            if (measurement.data.caregiverSection != null)
-              const SmallChip(text: 'Caregiver'),
-          ],
-        ),
+      body: Column(
+        children: [
+          ListTile(
+            title: Text('Sections'),
+            subtitle: Wrap(
+              alignment: WrapAlignment.start,
+              children: [
+                if (measurement.data.feverSection != null)
+                  const SmallChip(text: 'Fever'),
+                if (measurement.data.medicationSection != null)
+                  const SmallChip(text: 'Medication'),
+                if (measurement.data.hydrationSection != null)
+                  const SmallChip(text: 'Hydration'),
+                if (measurement.data.respirationSection != null)
+                  const SmallChip(text: 'Respiration'),
+                if (measurement.data.skinSection != null)
+                  const SmallChip(text: 'Skin'),
+                if (measurement.data.generalSection != null)
+                  const SmallChip(text: 'General'),
+                if (measurement.data.caregiverSection != null)
+                  const SmallChip(text: 'Caregiver'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) =>
+                      ViewMeasurement(measurementModel: entry.value)));
+            },
+            child: const Text('View'),
+          ),
+        ],
       ),
     );
   }

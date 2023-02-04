@@ -6,23 +6,27 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 class INumberInputField extends StatelessWidget {
   final String name;
   final String label;
-  final double min;
-  final double max;
+  final double? min;
+  final double? max;
   final bool isRequired;
   final String? unit;
   final void Function(num)? onChanged;
   final Icon? prefixIcon;
+  final bool enabled;
+  final String? initialValue;
 
   const INumberInputField({
     Key? key,
     required this.name,
     required this.label,
-    required this.max,
-    required this.min,
+    this.max,
+    this.min,
     this.isRequired = false,
     this.onChanged,
     this.unit,
     this.prefixIcon,
+    this.enabled = true,
+    this.initialValue,
   }) : super(key: key);
 
   void changeHandler(dynamic val) {
@@ -46,6 +50,8 @@ class INumberInputField extends StatelessWidget {
           prefixIcon: prefixIcon,
         ),
         name: name,
+        enabled: enabled,
+        initialValue: initialValue,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r"^\d{0,3}(\.\d{0,2})?"))
@@ -53,8 +59,8 @@ class INumberInputField extends StatelessWidget {
         onChanged: changeHandler,
         validator: FormBuilderValidators.compose([
           if (isRequired) FormBuilderValidators.required(),
-          FormBuilderValidators.min(min),
-          FormBuilderValidators.max(max),
+          if (min != null) FormBuilderValidators.min(min!),
+          if (max != null) FormBuilderValidators.max(max!),
         ]),
       ),
     );

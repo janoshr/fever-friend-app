@@ -8,17 +8,81 @@ import '../../models/fever_measurement.dart';
 import '../../ui/widgets/form/form.dart';
 import '../../models/models.dart';
 
-class FeverSectionView extends StatefulWidget {
-  final FormBuilderState? formState;
-  const FeverSectionView({Key? key, required this.formState}) : super(key: key);
-
-  @override
-  _FeverSectionViewState createState() => _FeverSectionViewState();
+enum FormActionState {
+  edit,
+  create,
+  view,
 }
 
-class _FeverSectionViewState extends State<FeverSectionView> {
+class SectionConfig {
+  final String title;
+  final Icon icon;
+  final Type widgetType;
+
+  const SectionConfig({
+    required this.title,
+    required this.icon,
+    required this.widgetType,
+  });
+}
+
+Map<MeasurementSections, SectionConfig> sectionConfigMap = const {
+  MeasurementSections.fever: SectionConfig(
+      title: 'Fever',
+      icon: Icon(Icons.thermostat),
+      widgetType: FeverSectionForm),
+  MeasurementSections.medication: SectionConfig(
+      title: 'Medication',
+      icon: Icon(Icons.medication),
+      widgetType: MedicationSectionForm),
+  MeasurementSections.hydration: SectionConfig(
+      title: 'Hydration',
+      icon: Icon(Icons.water_drop),
+      widgetType: HydrationSectionForm),
+  MeasurementSections.respiration: SectionConfig(
+      title: 'Respiration',
+      icon: Icon(Icons.air),
+      widgetType: RespirationSectionForm),
+  MeasurementSections.skin: SectionConfig(
+      title: 'Skin condition',
+      icon: Icon(Icons.face),
+      widgetType: SkinSectionForm),
+  MeasurementSections.pulse: SectionConfig(
+      title: 'Pulse',
+      icon: Icon(Icons.monitor_heart),
+      widgetType: PulseSectionForm),
+  MeasurementSections.general: SectionConfig(
+      title: 'General',
+      icon: Icon(Icons.self_improvement),
+      widgetType: GeneralSectionForm),
+  MeasurementSections.caregiver: SectionConfig(
+      title: 'Caregiver',
+      icon: Icon(Icons.volunteer_activism),
+      widgetType: CaregiverSectionForm),
+};
+
+class FeverSectionForm extends StatefulWidget {
+  final FormBuilderState? formState;
+  final FeverSectionModel? feverSectionModel;
+  final FormActionState formActionState;
+
+  const FeverSectionForm({
+    Key? key,
+    required this.formState,
+    this.feverSectionModel,
+    this.formActionState = FormActionState.create,
+  }) : super(key: key);
+
+  @override
+  _FeverSectionFormState createState() => _FeverSectionFormState();
+}
+
+class _FeverSectionFormState extends State<FeverSectionForm> {
   @override
   Widget build(BuildContext context) {
+    bool enabled = widget.formActionState != FormActionState.view;
+    final model = widget.feverSectionModel;
+
     return Column(
       children: [
         IRadioGroup(
@@ -26,6 +90,8 @@ class _FeverSectionViewState extends State<FeverSectionView> {
           label: 'Thermometer used?',
           answer: const ['Digital', 'Chemical', 'Infra', 'Other'],
           isRequired: true,
+          enabled: enabled,
+          initialValue: model?.thermometerUsed,
         ),
         IRadioGroup(
           name: FeverFields.measurementLocation.name,
@@ -33,6 +99,8 @@ class _FeverSectionViewState extends State<FeverSectionView> {
           answer: const ['Forehead', 'Ear', 'Rectal', 'Oral', 'Armpit'],
           isRequired: true,
           disabled: const ['Forehead'],
+          enabled: enabled,
+          initialValue: model?.feverMeasurementLocation,
         ),
         INumberInputField(
           name: FeverFields.temperature.name,
@@ -40,32 +108,54 @@ class _FeverSectionViewState extends State<FeverSectionView> {
           min: TEMPERATURE_MIN,
           max: TEMPERATURE_MAX,
           isRequired: true,
+          enabled: enabled,
+          initialValue:
+              model?.temperature != null ? model!.temperature.toString() : null,
         ),
         IRadioGroup(
           name: FeverFields.feverDuration.name,
           label: 'Fever duration?',
           answer: const ['Less than 3 days', '3-5 days', 'More than 5 days'],
+          enabled: enabled,
+          initialValue: model?.feverDuration,
         )
       ],
     );
   }
 }
 
-class MedicationSectionView extends StatefulWidget {
+class MedicationSectionForm extends StatefulWidget {
   final FormBuilderState? formState;
-  const MedicationSectionView({Key? key, required this.formState})
-      : super(key: key);
+  final MedicationSectionModel? medicationSectionModel;
+  final FormActionState formActionState;
+
+  const MedicationSectionForm({
+    Key? key,
+    required this.formState,
+    this.medicationSectionModel,
+    this.formActionState = FormActionState.create,
+  }) : super(key: key);
 
   @override
-  _MedicationSectionViewState createState() => _MedicationSectionViewState();
+  _MedicationSectionFormState createState() => _MedicationSectionFormState();
 }
 
-class _MedicationSectionViewState extends State<MedicationSectionView> {
+class _MedicationSectionFormState extends State<MedicationSectionForm> {
   bool showAntipyreticQs = false;
   bool showAntibioticQs = false;
 
   @override
+  void initState() {
+    showAntibioticQs = widget.medicationSectionModel?.antibiotics == 'Yes';
+    showAntipyreticQs = widget.medicationSectionModel?.antipyretic == 'Yes';
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool enabled = widget.formActionState != FormActionState.view;
+    final model = widget.medicationSectionModel;
+
     return Column(
       children: [
         IRadioGroup(
@@ -74,6 +164,8 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
               'Has the patient got "fever-reducing" medication in the past 24 hours?',
           answer: const ['Yes', 'No'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.antipyretic,
           onChanged: (val) {
             if (val == 'Yes' && !showAntipyreticQs) {
               setState(() {
@@ -101,6 +193,8 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
                   'Metamizole',
                   'Other'
                 ],
+                enabled: enabled,
+                initialValue: model?.antipyreticWhat,
                 isRequired: showAntipyreticQs,
               ),
               INumberInputField(
@@ -109,6 +203,10 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
                 max: 6,
                 min: 1,
                 isRequired: showAntipyreticQs,
+                enabled: enabled,
+                initialValue: model?.antipyreticHowMany != null
+                    ? model!.antipyreticHowMany.toString()
+                    : null,
               ),
               INumberInputField(
                 name: MedicationFields.antipyreticHowMuch.name,
@@ -117,12 +215,18 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
                 max: 600,
                 unit: 'mg',
                 isRequired: showAntipyreticQs,
+                enabled: enabled,
+                initialValue: model?.antipyreticHowMuch != null
+                    ? model!.antipyreticHowMuch.toString()
+                    : null,
               ),
               IRadioGroup(
                 name: MedicationFields.antipyreticReason.name,
                 label: 'Reason for administering?',
                 answer: const ['Fear', 'For better comfort', 'Other'],
                 isRequired: showAntipyreticQs,
+                enabled: enabled,
+                initialValue: model?.antipyreticReason,
               ),
             ],
           ),
@@ -132,6 +236,8 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
           label: 'Has the patient got antibiotics in the past 24 hours?',
           answer: const ['Yes', 'No'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.antibiotics,
           onChanged: (value) {
             if (value == 'Yes' && !showAntibioticQs) {
               setState(() {
@@ -152,6 +258,8 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
                 name: MedicationFields.antibioticsWhat.name,
                 label: 'What?',
                 isRequired: showAntibioticQs,
+                enabled: enabled,
+                initialValue: model?.antibioticsWhat,
               ),
               INumberInputField(
                 name: MedicationFields.antibioticsHowMany.name,
@@ -159,6 +267,10 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
                 max: 6,
                 min: 1,
                 isRequired: showAntibioticQs,
+                enabled: enabled,
+                initialValue: model?.antibioticsHowMany != null
+                    ? model!.antibioticsHowMany.toString()
+                    : null,
               ),
               INumberInputField(
                 name: MedicationFields.antibioticsHowMuch.name,
@@ -167,6 +279,10 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
                 max: 600,
                 unit: 'mg',
                 isRequired: showAntibioticQs,
+                enabled: enabled,
+                initialValue: model?.antibioticsHowMuch != null
+                    ? model!.antibioticsHowMuch.toString()
+                    : null,
               ),
             ],
           ),
@@ -176,21 +292,40 @@ class _MedicationSectionViewState extends State<MedicationSectionView> {
   }
 }
 
-class HydrationSectionView extends StatefulWidget {
+class HydrationSectionForm extends StatefulWidget {
   final FormBuilderState? formState;
-  const HydrationSectionView({Key? key, required this.formState})
-      : super(key: key);
+  final HydrationSectionModel? hydrationSectionModel;
+  final FormActionState formActionState;
+
+  const HydrationSectionForm({
+    Key? key,
+    required this.formState,
+    this.hydrationSectionModel,
+    this.formActionState = FormActionState.create,
+  }) : super(key: key);
 
   @override
-  _HydrationSectionViewState createState() => _HydrationSectionViewState();
+  _HydrationSectionFormState createState() => _HydrationSectionFormState();
 }
 
-class _HydrationSectionViewState extends State<HydrationSectionView> {
+class _HydrationSectionFormState extends State<HydrationSectionForm> {
   bool showCryingQ = false;
   bool showVomitQ = false;
 
   @override
+  void initState() {
+    showCryingQ = widget.hydrationSectionModel?.crying == 'Yes';
+    showVomitQ = widget.hydrationSectionModel != null &&
+        widget.hydrationSectionModel!.vomit != null &&
+        widget.hydrationSectionModel!.vomit!.isNotEmpty;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool enabled = widget.formActionState != FormActionState.view;
+    final model = widget.hydrationSectionModel;
+
     return Column(
       children: [
         IRadioGroup(
@@ -201,11 +336,15 @@ class _HydrationSectionViewState extends State<HydrationSectionView> {
             '6-12 hours ago',
             'More than 12 hours ago'
           ],
+          enabled: enabled,
+          initialValue: model?.lastUrination,
         ),
         IRadioGroup(
           name: HydrationFields.skinTurgor.name,
           label: 'Skin turgor?',
           answer: const ['Normal', 'Somewhat decreased', 'Severely decreased'],
+          enabled: enabled,
+          initialValue: model?.skinTurgor,
         ),
         IRadioGroup(
           name: HydrationFields.crying.name,
@@ -216,6 +355,8 @@ class _HydrationSectionViewState extends State<HydrationSectionView> {
             'Continuous with unusually high pitch',
             'Weak'
           ],
+          enabled: enabled,
+          initialValue: model?.crying,
           onChanged: (value) {
             if (value != 'Doesn\'t cry') {
               setState(() {
@@ -234,6 +375,8 @@ class _HydrationSectionViewState extends State<HydrationSectionView> {
             name: HydrationFields.tearsWhenCrying.name,
             label: 'Tears when crying?',
             answer: const ['Yes', 'Not so much', 'No'],
+            enabled: enabled,
+            initialValue: model?.tearsWhenCrying,
           ),
         ),
         IRadioGroup(
@@ -241,6 +384,8 @@ class _HydrationSectionViewState extends State<HydrationSectionView> {
           label: 'Tongue?',
           answer: const ['Wet', 'Dry'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.tongue,
         ),
         IRadioGroup(
           name: HydrationFields.drinking.name,
@@ -250,15 +395,22 @@ class _HydrationSectionViewState extends State<HydrationSectionView> {
             'Less than normal',
             'Nothing in the last 12 hours'
           ],
+          enabled: enabled,
+          initialValue: model?.drinking,
         ),
         IRadioGroup(
           name: HydrationFields.diarrhea.name,
           label: 'Diarrhea for more than 12 hours?',
           answer: const ['No or slight', 'Frequent', 'Frequent and bloody'],
+          enabled: enabled,
+          initialValue: model?.diarrhea,
         ),
         ICheckbox(
           name: 'vomit_logic',
           label: 'Vomiting?',
+          enabled: enabled,
+          initialValue: model?.vomit != null ||
+              (model!.vomit != null && model.vomit!.isEmpty),
           onChanged: (val) {
             if (val && !showVomitQ) {
               setState(() {
@@ -276,6 +428,8 @@ class _HydrationSectionViewState extends State<HydrationSectionView> {
           child: ICheckboxGroup(
             name: HydrationFields.vomit.name,
             label: 'Vomiting?',
+            enabled: enabled,
+            initialValue: model?.vomit,
             answer: const [
               // * notice the answer 'No' has been replaced by a checkbox
               'Slight',
@@ -291,18 +445,28 @@ class _HydrationSectionViewState extends State<HydrationSectionView> {
   }
 }
 
-class RespirationSectionView extends StatefulWidget {
+class RespirationSectionForm extends StatefulWidget {
   final FormBuilderState? formState;
-  const RespirationSectionView({Key? key, required this.formState})
-      : super(key: key);
+  final RespirationSectionModel? respirationSectionModel;
+  final FormActionState formActionState;
+
+  const RespirationSectionForm({
+    Key? key,
+    required this.formState,
+    this.respirationSectionModel,
+    this.formActionState = FormActionState.create,
+  }) : super(key: key);
 
   @override
-  _RespirationSectionViewState createState() => _RespirationSectionViewState();
+  _RespirationSectionFormState createState() => _RespirationSectionFormState();
 }
 
-class _RespirationSectionViewState extends State<RespirationSectionView> {
+class _RespirationSectionFormState extends State<RespirationSectionForm> {
   @override
   Widget build(BuildContext context) {
+    bool enabled = widget.formActionState != FormActionState.view;
+    final model = widget.respirationSectionModel;
+
     return Column(
       children: [
         INumberInputField(
@@ -310,6 +474,10 @@ class _RespirationSectionViewState extends State<RespirationSectionView> {
           label: 'Respiratory rate?',
           min: RRATE_MIN,
           max: RRATE_MAX,
+          enabled: enabled,
+          initialValue: model?.respiratoryRate != null
+              ? model!.respiratoryRate.toString()
+              : null,
         ),
         IRadioGroup(
           name: RespirationFields.wheezing.name,
@@ -319,31 +487,52 @@ class _RespirationSectionViewState extends State<RespirationSectionView> {
             'Slightly wheezing',
             'Strong wheezing (stridor)'
           ],
+          enabled: enabled,
+          initialValue: model?.wheezing,
         ),
         IRadioGroup(
           name: RespirationFields.dyspnea.name,
           label: 'Dyspnea?',
           answer: const ['1', '2', '3', '4', '5'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.dyspnea,
         ),
       ],
     );
   }
 }
 
-class SkinSectionView extends StatefulWidget {
+class SkinSectionForm extends StatefulWidget {
   final FormBuilderState? formState;
-  const SkinSectionView({Key? key, required this.formState}) : super(key: key);
+  final SkinSectionModel? skinSectionModel;
+  final FormActionState formActionState;
+
+  const SkinSectionForm({
+    Key? key,
+    required this.formState,
+    this.skinSectionModel,
+    this.formActionState = FormActionState.create,
+  }) : super(key: key);
 
   @override
-  _SkinSectionViewState createState() => _SkinSectionViewState();
+  _SkinSectionFormState createState() => _SkinSectionFormState();
 }
 
-class _SkinSectionViewState extends State<SkinSectionView> {
+class _SkinSectionFormState extends State<SkinSectionForm> {
   bool showRashQ = false;
 
   @override
+  void initState() {
+    showRashQ = widget.skinSectionModel?.rash == 'Yes';
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool enabled = widget.formActionState != FormActionState.view;
+    final model = widget.skinSectionModel;
+
     return Column(
       children: [
         IRadioGroup(
@@ -354,12 +543,16 @@ class _SkinSectionViewState extends State<SkinSectionView> {
             'Pale',
             'Grey, bluish, purplish'
           ],
+          enabled: enabled,
+          initialValue: model?.skinColor,
         ),
         IRadioGroup(
           name: SkinFields.rash.name,
           label: 'Rash?',
           answer: const ['No', 'Yes'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.rash,
           onChanged: (value) {
             if (value == 'Yes' && !showRashQ) {
               setState(() {
@@ -376,6 +569,8 @@ class _SkinSectionViewState extends State<SkinSectionView> {
           visible: showRashQ,
           child: IRadioGroup(
             name: SkinFields.glassTest.name,
+            enabled: enabled,
+            initialValue: model?.glassTest,
             label:
                 'Glass Test: when pressing on the rash with a transparent object like glass.',
             answer: const [
@@ -390,17 +585,28 @@ class _SkinSectionViewState extends State<SkinSectionView> {
   }
 }
 
-class PulseSectionView extends StatefulWidget {
+class PulseSectionForm extends StatefulWidget {
   final FormBuilderState? formState;
-  const PulseSectionView({Key? key, required this.formState}) : super(key: key);
+  final PulseSectionModel? pulseSectionModel;
+  final FormActionState formActionState;
+
+  const PulseSectionForm({
+    Key? key,
+    required this.formState,
+    this.pulseSectionModel,
+    this.formActionState = FormActionState.create,
+  }) : super(key: key);
 
   @override
-  _PulseSectionViewState createState() => _PulseSectionViewState();
+  _PulseSectionFormState createState() => _PulseSectionFormState();
 }
 
-class _PulseSectionViewState extends State<PulseSectionView> {
+class _PulseSectionFormState extends State<PulseSectionForm> {
   @override
   Widget build(BuildContext context) {
+    bool enabled = widget.formActionState != FormActionState.view;
+    final model = widget.pulseSectionModel;
+
     return Column(
       children: [
         INumberInputField(
@@ -408,26 +614,38 @@ class _PulseSectionViewState extends State<PulseSectionView> {
           label: 'Pulse rate?',
           min: PULSE_MIN,
           max: PULSE_MAX,
+          enabled: enabled,
+          initialValue: model?.pulse != null ? model!.pulse.toString() : null,
         ),
       ],
     );
   }
 }
 
-class GeneralSectionView extends StatefulWidget {
+class GeneralSectionForm extends StatefulWidget {
   final FormBuilderState? formState;
-  const GeneralSectionView({Key? key, required this.formState})
-      : super(key: key);
+  final GeneralSectionModel? generalSectionModel;
+  final FormActionState formActionState;
+
+  const GeneralSectionForm({
+    Key? key,
+    required this.formState,
+    this.generalSectionModel,
+    this.formActionState = FormActionState.create,
+  }) : super(key: key);
 
   @override
-  _GeneralSectionViewState createState() => _GeneralSectionViewState();
+  _GeneralSectionFormState createState() => _GeneralSectionFormState();
 }
 
-class _GeneralSectionViewState extends State<GeneralSectionView> {
+class _GeneralSectionFormState extends State<GeneralSectionForm> {
   bool showVaccinationQs = false;
 
   @override
   Widget build(BuildContext context) {
+    bool enabled = widget.formActionState != FormActionState.view;
+    final model = widget.generalSectionModel;
+
     final patientProvider = Provider.of<PatientProvider>(context);
     final daysOld =
         patientProvider.patient?.dateOfBirth.difference(DateTime.now()).inDays;
@@ -443,18 +661,24 @@ class _GeneralSectionViewState extends State<GeneralSectionView> {
             'More than 12, but less than 24 hours ago',
             'More than 24 hours ago'
           ],
+          enabled: enabled,
+          initialValue: model?.lastTimeEating,
         ),
         IRadioGroup(
           name: GeneralFields.painfulUrination.name,
           label: 'Painful urination?',
           answer: const ['No', 'Yes'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.painfulUrination,
         ),
         IRadioGroup(
           name: GeneralFields.smellyUrine.name,
           label: 'Smelly urine?',
           answer: const ['No', 'Yes'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.smellyUrine,
         ),
         Visibility(
           visible: !olderThan18M,
@@ -463,6 +687,8 @@ class _GeneralSectionViewState extends State<GeneralSectionView> {
             label: 'Bulging fontanelle?',
             answer: const ['No', 'Yes'],
             orientation: OptionsOrientation.horizontal,
+            enabled: enabled,
+            initialValue: model?.bulgingFontanelleMax18MOld,
           ),
         ),
         IRadioGroup(
@@ -473,11 +699,15 @@ class _GeneralSectionViewState extends State<GeneralSectionView> {
             'Sleepy, odd for more than 5 hours, or having feverish nightmares',
             'No reactions, no awareness'
           ],
+          enabled: enabled,
+          initialValue: model?.awareness,
         ),
         IRadioGroup(
           name: GeneralFields.vaccinationIn14days.name,
           label: 'Vacination within 14 days?',
           answer: const ['No', 'Yes'],
+          enabled: enabled,
+          initialValue: model?.vaccinationIn14days,
         ),
         Visibility(
           visible: showVaccinationQs,
@@ -488,11 +718,15 @@ class _GeneralSectionViewState extends State<GeneralSectionView> {
                 label: 'How many hours ago?',
                 answer: const ['Within 48', 'Beyond 48 hours'],
                 isRequired: showVaccinationQs,
+                enabled: enabled,
+                initialValue: model?.vaccinationHowManyHoursAgo,
               ),
               ITextField(
                 name: GeneralFields.vaccinationWhat.name,
                 label: 'What is the name of the vaccination?',
                 isRequired: showVaccinationQs,
+                enabled: enabled,
+                initialValue: model?.vaccinationWhat,
               ),
             ],
           ),
@@ -501,19 +735,25 @@ class _GeneralSectionViewState extends State<GeneralSectionView> {
           name: GeneralFields.exoticTrip.name,
           label: 'Exotic trip in the past 12 months?',
           orientation: OptionsOrientation.horizontal,
-          answer: const ['Yes', 'No'],
+          answer: const ['No', 'Yes'],
+          enabled: enabled,
+          initialValue: model?.exoticTrip,
         ),
         IRadioGroup(
           name: GeneralFields.seizure.name,
           label: 'Feverish seizure',
           answer: const ['No', 'Yes'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.seizure,
         ),
         IRadioGroup(
           name: GeneralFields.wryNeck.name,
           label: 'Stiff neck?',
           answer: const ['No', 'Yes'],
           orientation: OptionsOrientation.horizontal,
+          enabled: enabled,
+          initialValue: model?.wryNeck,
         ),
         ICheckboxGroup(
           name: GeneralFields.pain.name,
@@ -525,35 +765,51 @@ class _GeneralSectionViewState extends State<GeneralSectionView> {
             'Swollen, painful bodyparts, patient is trying to protect it',
             'Strong belly pain for more than 12 hours'
           ],
+          enabled: enabled,
+          initialValue: model?.pain,
         ),
       ],
     );
   }
 }
 
-class CaregiverSectionView extends StatefulWidget {
+class CaregiverSectionForm extends StatefulWidget {
   final FormBuilderState? formState;
-  const CaregiverSectionView({Key? key, required this.formState})
-      : super(key: key);
+  final CaregiverSectionModel? caregiverSectionModel;
+  final FormActionState formActionState;
+
+  const CaregiverSectionForm({
+    Key? key,
+    required this.formState,
+    this.caregiverSectionModel,
+    this.formActionState = FormActionState.create,
+  }) : super(key: key);
 
   @override
-  _CaregiverSectionViewState createState() => _CaregiverSectionViewState();
+  _CaregiverSectionFormState createState() => _CaregiverSectionFormState();
 }
 
-class _CaregiverSectionViewState extends State<CaregiverSectionView> {
+class _CaregiverSectionFormState extends State<CaregiverSectionForm> {
   @override
   Widget build(BuildContext context) {
+    bool enabled = widget.formActionState != FormActionState.view;
+    final model = widget.caregiverSectionModel;
+
     return Column(
       children: [
         IRadioGroup(
           name: CaregiverFields.parentFeel.name,
           label: 'How do you feel about the progress of your patient\'s fever?',
           answer: const ['Optimal', 'Not sure', 'Very worried'],
+          enabled: enabled,
+          initialValue: model?.parentFeel,
         ),
         IRadioGroup(
           name: CaregiverFields.parentThink.name,
           label: 'How severe do you think your patient\' condition is?',
           answer: const ['Not severe', 'Somewhat severe', 'Very severe'],
+          enabled: enabled,
+          initialValue: model?.parentThink,
         ),
         IRadioGroup(
           name: CaregiverFields.parentConfident.name,
@@ -565,6 +821,8 @@ class _CaregiverSectionViewState extends State<CaregiverSectionView> {
             'Not really',
             'Not at all'
           ],
+          enabled: enabled,
+          initialValue: model?.parentConfident,
         ),
       ],
     );

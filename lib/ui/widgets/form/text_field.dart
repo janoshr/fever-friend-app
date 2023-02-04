@@ -9,6 +9,8 @@ class ITextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final Icon? prefixIcon;
   final String? suffixText;
+  final bool enabled;
+  final String? initialValue;
 
   const ITextField({
     Key? key,
@@ -18,6 +20,8 @@ class ITextField extends StatelessWidget {
     this.onChanged,
     this.prefixIcon,
     this.suffixText,
+    this.enabled = true,
+    this.initialValue,
   }) : super(key: key);
 
   void changeHandler(dynamic val) {
@@ -33,6 +37,8 @@ class ITextField extends StatelessWidget {
       child: FormBuilderTextField(
         autovalidateMode: AutovalidateMode.onUserInteraction,
         name: name,
+        enabled: enabled,
+        initialValue: initialValue,
         decoration: InputDecoration(
           label: Text(label),
           prefixIcon: prefixIcon,
