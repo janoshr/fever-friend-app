@@ -38,97 +38,14 @@ class MeasurementModel {
       FormBuilderState formState, Patient patient) {
     PackageInfo pi = getIt.get<PackageInfo>();
     final data = MeasurementModelData(
-      feverSection: FeverSectionModel(
-        feverDuration: formState.value[FeverFields.feverDuration.name],
-        feverMeasurementLocation:
-            formState.value[FeverFields.measurementLocation.name],
-        temperature:
-            double.parse(formState.value[FeverFields.temperature.name]),
-        // TODO add calculating logic to screen
-        temperatureAdjusted: null,
-        thermometerUsed: formState.value[FeverFields.thermometerUsed.name],
-      ),
-      medicationSection: MedicationSectionModel(
-        antibiotics: formState.value[MedicationFields.antibiotics.name],
-        antibioticsHowMany:
-            formState.value[MedicationFields.antibioticsHowMuch.name] != null
-                ? int.tryParse(
-                    formState.value[MedicationFields.antibioticsHowMuch.name])
-                : null,
-        antibioticsHowMuch:
-            formState.value[MedicationFields.antibioticsHowMuch.name] != null
-                ? double.tryParse(
-                    formState.value[MedicationFields.antibioticsHowMuch.name])
-                : null,
-        antibioticsWhat: formState.value[MedicationFields.antibioticsWhat.name],
-        antipyretic: formState.value[MedicationFields.antipyretic.name],
-        antipyreticHowMany:
-            formState.value[MedicationFields.antipyreticHowMany.name] != null
-                ? int.tryParse(
-                    formState.value[MedicationFields.antipyreticHowMany.name])
-                : null,
-        antipyreticHowMuch:
-            formState.value[MedicationFields.antipyreticHowMuch.name] != null
-                ? double.tryParse(
-                    formState.value[MedicationFields.antipyreticHowMuch.name])
-                : null,
-        antipyreticReason:
-            formState.value[MedicationFields.antipyreticReason.name],
-        antipyreticWhat: formState.value[MedicationFields.antipyreticWhat],
-      ),
-      hydrationSection: HydrationSectionModel(
-        crying: formState.value[HydrationFields.crying.name],
-        diarrhea: formState.value[HydrationFields.diarrhea.name],
-        drinking: formState.value[HydrationFields.drinking.name],
-        lastUrination: formState.value[HydrationFields.lastUrination.name],
-        skinTurgor: formState.value[HydrationFields.skinTurgor.name],
-        tearsWhenCrying: formState.value[HydrationFields.tearsWhenCrying.name],
-        tongue: formState.value[HydrationFields.tongue.name],
-        vomit: formState.value[HydrationFields.vomit.name] != null
-            ? List<String>.from(formState.value[HydrationFields.vomit.name])
-            : null,
-      ),
-      respirationSection: RespirationSectionModel(
-        dyspnea: formState.value[RespirationFields.dyspnea.name],
-        respiratoryRate:
-            formState.value[RespirationFields.respiratoryRate.name] != null
-                ? double.tryParse(
-                    formState.value[RespirationFields.respiratoryRate.name])
-                : null,
-        wheezing: formState.value[RespirationFields.wheezing.name],
-      ),
-      skinSection: SkinSectionModel(
-        glassTest: formState.value[SkinFields.glassTest.name],
-        rash: formState.value[SkinFields.rash.name],
-        skinColor: formState.value[SkinFields.skinColor.name],
-      ),
-      pulseSection: PulseSectionModel(
-        pulse: formState.value[PulseFields.pulse.name] != null
-            ? double.tryParse(formState.value[PulseFields.pulse.name])
-            : null,
-      ),
-      generalSection: GeneralSectionModel(
-        awareness: formState.value[GeneralFields.awareness.name],
-        exoticTrip: formState.value[GeneralFields.exoticTrip.name],
-        seizure: formState.value[GeneralFields.seizure.name],
-        lastTimeEating: formState.value[GeneralFields.lastTimeEating.name],
-        pain: formState.value[GeneralFields.pain.name] != null
-            ? List<String>.from(formState.value[GeneralFields.pain.name])
-            : null,
-        painfulUrination: formState.value[GeneralFields.painfulUrination.name],
-        smellyUrine: formState.value[GeneralFields.smellyUrine.name],
-        vaccinationHowManyHoursAgo:
-            formState.value[GeneralFields.vaccinationHowManyHoursAgo.name],
-        vaccinationIn14days:
-            formState.value[GeneralFields.vaccinationIn14days.name],
-        vaccinationWhat: formState.value[GeneralFields.vaccinationWhat.name],
-        wryNeck: formState.value[GeneralFields.wryNeck.name],
-      ),
-      caregiverSection: CaregiverSectionModel(
-        parentConfident: formState.value[CaregiverFields.parentConfident.name],
-        parentFeel: formState.value[CaregiverFields.parentFeel.name],
-        parentThink: formState.value[CaregiverFields.parentThink.name],
-      ),
+      feverSection: FeverSectionModel.fromFormBuilder(formState),
+      medicationSection: MedicationSectionModel.fromFormBuilder(formState),
+      hydrationSection: HydrationSectionModel.fromFormBuilder(formState),
+      respirationSection: RespirationSectionModel.fromFormBuilder(formState),
+      skinSection: SkinSectionModel.fromFormBuilder(formState),
+      pulseSection: PulseSectionModel.fromFormBuilder(formState),
+      generalSection: GeneralSectionModel.fromFormBuilder(formState),
+      caregiverSection: CaregiverSectionModel.fromFormBuilder(formState),
     );
     final meta = MeasurementModelMeta(
       createdAt: DateTime.now(),
@@ -266,6 +183,22 @@ class FeverSectionModel {
     this.temperatureAdjusted,
   });
 
+  static FeverSectionModel? fromFormBuilder(FormBuilderState formState) {
+    if (FeverFields.values
+        .every((element) => formState.value[element.name] == null)) {
+      return null;
+    }
+    return FeverSectionModel(
+      feverDuration: formState.value[FeverFields.feverDuration.name],
+      feverMeasurementLocation:
+          formState.value[FeverFields.measurementLocation.name],
+      temperature: double.parse(formState.value[FeverFields.temperature.name]),
+      // TODO add calculating logic to screen
+      temperatureAdjusted: null,
+      thermometerUsed: formState.value[FeverFields.thermometerUsed.name],
+    );
+  }
+
   factory FeverSectionModel.fromJson(Map<String, dynamic> json) =>
       _$FeverSectionModelFromJson(json);
 
@@ -297,6 +230,46 @@ class MedicationSectionModel {
     this.antipyreticWhat,
   });
 
+  static MedicationSectionModel? fromFormBuilder(FormBuilderState formState) {
+    if (MedicationFields.values
+        .every((element) => formState.value[element.name] == null)) {
+      return null;
+    }
+
+    return MedicationSectionModel(
+      antibiotics: formState.value[MedicationFields.antibiotics.name],
+      antibioticsHowMany:
+          formState.value[MedicationFields.antibioticsHowMuch.name] != null
+              ? int.tryParse(
+                  formState.value[MedicationFields.antibioticsHowMuch.name])
+              : null,
+      antibioticsHowMuch:
+          formState.value[MedicationFields.antibioticsHowMuch.name] != null
+              ? double.tryParse(
+                  formState.value[MedicationFields.antibioticsHowMuch.name])
+              : null,
+      antibioticsWhat: formState.value[MedicationFields.antibioticsWhat.name],
+      antipyretic: formState.value[MedicationFields.antipyretic.name],
+      antipyreticHowMany:
+          formState.value[MedicationFields.antipyreticHowMany.name] != null
+              ? int.tryParse(
+                  formState.value[MedicationFields.antipyreticHowMany.name])
+              : null,
+      antipyreticHowMuch:
+          formState.value[MedicationFields.antipyreticHowMuch.name] != null
+              ? double.tryParse(
+                  formState.value[MedicationFields.antipyreticHowMuch.name])
+              : null,
+      antipyreticReason:
+          formState.value[MedicationFields.antipyreticReason.name],
+      antipyreticWhat:
+          formState.value[MedicationFields.antipyreticWhat.name] != null
+              ? List<String>.from(
+                  formState.value[MedicationFields.antipyreticWhat.name])
+              : null,
+    );
+  }
+
   factory MedicationSectionModel.fromJson(Map<String, dynamic> json) =>
       _$MedicationSectionModelFromJson(json);
 
@@ -325,6 +298,26 @@ class HydrationSectionModel {
     this.vomit,
   });
 
+  static HydrationSectionModel? fromFormBuilder(FormBuilderState formState) {
+    if (HydrationFields.values
+        .every((element) => formState.value[element.name] == null)) {
+      return null;
+    }
+
+    return HydrationSectionModel(
+      crying: formState.value[HydrationFields.crying.name],
+      diarrhea: formState.value[HydrationFields.diarrhea.name],
+      drinking: formState.value[HydrationFields.drinking.name],
+      lastUrination: formState.value[HydrationFields.lastUrination.name],
+      skinTurgor: formState.value[HydrationFields.skinTurgor.name],
+      tearsWhenCrying: formState.value[HydrationFields.tearsWhenCrying.name],
+      tongue: formState.value[HydrationFields.tongue.name],
+      vomit: formState.value[HydrationFields.vomit.name] != null
+          ? List<String>.from(formState.value[HydrationFields.vomit.name])
+          : null,
+    );
+  }
+
   factory HydrationSectionModel.fromJson(Map<String, dynamic> json) =>
       _$HydrationSectionModelFromJson(json);
 
@@ -342,6 +335,23 @@ class RespirationSectionModel {
     this.respiratoryRate,
     this.wheezing,
   });
+
+  static RespirationSectionModel? fromFormBuilder(FormBuilderState formState) {
+    if (RespirationFields.values
+        .every((element) => formState.value[element.name] == null)) {
+      return null;
+    }
+
+    return RespirationSectionModel(
+      dyspnea: formState.value[RespirationFields.dyspnea.name],
+      respiratoryRate:
+          formState.value[RespirationFields.respiratoryRate.name] != null
+              ? double.tryParse(
+                  formState.value[RespirationFields.respiratoryRate.name])
+              : null,
+      wheezing: formState.value[RespirationFields.wheezing.name],
+    );
+  }
 
   factory RespirationSectionModel.fromJson(Map<String, dynamic> json) =>
       _$RespirationSectionModelFromJson(json);
@@ -361,6 +371,19 @@ class SkinSectionModel {
     this.skinColor,
   });
 
+  static SkinSectionModel? fromFormBuilder(FormBuilderState formState) {
+    if (SkinFields.values
+        .every((element) => formState.value[element.name] == null)) {
+      return null;
+    }
+
+    return SkinSectionModel(
+      glassTest: formState.value[SkinFields.glassTest.name],
+      rash: formState.value[SkinFields.rash.name],
+      skinColor: formState.value[SkinFields.skinColor.name],
+    );
+  }
+
   factory SkinSectionModel.fromJson(Map<String, dynamic> json) =>
       _$SkinSectionModelFromJson(json);
 
@@ -374,6 +397,19 @@ class PulseSectionModel {
   PulseSectionModel({
     this.pulse,
   });
+
+  static PulseSectionModel? fromFormBuilder(FormBuilderState formState) {
+    if (PulseFields.values
+        .every((element) => formState.value[element.name] == null)) {
+      return null;
+    }
+
+    return PulseSectionModel(
+      pulse: formState.value[PulseFields.pulse.name] != null
+          ? double.tryParse(formState.value[PulseFields.pulse.name])
+          : null,
+    );
+  }
 
   factory PulseSectionModel.fromJson(Map<String, dynamic> json) =>
       _$PulseSectionModelFromJson(json);
@@ -411,6 +447,31 @@ class GeneralSectionModel {
     this.wryNeck,
   });
 
+  static GeneralSectionModel? fromFormBuilder(FormBuilderState formState) {
+    if (GeneralFields.values
+        .every((element) => formState.value[element.name] == null)) {
+      return null;
+    }
+
+    return GeneralSectionModel(
+      awareness: formState.value[GeneralFields.awareness.name],
+      exoticTrip: formState.value[GeneralFields.exoticTrip.name],
+      seizure: formState.value[GeneralFields.seizure.name],
+      lastTimeEating: formState.value[GeneralFields.lastTimeEating.name],
+      pain: formState.value[GeneralFields.pain.name] != null
+          ? List<String>.from(formState.value[GeneralFields.pain.name])
+          : null,
+      painfulUrination: formState.value[GeneralFields.painfulUrination.name],
+      smellyUrine: formState.value[GeneralFields.smellyUrine.name],
+      vaccinationHowManyHoursAgo:
+          formState.value[GeneralFields.vaccinationHowManyHoursAgo.name],
+      vaccinationIn14days:
+          formState.value[GeneralFields.vaccinationIn14days.name],
+      vaccinationWhat: formState.value[GeneralFields.vaccinationWhat.name],
+      wryNeck: formState.value[GeneralFields.wryNeck.name],
+    );
+  }
+
   factory GeneralSectionModel.fromJson(Map<String, dynamic> json) =>
       _$GeneralSectionModelFromJson(json);
 
@@ -419,15 +480,29 @@ class GeneralSectionModel {
 
 @JsonSerializable()
 class CaregiverSectionModel {
-  String? parentConfident;
-  String? parentFeel;
-  String? parentThink;
+  String? caregiverConfident;
+  String? caregiverFeel;
+  String? caregiverThink;
 
   CaregiverSectionModel({
-    this.parentConfident,
-    this.parentFeel,
-    this.parentThink,
+    this.caregiverConfident,
+    this.caregiverFeel,
+    this.caregiverThink,
   });
+
+  static CaregiverSectionModel? fromFormBuilder(FormBuilderState formState) {
+    if (CaregiverFields.values
+        .every((element) => formState.value[element.name] == null)) {
+      return null;
+    }
+
+    return CaregiverSectionModel(
+      caregiverConfident:
+          formState.value[CaregiverFields.caregiverConfident.name],
+      caregiverFeel: formState.value[CaregiverFields.caregiverFeel.name],
+      caregiverThink: formState.value[CaregiverFields.caregiverThink.name],
+    );
+  }
 
   factory CaregiverSectionModel.fromJson(Map<String, dynamic> json) =>
       _$CaregiverSectionModelFromJson(json);

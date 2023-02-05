@@ -146,9 +146,9 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
 
   @override
   void initState() {
+    super.initState();
     showAntibioticQs = widget.medicationSectionModel?.antibiotics == 'Yes';
     showAntipyreticQs = widget.medicationSectionModel?.antipyretic == 'Yes';
-    super.initState();
   }
 
   @override
@@ -314,11 +314,11 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
 
   @override
   void initState() {
-    showCryingQ = widget.hydrationSectionModel?.crying == 'Yes';
+    super.initState();
+    showCryingQ = widget.hydrationSectionModel?.crying != 'Doesn\'t cry';
     showVomitQ = widget.hydrationSectionModel != null &&
         widget.hydrationSectionModel!.vomit != null &&
         widget.hydrationSectionModel!.vomit!.isNotEmpty;
-    super.initState();
   }
 
   @override
@@ -409,8 +409,8 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
           name: 'vomit_logic',
           label: 'Vomiting?',
           enabled: enabled,
-          initialValue: model?.vomit != null ||
-              (model!.vomit != null && model.vomit!.isEmpty),
+          initialValue:
+              model != null && model.vomit != null && model.vomit!.isNotEmpty,
           onChanged: (val) {
             if (val && !showVomitQ) {
               setState(() {
@@ -524,8 +524,8 @@ class _SkinSectionFormState extends State<SkinSectionForm> {
 
   @override
   void initState() {
-    showRashQ = widget.skinSectionModel?.rash == 'Yes';
     super.initState();
+    showRashQ = widget.skinSectionModel?.rash == 'Yes';
   }
 
   @override
@@ -798,21 +798,21 @@ class _CaregiverSectionFormState extends State<CaregiverSectionForm> {
     return Column(
       children: [
         IRadioGroup(
-          name: CaregiverFields.parentFeel.name,
+          name: CaregiverFields.caregiverFeel.name,
           label: 'How do you feel about the progress of your patient\'s fever?',
           answer: const ['Optimal', 'Not sure', 'Very worried'],
           enabled: enabled,
-          initialValue: model?.parentFeel,
+          initialValue: model?.caregiverFeel,
         ),
         IRadioGroup(
-          name: CaregiverFields.parentThink.name,
+          name: CaregiverFields.caregiverThink.name,
           label: 'How severe do you think your patient\' condition is?',
           answer: const ['Not severe', 'Somewhat severe', 'Very severe'],
           enabled: enabled,
-          initialValue: model?.parentThink,
+          initialValue: model?.caregiverThink,
         ),
         IRadioGroup(
-          name: CaregiverFields.parentConfident.name,
+          name: CaregiverFields.caregiverConfident.name,
           label:
               'How confident do you feel yourselves in managing the patient\'s feverish illness?',
           answer: const [
@@ -822,7 +822,7 @@ class _CaregiverSectionFormState extends State<CaregiverSectionForm> {
             'Not at all'
           ],
           enabled: enabled,
-          initialValue: model?.parentConfident,
+          initialValue: model?.caregiverConfident,
         ),
       ],
     );
