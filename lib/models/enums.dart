@@ -11,6 +11,8 @@ enum MeasurementSections {
   caregiver,
 }
 
+/// Fever form questions
+/// (4)
 enum FeverFields {
   feverDuration,
   measurementLocation,
@@ -18,6 +20,8 @@ enum FeverFields {
   thermometerUsed,
 }
 
+/// Medication form questions
+/// (9)
 enum MedicationFields {
   antibiotics,
   antibioticsHowMany,
@@ -30,6 +34,8 @@ enum MedicationFields {
   antipyreticWhat,
 }
 
+/// Hydration form questions
+/// (8)
 enum HydrationFields {
   crying,
   diarrhea,
@@ -41,22 +47,30 @@ enum HydrationFields {
   vomit,
 }
 
+/// Respiration form questions
+/// (3)
 enum RespirationFields {
   dyspnea,
   respiratoryRate,
   wheezing,
 }
 
+/// Skin condition form questions
+/// (3)
 enum SkinFields {
   glassTest,
   rash,
   skinColor,
 }
 
+/// Pulse form question
+/// (1)
 enum PulseFields {
   pulse,
 }
 
+/// General condition form questions
+/// (12)
 enum GeneralFields {
   awareness,
   // TODO add everywhere with logic
@@ -73,10 +87,12 @@ enum GeneralFields {
   wryNeck,
 }
 
+/// Caregiver form questions
+/// (3)
 enum CaregiverFields {
-  parentConfident,
-  parentFeel,
-  parentThink,
+  caregiverConfident,
+  caregiverFeel,
+  caregiverThink,
 }
 
 enum PatientState {

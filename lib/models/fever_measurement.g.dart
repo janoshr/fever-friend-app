@@ -269,15 +269,15 @@ Map<String, dynamic> _$GeneralSectionModelToJson(
 
 CaregiverSectionModel _$CaregiverSectionModelFromJson(Map json) =>
     CaregiverSectionModel(
-      parentConfident: json['parentConfident'] as String?,
-      parentFeel: json['parentFeel'] as String?,
-      parentThink: json['parentThink'] as String?,
+      caregiverConfident: json['caregiverConfident'] as String?,
+      caregiverFeel: json['caregiverFeel'] as String?,
+      caregiverThink: json['caregiverThink'] as String?,
     );
 
 Map<String, dynamic> _$CaregiverSectionModelToJson(
         CaregiverSectionModel instance) =>
     <String, dynamic>{
-      'parentConfident': instance.parentConfident,
-      'parentFeel': instance.parentFeel,
-      'parentThink': instance.parentThink,
+      'caregiverConfident': instance.caregiverConfident,
+      'caregiverFeel': instance.caregiverFeel,
+      'caregiverThink': instance.caregiverThink,
     };

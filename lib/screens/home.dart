@@ -67,7 +67,9 @@ class _IHomeScreenState extends State<IHomeScreen> {
                     ),
                   Expanded(
                     child: IllnessList(
-                      illnessList: illnesses.skip(1).toList(),
+                      illnessList: activeIllness
+                          ? illnesses.skip(1).toList()
+                          : illnesses,
                     ),
                   ),
                 ]),
