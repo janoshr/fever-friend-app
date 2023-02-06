@@ -85,10 +85,8 @@ class _IHomeScreenState extends State<IHomeScreen> {
                           arguments: illnesses.first);
                     },
                     label: const Text('Measure'),
-                    icon: const Icon(
-                      Icons.thermostat,
-                    ),
-                    backgroundColor: Colors.blue,
+                    icon: const Icon(Icons.thermostat),
+                    backgroundColor: Theme.of(context).primaryColor,
                   ),
                   FloatingActionButton.extended(
                     heroTag: UniqueKey(),
@@ -111,6 +109,7 @@ class _IHomeScreenState extends State<IHomeScreen> {
                 },
                 label: const Text('Measure'),
                 icon: const Icon(Icons.thermostat),
+                backgroundColor: Theme.of(context).primaryColor,
               ),
       );
     });

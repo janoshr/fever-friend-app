@@ -159,13 +159,19 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final patientProvider = Provider.of<PatientProvider>(context);
+    final primaryColor = patientProvider.patient != null &&
+            patientProvider.patient!.color != null
+        ? patientProvider.patient!.color!
+        : Colors.orange;
+
     return MaterialApp(
       title: 'CS310 The Fever Friend App',
       theme: ThemeData(
-          primarySwatch: Colors.orange,
+          primaryColor: primaryColor,
           // Add the 5 lines from here...
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.orange,
+          appBarTheme: AppBarTheme(
+            backgroundColor: primaryColor,
             foregroundColor: Colors.white,
           ),
           inputDecorationTheme: const InputDecorationTheme(

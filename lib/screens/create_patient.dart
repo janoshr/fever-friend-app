@@ -4,6 +4,7 @@ import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/services/firestore.dart';
 import 'package:fever_friend_app/ui/shared/constants.dart';
 import 'package:fever_friend_app/ui/widgets/form/form.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -19,6 +20,7 @@ class ICreatePatientScreen extends StatefulWidget {
 class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   String? _error;
+  Color screenPickerColor = Colors.amber;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,8 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                 if (_error != null) ...[
                   Text(
                     _error!,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
                   )
                 ],
                 const ITextField(
@@ -98,7 +101,36 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                   ],
                   validator: FormBuilderValidators.required(),
                 ),
-                //const Spacer(),
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    border: Border(bottom: BorderSide()),
+                  ),
+                  child: ColorPicker(
+                    // Use the screenPickerColor as start color.
+                    enableShadesSelection: false,
+                    pickersEnabled: const {
+                      ColorPickerType.accent: false,
+                      ColorPickerType.wheel: false,
+                      ColorPickerType.both: false,
+                      ColorPickerType.primary: true,
+                    },
+                    color: screenPickerColor,
+                    // Update the screenPickerColor using the callback.
+                    onColorChanged: (Color color) =>
+                        setState(() => screenPickerColor = color),
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    heading: Text(
+                      'Select color',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
@@ -134,6 +166,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
           gender: fields['gender']!.value,
           height: fields['height']!.value,
           weight: fields['weight']!.value,
+          color: screenPickerColor,
         );
         await db.createPatient(patient);
         onSuccess.call(patient);

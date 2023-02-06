@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'util.dart';
@@ -30,6 +31,9 @@ class Patient {
 
   List<String> chronicDiseases;
 
+  @JsonKey(fromJson: colorFromJson, toJson: colorToJson)
+  Color? color;
+
   Patient({
     required this.id,
     required this.name,
@@ -41,6 +45,7 @@ class Patient {
     this.chronicDiseases = const [],
     this.siblings,
     this.updatedAt,
+    this.color,
   });
 
   static toNull(_) => null;
