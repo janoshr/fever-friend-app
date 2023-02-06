@@ -19,89 +19,98 @@ class DrawerMenu extends StatelessWidget {
     PackageInfo pi = getIt.get<PackageInfo>();
 
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            decoration: BoxDecoration(
+              color: patient?.color ?? getIconColor(patient?.name ?? 'n/a'),
+            ),
             accountName: Text(patient?.name ?? 'Loading...'),
             accountEmail: Text(patient?.dateOfBirth != null
                 ? dateFYYYYMMDD.format(patient!.dateOfBirth)
                 : 'Loading...'),
-            currentAccountPicture: Icon(
+            currentAccountPicture: const Icon(
               Icons.account_circle,
-              color: getIconColor(patient?.name ?? 'n/a'),
+              color: Colors.white,
               size: 48,
             ),
           ),
-          ...patientList
-              .map(
-                (p) => ListTile(
-                  dense: true,
-                  subtitle: Text(dateFYYYYMMDD.format(p.dateOfBirth)),
-                  leading: const Icon(Icons.account_circle),
-                  title: Text(p.name),
-                  iconColor: getIconColor(p.name),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                ...patientList
+                    .map(
+                      (p) => ListTile(
+                        dense: true,
+                        subtitle: Text(dateFYYYYMMDD.format(p.dateOfBirth)),
+                        leading: const Icon(Icons.account_circle),
+                        title: Text(p.name),
+                        iconColor: p.color ?? getIconColor(p.name),
+                        onTap: () {
+                          patientProvider.setPatientByID(p.id);
+                        },
+                      ),
+                    )
+                    .toList(),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.home),
+                  title: const Text('Home page'),
                   onTap: () {
-                    patientProvider.setPatientByID(p.id);
+                    Navigator.pop(context);
                   },
                 ),
-              )
-              .toList(),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home page'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.person_add),
-            title: const Text('Add Patient'),
-            onTap: () {
-              Navigator.pushNamed(context, ScreenDefinition.createPatient);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.pushNamed(context, ScreenDefinition.settings);
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Log out'),
-            onTap: () {
-              FirebaseAuth.instance.signOut();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/splash', ((route) => false));
-            },
-          ),
-          AboutListTile(
-            // <-- SEE HERE
-            icon: const Icon(Icons.info),
-            applicationIcon: const Icon(Icons.info),
-            applicationName: pi.appName,
-            applicationVersion: pi.version,
-            applicationLegalese: '© 2023 Civil Support',
-            aboutBoxChildren: [
-              const Text('Developer: Janos Hajdu Rafis'),
-              TextButton(
-                onPressed: () {},
-                onLongPress: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                            content:
-                                SelectableText('Patient ID: ${patient?.id}'),
-                          ));
-                },
-                child: const Text('ID info'),
-              ),
-            ],
-            child: const Text('About app'),
+                ListTile(
+                  leading: const Icon(Icons.person_add),
+                  title: const Text('Add Patient'),
+                  onTap: () {
+                    Navigator.pushNamed(
+                        context, ScreenDefinition.createPatient);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text('Settings'),
+                  onTap: () {
+                    Navigator.pushNamed(context, ScreenDefinition.settings);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Log out'),
+                  onTap: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('/splash', ((route) => false));
+                  },
+                ),
+                AboutListTile(
+                  // <-- SEE HERE
+                  icon: const Icon(Icons.info),
+                  applicationIcon: const Icon(Icons.info),
+                  applicationName: pi.appName,
+                  applicationVersion: pi.version,
+                  applicationLegalese: '© 2023 Civil Support',
+                  aboutBoxChildren: [
+                    const Text('Developer: Janos Hajdu Rafis'),
+                    TextButton(
+                      onPressed: () {},
+                      onLongPress: () {
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                                  content: SelectableText(
+                                      'Patient ID: ${patient?.id}'),
+                                ));
+                      },
+                      child: const Text('ID info'),
+                    ),
+                  ],
+                  child: const Text('About app'),
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -20,6 +20,7 @@ Patient _$PatientFromJson(Map json) => Patient(
           const [],
       siblings: json['siblings'] as int?,
       updatedAt: fromTimestampToDateNullable(json['updatedAt'] as Timestamp?),
+      color: colorFromJson(json['color'] as int?),
     );
 
 Map<String, dynamic> _$PatientToJson(Patient instance) {
@@ -41,5 +42,6 @@ Map<String, dynamic> _$PatientToJson(Patient instance) {
   val['createdAt'] = fromDateToTimestamp(instance.createdAt);
   val['updatedAt'] = fromDateToTimestampNullable(instance.updatedAt);
   val['chronicDiseases'] = instance.chronicDiseases;
+  val['color'] = colorToJson(instance.color);
   return val;
 }
