@@ -7,6 +7,7 @@ import 'package:fever_friend_app/models/patient.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/routes.dart';
 import 'package:fever_friend_app/services/firestore.dart';
+import 'package:fever_friend_app/ui/shared/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -160,15 +161,16 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final patientProvider = Provider.of<PatientProvider>(context);
-    final primaryColor = patientProvider.patient != null &&
-            patientProvider.patient!.color != null
-        ? patientProvider.patient!.color!
-        : Colors.orange;
+    final primaryColor = generateMaterialColor(
+        patientProvider.patient != null &&
+                patientProvider.patient!.color != null
+            ? patientProvider.patient!.color!
+            : Colors.orange);
 
     return MaterialApp(
       title: 'CS310 The Fever Friend App',
       theme: ThemeData(
-          primaryColor: primaryColor,
+          primarySwatch: primaryColor,
           // Add the 5 lines from here...
           appBarTheme: AppBarTheme(
             backgroundColor: primaryColor,
