@@ -1,14 +1,17 @@
+import 'package:fever_friend_app/utils/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class IRadioGroup<T> extends StatelessWidget {
+class IRadioGroup extends StatelessWidget {
   final String name;
   final String label;
-  final List<T> answer;
+  final List<Tuple> answer;
   final bool isRequired;
-  final ValueChanged<T>? onChanged;
-  final List<T>? disabled;
+  final ValueChanged<String>? onChanged;
+
+  /// Value of the option -> first of tuple
+  final List<String>? disabled;
   final OptionsOrientation orientation;
   final bool enabled;
   final String? initialValue;
@@ -42,7 +45,19 @@ class IRadioGroup<T> extends StatelessWidget {
         materialTapTargetSize: MaterialTapTargetSize.padded,
         name: name,
         decoration: InputDecoration(
-          label: Text(label),
+          label: RichText(
+            text: TextSpan(
+              text: label,
+              style: DefaultTextStyle.of(context).style,
+              children: [
+                if (isRequired)
+                  const TextSpan(
+                    text: ' *',
+                    style: TextStyle(color: Colors.red),
+                  )
+              ],
+            ),
+          ),
         ),
         // orientation: OptionsOrientation.vertical,
         validator: FormBuilderValidators.compose([
@@ -57,13 +72,13 @@ class IRadioGroup<T> extends StatelessWidget {
         options: List<FormBuilderChipOption>.from(
           answer.map(
             (a) => FormBuilderChipOption(
-              value: a,
+              value: a.first,
               child: SizedBox(
                 width: orientation == OptionsOrientation.horizontal
                     ? null
                     : double.infinity,
                 child: Text(
-                  a as String,
+                  a.second,
                   softWrap: true,
                 ),
               ),

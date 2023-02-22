@@ -1,20 +1,24 @@
 import 'package:fever_friend_app/screens/screen_definition.dart';
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 class ISplashScreen extends StatelessWidget {
   const ISplashScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 32),
+          Padding(
+            padding: const EdgeInsets.only(top: 32),
             child: Text(
-              'CS310 Fever Friend App',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              loc.homeTitle,
+              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
           ),
           const Icon(
@@ -32,7 +36,7 @@ class ISplashScreen extends StatelessWidget {
                       onPressed: (() {
                         Navigator.pushNamed(context, ScreenDefinition.login);
                       }),
-                      child: const Text('Sign in'),
+                      child: Text(loc.signIn),
                     ),
                   ),
                 ),
@@ -43,7 +47,7 @@ class ISplashScreen extends StatelessWidget {
                       onPressed: (() {
                         Navigator.pushNamed(context, ScreenDefinition.register);
                       }),
-                      child: const Text('Sign up'),
+                      child: Text(loc.signUp),
                     ),
                   ),
                 )

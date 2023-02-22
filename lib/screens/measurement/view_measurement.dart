@@ -2,6 +2,8 @@ import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/screens/measurement/sections.dart';
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 const formActionState = FormActionState.view;
 
 Map<MeasurementSections, Widget Function(dynamic)> formTypes = {
@@ -55,12 +57,13 @@ class ViewMeasurement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = measurementModel.data.sectionMap;
+    final loc = AppLocalizations.of(context)!;
 
     return DefaultTabController(
       length: measurementModel.data.sectionCount,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Measurement'),
+          title: Text(loc.measurement),
           centerTitle: true,
           bottom: TabBar(
             isScrollable: true,
@@ -68,8 +71,8 @@ class ViewMeasurement extends StatelessWidget {
               for (final section in MeasurementSections.values)
                 if (data[section] != null)
                   Tab(
-                    text: sectionConfigMap[section]!.title,
-                    icon: sectionConfigMap[section]!.icon,
+                    text: sectionConfigMap(context)[section]!.title,
+                    icon: sectionConfigMap(context)[section]!.icon,
                   ),
             ],
           ),

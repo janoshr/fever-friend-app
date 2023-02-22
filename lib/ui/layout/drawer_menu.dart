@@ -1,3 +1,4 @@
+import 'package:fever_friend_app/l10n/app_localizations.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/patient.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
@@ -17,6 +18,7 @@ class DrawerMenu extends StatelessWidget {
     Patient? patient = patientProvider.patient;
     final patientList = patientProvider.patientList;
     PackageInfo pi = getIt.get<PackageInfo>();
+    final loc = AppLocalizations.of(context)!;
 
     return Drawer(
       child: Column(
@@ -25,10 +27,10 @@ class DrawerMenu extends StatelessWidget {
             decoration: BoxDecoration(
               color: patient?.color ?? getIconColor(patient?.name ?? 'n/a'),
             ),
-            accountName: Text(patient?.name ?? 'Loading...'),
+            accountName: Text(patient?.name ?? loc.loading),
             accountEmail: Text(patient?.dateOfBirth != null
                 ? dateFYYYYMMDD.format(patient!.dateOfBirth)
-                : 'Loading...'),
+                : loc.loading),
             currentAccountPicture: const Icon(
               Icons.account_circle,
               color: Colors.white,
@@ -56,14 +58,14 @@ class DrawerMenu extends StatelessWidget {
                 const Divider(),
                 ListTile(
                   leading: const Icon(Icons.home),
-                  title: const Text('Home page'),
+                  title: Text(loc.homePage),
                   onTap: () {
                     Navigator.pop(context);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.person_add),
-                  title: const Text('Add Patient'),
+                  title: Text(loc.addPatient),
                   onTap: () {
                     Navigator.pushNamed(
                         context, ScreenDefinition.createPatient);
@@ -71,18 +73,18 @@ class DrawerMenu extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.settings),
-                  title: const Text('Settings'),
+                  title: Text(loc.settings),
                   onTap: () {
                     Navigator.pushNamed(context, ScreenDefinition.settings);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.logout),
-                  title: const Text('Log out'),
+                  title: Text(loc.signOut),
                   onTap: () {
                     FirebaseAuth.instance.signOut();
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/splash', ((route) => false));
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        ScreenDefinition.splash, ((route) => false));
                   },
                 ),
                 AboutListTile(
@@ -107,7 +109,7 @@ class DrawerMenu extends StatelessWidget {
                       child: const Text('ID info'),
                     ),
                   ],
-                  child: const Text('About app'),
+                  child: Text(loc.aboutApp),
                 ),
               ],
             ),

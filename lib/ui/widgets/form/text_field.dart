@@ -40,7 +40,19 @@ class ITextField extends StatelessWidget {
         enabled: enabled,
         initialValue: initialValue,
         decoration: InputDecoration(
-          label: Text(label),
+          label: RichText(
+            text: TextSpan(
+              text: label,
+              style: DefaultTextStyle.of(context).style,
+              children: [
+                if (isRequired)
+                  const TextSpan(
+                    text: ' *',
+                    style: TextStyle(color: Colors.red),
+                  )
+              ],
+            ),
+          ),
           prefixIcon: prefixIcon,
           suffixText: suffixText,
         ),

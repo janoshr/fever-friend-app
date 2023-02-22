@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fever_friend_app/models/fever_model_encode.dart';
 import 'package:fever_friend_app/models/util.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/models.dart';
@@ -163,6 +164,23 @@ class MeasurementModelData {
       _$MeasurementModelDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$MeasurementModelDataToJson(this);
+
+  List<num> get modelData {
+    //  'ageInMonths', 'feverDuration', 'temperature', 'antibiotics',
+    //  'antibioticsHowMany', 'antibioticsHowMuch', 'antipyretic',
+    //  'antipyreticHowMany', 'antipyreticHowMuch', 'crying', 'diarrhea',
+    //  'drinking', 'lastUrination', 'skinTurgor', 'tearsWhenCrying', 'tongue',
+    //  'dyspnea', 'respiratoryRate', 'wheezing', 'glassTest', 'rash',
+    //  'skinColor', 'pulse', 'bulgingFontanelleMax18MOld', 'exoticTrip',
+    //  'lastTimeEating', 'painfulUrination', 'seizure', 'smellyUrine',
+    //  'vaccinationIn14days', 'vaccinationHowManyHoursAgo', 'wryNeck',
+    //  'pain-01-No', 'pain-02-FeelingBad', 'pain-03-Headache',
+    //  'pain-04-SwollenPainful', 'pain-05-StrongBellyacheAche',
+    //  'awareness-01-Normal', 'awareness-02-SleepyOddOrFeverishNightmares',
+    //  'awareness-03-NoReactionsNoAwareness', 'vomit-01-No', 'vomit-02-Slight',
+    //  'vomit-03-Frequent', 'vomit-04-Yellow', 'vomit-05-5<hours'
+    return encodeMeasurement(this);
+  }
 }
 
 @JsonSerializable()
