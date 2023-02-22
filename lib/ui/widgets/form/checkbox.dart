@@ -1,15 +1,16 @@
+import 'package:fever_friend_app/utils/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class ICheckboxGroup<T> extends StatelessWidget {
+class ICheckboxGroup extends StatelessWidget {
   final String name;
   final String label;
-  final List<T> answer;
+  final List<Tuple> answer;
   final bool isRequired;
-  final void Function(List<T>?)? onChanged;
+  final void Function(List<Tuple>?)? onChanged;
   final bool enabled;
-  final List<T>? initialValue;
+  final List<String>? initialValue;
 
   const ICheckboxGroup({
     Key? key,
@@ -24,7 +25,7 @@ class ICheckboxGroup<T> extends StatelessWidget {
 
   void changeHandler(List<dynamic>? vals) {
     if (onChanged != null) {
-      onChanged!(vals as List<T>?);
+      onChanged!(vals as List<Tuple>?);
     }
   }
 
@@ -38,7 +39,19 @@ class ICheckboxGroup<T> extends StatelessWidget {
         enabled: enabled,
         initialValue: initialValue,
         decoration: InputDecoration(
-          label: Text(label),
+          label: RichText(
+            text: TextSpan(
+              text: label,
+              style: DefaultTextStyle.of(context).style,
+              children: [
+                if (isRequired)
+                  const TextSpan(
+                    text: ' *',
+                    style: TextStyle(color: Colors.red),
+                  )
+              ],
+            ),
+          ),
         ),
         validator: FormBuilderValidators.compose([
           if (isRequired)
@@ -53,11 +66,11 @@ class ICheckboxGroup<T> extends StatelessWidget {
         options: List<FormBuilderFieldOption>.from(
           answer.map(
             (a) => FormBuilderFieldOption(
-              value: a,
+              value: a.first,
               child: SizedBox(
                 width: double.infinity,
                 height: 18,
-                child: Text(a as String),
+                child: Text(a.second),
               ),
             ),
           ),

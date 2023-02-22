@@ -45,7 +45,19 @@ class INumberInputField extends StatelessWidget {
       child: FormBuilderTextField(
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
-          label: Text(label),
+          label: RichText(
+            text: TextSpan(
+              text: label,
+              style: DefaultTextStyle.of(context).style,
+              children: [
+                if (isRequired)
+                  const TextSpan(
+                    text: ' *',
+                    style: TextStyle(color: Colors.red),
+                  )
+              ],
+            ),
+          ),
           suffixText: unit,
           prefixIcon: prefixIcon,
         ),

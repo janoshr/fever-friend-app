@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
+import '../l10n/app_localizations.dart';
 import '../services/firestore.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -19,10 +20,12 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Settings'),
+        title: Text(loc.settings),
       ),
       body: SafeArea(
         child: FormBuilder(
@@ -35,32 +38,31 @@ class _SettingScreenState extends State<SettingScreen> {
                 if (_error != null) ...[
                   Text(
                     _error!,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
                   )
                 ],
                 FormBuilderDropdown(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(
-                    label: Text('Language'),
-                    prefixIcon: Icon(Icons.language),
+                  decoration: InputDecoration(
+                    label: Text(loc.lang),
+                    prefixIcon: const Icon(Icons.language),
                   ),
                   name: 'lang',
                   validator: FormBuilderValidators.required(),
-                  items: const [
-                    DropdownMenuItem(value: 'en', child: Text('English')),
-                    DropdownMenuItem(value: 'hu', child: Text('Hungarian')),
-                    DropdownMenuItem(value: 'de', child: Text('German')),
+                  items: [
+                    DropdownMenuItem(value: 'en', child: Text(loc.en)),
+                    DropdownMenuItem(value: 'hu', child: Text(loc.hu)),
                   ],
                 ),
                 const SizedBox(height: 12),
                 FormBuilderCheckbox(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(
-                    label: Text('Participate in research'),
+                  decoration: InputDecoration(
+                    label: Text(loc.participateInResearch),
                   ),
                   name: 'research',
-                  title: const Text(
-                      'Allow anonimised usage of your data for medical research?'),
+                  title: Text(loc.participateInResearchDetails),
                 ),
                 const SizedBox(height: 12),
                 //const Spacer(),
@@ -72,7 +74,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/', (route) => false);
                   }),
-                  child: const Text('Save settings'),
+                  child: Text(loc.saveSettings),
                 )
               ],
             ),

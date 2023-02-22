@@ -8,6 +8,7 @@ import 'package:fever_friend_app/ui/widgets/speed_dial.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../services/get_it.dart';
 import '../ui/layout/drawer_menu.dart';
 import '../ui/widgets/illness_card.dart';
@@ -25,13 +26,15 @@ class _IHomeScreenState extends State<IHomeScreen> {
     final notis = Provider.of<List<INotification>>(context);
     final patient = Provider.of<PatientProvider>(context).patient;
 
+    final loc = AppLocalizations.of(context);
+
     return Consumer<List<Illness>>(builder: (context, illnesses, _) {
       bool activeIllness = illnesses.isNotEmpty && illnesses.first.isActive;
 
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('CS310 Fever Friend App'),
+          title: Text(loc!.homeTitle),
           actions: <Widget>[
             Badge(
               label: Text(notis.length.toString()),
@@ -51,9 +54,9 @@ class _IHomeScreenState extends State<IHomeScreen> {
                   padding: const EdgeInsets.all(32.0),
                   child: Center(
                     child: Column(
-                      children: const [
-                        Icon(Icons.info_outline),
-                        Text('No measurements to display')
+                      children: [
+                        const Icon(Icons.info_outline),
+                        Text(loc.emptyMeasurements)
                       ],
                     ),
                   ),
@@ -84,7 +87,7 @@ class _IHomeScreenState extends State<IHomeScreen> {
                           ScreenDefinition.createMeasurement,
                           arguments: illnesses.first);
                     },
-                    label: const Text('Measure'),
+                    label: Text(loc.measure),
                     icon: const Icon(Icons.thermostat),
                   ),
                   FloatingActionButton.extended(
@@ -92,7 +95,7 @@ class _IHomeScreenState extends State<IHomeScreen> {
                     onPressed: () {
                       // TODO close illness
                     },
-                    label: const Text('Healed'),
+                    label: Text(loc.healed),
                     icon: const Icon(
                       Icons.healing,
                     ),
@@ -106,7 +109,7 @@ class _IHomeScreenState extends State<IHomeScreen> {
                   Navigator.pushNamed(
                       context, ScreenDefinition.createMeasurement);
                 },
-                label: const Text('Measure'),
+                label: Text(loc.measure),
                 icon: const Icon(Icons.thermostat),
               ),
       );

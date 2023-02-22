@@ -1,9 +1,11 @@
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/ui/shared/constants.dart';
+import 'package:fever_friend_app/utils/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../models/fever_measurement.dart';
 import '../../ui/widgets/form/form.dart';
 import '../../models/models.dart';
@@ -26,40 +28,43 @@ class SectionConfig {
   });
 }
 
-Map<MeasurementSections, SectionConfig> sectionConfigMap = const {
-  MeasurementSections.fever: SectionConfig(
-      title: 'Fever',
-      icon: Icon(Icons.thermostat),
-      widgetType: FeverSectionForm),
-  MeasurementSections.medication: SectionConfig(
-      title: 'Medication',
-      icon: Icon(Icons.medication),
-      widgetType: MedicationSectionForm),
-  MeasurementSections.hydration: SectionConfig(
-      title: 'Hydration',
-      icon: Icon(Icons.water_drop),
-      widgetType: HydrationSectionForm),
-  MeasurementSections.respiration: SectionConfig(
-      title: 'Respiration',
-      icon: Icon(Icons.air),
-      widgetType: RespirationSectionForm),
-  MeasurementSections.skin: SectionConfig(
-      title: 'Skin condition',
-      icon: Icon(Icons.face),
-      widgetType: SkinSectionForm),
-  MeasurementSections.pulse: SectionConfig(
-      title: 'Pulse',
-      icon: Icon(Icons.monitor_heart),
-      widgetType: PulseSectionForm),
-  MeasurementSections.general: SectionConfig(
-      title: 'General',
-      icon: Icon(Icons.self_improvement),
-      widgetType: GeneralSectionForm),
-  MeasurementSections.caregiver: SectionConfig(
-      title: 'Caregiver',
-      icon: Icon(Icons.volunteer_activism),
-      widgetType: CaregiverSectionForm),
-};
+Map<MeasurementSections, SectionConfig> sectionConfigMap(BuildContext context) {
+  final loc = AppLocalizations.of(context)!;
+  return {
+    MeasurementSections.fever: SectionConfig(
+        title: loc.fever,
+        icon: const Icon(Icons.thermostat),
+        widgetType: FeverSectionForm),
+    MeasurementSections.medication: SectionConfig(
+        title: loc.medication,
+        icon: const Icon(Icons.medication),
+        widgetType: MedicationSectionForm),
+    MeasurementSections.hydration: SectionConfig(
+        title: loc.hydration,
+        icon: const Icon(Icons.water_drop),
+        widgetType: HydrationSectionForm),
+    MeasurementSections.respiration: SectionConfig(
+        title: loc.respiration,
+        icon: const Icon(Icons.air),
+        widgetType: RespirationSectionForm),
+    MeasurementSections.skin: SectionConfig(
+        title: loc.skin,
+        icon: const Icon(Icons.face),
+        widgetType: SkinSectionForm),
+    MeasurementSections.pulse: SectionConfig(
+        title: loc.pulse,
+        icon: const Icon(Icons.monitor_heart),
+        widgetType: PulseSectionForm),
+    MeasurementSections.general: SectionConfig(
+        title: loc.general,
+        icon: const Icon(Icons.self_improvement),
+        widgetType: GeneralSectionForm),
+    MeasurementSections.caregiver: SectionConfig(
+        title: loc.caregiver,
+        icon: const Icon(Icons.volunteer_activism),
+        widgetType: CaregiverSectionForm),
+  };
+}
 
 class FeverSectionForm extends StatefulWidget {
   final FormBuilderState? formState;
@@ -82,29 +87,45 @@ class _FeverSectionFormState extends State<FeverSectionForm> {
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.feverSectionModel;
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         IRadioGroup(
           name: FeverFields.thermometerUsed.name,
-          label: 'Thermometer used?',
-          answer: const ['Digital', 'Chemical', 'Infra', 'Other'],
+          label: loc.thermometerUsedQ,
+          answer: <Tuple<String, String>>[
+            Tuple('thermometerUsed-01-Digital', loc.thermometerUsed01),
+            Tuple('thermometerUsed-02-Chemical', loc.thermometerUsed02),
+            Tuple('thermometerUsed-03-Infra', loc.thermometerUsed03),
+            Tuple('thermometerUsed-04-Other', loc.thermometerUsed04)
+          ],
           isRequired: true,
           enabled: enabled,
           initialValue: model?.thermometerUsed,
         ),
         IRadioGroup(
           name: FeverFields.measurementLocation.name,
-          label: 'Measurement location?',
-          answer: const ['Forehead', 'Ear', 'Rectal', 'Oral', 'Armpit'],
+          label: loc.measurementLocationQ,
+          answer: <Tuple<String, String>>[
+            Tuple('feverMeasurementLocation-01-Forehead',
+                loc.measurementLocation01),
+            Tuple('feverMeasurementLocation-02-Ear', loc.measurementLocation02),
+            Tuple('feverMeasurementLocation-03-Rectal',
+                loc.measurementLocation03),
+            Tuple(
+                'feverMeasurementLocation-04-Oral', loc.measurementLocation04),
+            Tuple('feverMeasurementLocation-05-Armpit',
+                loc.measurementLocation05),
+          ],
           isRequired: true,
-          disabled: const ['Forehead'],
+          disabled: const ['feverMeasurementLocation-01-Forehead'],
           enabled: enabled,
           initialValue: model?.feverMeasurementLocation,
         ),
         INumberInputField(
           name: FeverFields.temperature.name,
-          label: 'Temperature?',
+          label: loc.temperatureQ,
           min: TEMPERATURE_MIN,
           max: TEMPERATURE_MAX,
           isRequired: true,
@@ -114,8 +135,12 @@ class _FeverSectionFormState extends State<FeverSectionForm> {
         ),
         IRadioGroup(
           name: FeverFields.feverDuration.name,
-          label: 'Fever duration?',
-          answer: const ['Less than 3 days', '3-5 days', 'More than 5 days'],
+          label: loc.feverDurationQ,
+          answer: <Tuple<String, String>>[
+            Tuple('feverDuration-01-3>days', loc.feverDuration01),
+            Tuple('feverDuration-02-5>=days>3', loc.feverDuration02),
+            Tuple('feverDuration-03-days>=5', loc.feverDuration03)
+          ],
           enabled: enabled,
           initialValue: model?.feverDuration,
         )
@@ -147,31 +172,36 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
   @override
   void initState() {
     super.initState();
-    showAntibioticQs = widget.medicationSectionModel?.antibiotics == 'Yes';
-    showAntipyreticQs = widget.medicationSectionModel?.antipyretic == 'Yes';
+    showAntibioticQs =
+        widget.medicationSectionModel?.antibiotics == 'antibiotics-02-Yes';
+    showAntipyreticQs =
+        widget.medicationSectionModel?.antipyretic == 'antipyretic-02-Yes';
   }
 
   @override
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.medicationSectionModel;
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         IRadioGroup(
           name: MedicationFields.antipyretic.name,
-          label:
-              'Has the patient got "fever-reducing" medication in the past 24 hours?',
-          answer: const ['Yes', 'No'],
+          label: loc.antipyreticQ,
+          answer: <Tuple>[
+            Tuple('antipyretic-01-No', loc.no),
+            Tuple('antipyretic-02-Yes', loc.yes)
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.antipyretic,
           onChanged: (val) {
-            if (val == 'Yes' && !showAntipyreticQs) {
+            if (val == 'antipyretic-02-Yes' && !showAntipyreticQs) {
               setState(() {
                 showAntipyreticQs = true;
               });
-            } else if (val == 'No' && showAntipyreticQs) {
+            } else if (val == 'antipyretic-01-No' && showAntipyreticQs) {
               setState(() {
                 showAntipyreticQs = false;
               });
@@ -184,14 +214,16 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
             children: [
               ICheckboxGroup(
                 name: MedicationFields.antipyreticWhat.name,
-                label: 'What?',
-                answer: const [
-                  'Paracetamol',
-                  'Ibuprofen',
-                  'Aminophenason',
-                  'Diclofenac',
-                  'Metamizole',
-                  'Other'
+                label: loc.antipyreticWhatQ,
+                answer: <Tuple>[
+                  Tuple(
+                      'antipyreticWhat-01-Paracetamol', loc.antipyreticWhat01),
+                  Tuple('antipyreticWhat-02-Ibuprofen', loc.antipyreticWhat02),
+                  Tuple('antipyreticWhat-03-Aminophenason',
+                      loc.antipyreticWhat03),
+                  Tuple('antipyreticWhat-04-Diclofenac', loc.antipyreticWhat04),
+                  Tuple('antipyreticWhat-05-Metamizol', loc.antipyreticWhat05),
+                  Tuple('antipyreticWhat-06-Other', loc.antipyreticWhat06),
                 ],
                 enabled: enabled,
                 initialValue: model?.antipyreticWhat,
@@ -199,7 +231,7 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
               ),
               INumberInputField(
                 name: MedicationFields.antipyreticHowMany.name,
-                label: 'How many times in the past 24 hours?',
+                label: loc.antipyreticHowManyQ,
                 max: 6,
                 min: 1,
                 isRequired: showAntipyreticQs,
@@ -210,7 +242,7 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
               ),
               INumberInputField(
                 name: MedicationFields.antipyreticHowMuch.name,
-                label: 'How much all together in the past 24 hours (mg)?',
+                label: loc.antipyreticHowMuchQ,
                 min: 0,
                 max: 600,
                 unit: 'mg',
@@ -222,8 +254,13 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
               ),
               IRadioGroup(
                 name: MedicationFields.antipyreticReason.name,
-                label: 'Reason for administering?',
-                answer: const ['Fear', 'For better comfort', 'Other'],
+                label: loc.antipyreticReasonQ,
+                answer: <Tuple>[
+                  Tuple('antipyreticReason-01-Fear', loc.antipyreticReason01),
+                  Tuple(
+                      'antipyreticReason-02-Comfort', loc.antipyreticReason02),
+                  Tuple('antipyreticReason-03-Other', loc.antipyreticReason03)
+                ],
                 isRequired: showAntipyreticQs,
                 enabled: enabled,
                 initialValue: model?.antipyreticReason,
@@ -233,17 +270,20 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
         ),
         IRadioGroup(
           name: MedicationFields.antibiotics.name,
-          label: 'Has the patient got antibiotics in the past 24 hours?',
-          answer: const ['Yes', 'No'],
+          label: loc.antibioticsQ,
+          answer: <Tuple>[
+            Tuple('antibiotics-01-No', loc.no),
+            Tuple('antibiotics-02-Yes', loc.yes),
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.antibiotics,
           onChanged: (value) {
-            if (value == 'Yes' && !showAntibioticQs) {
+            if (value == 'antibiotics-02-Yes' && !showAntibioticQs) {
               setState(() {
                 showAntibioticQs = true;
               });
-            } else if (value == 'No' && showAntibioticQs) {
+            } else if (value == 'antibiotics-01-No' && showAntibioticQs) {
               setState(() {
                 showAntibioticQs = false;
               });
@@ -256,14 +296,14 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
             children: [
               ITextField(
                 name: MedicationFields.antibioticsWhat.name,
-                label: 'What?',
+                label: loc.antibioticsWhatQ,
                 isRequired: showAntibioticQs,
                 enabled: enabled,
                 initialValue: model?.antibioticsWhat,
               ),
               INumberInputField(
                 name: MedicationFields.antibioticsHowMany.name,
-                label: 'How many times in the past 24 hours?',
+                label: loc.antibioticsHowManyQ,
                 max: 6,
                 min: 1,
                 isRequired: showAntibioticQs,
@@ -274,7 +314,7 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
               ),
               INumberInputField(
                 name: MedicationFields.antibioticsHowMuch.name,
-                label: 'How much all together in the past 24 hours (mg)?',
+                label: loc.antibioticsHowMuchQ,
                 min: 0,
                 max: 600,
                 unit: 'mg',
@@ -325,40 +365,45 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.hydrationSectionModel;
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         IRadioGroup(
           name: HydrationFields.lastUrination.name,
-          label: 'Last urination how many hours ago?',
-          answer: const [
-            'Less than 6 hours ago',
-            '6-12 hours ago',
-            'More than 12 hours ago'
+          label: loc.lastUrinationQ,
+          answer: <Tuple>[
+            Tuple('lastUrination-01-6>hours', loc.lastUrination01),
+            Tuple('lastUrination-02-6<=hours<12', loc.lastUrination02),
+            Tuple('lastUrination-03-12<hours', loc.lastUrination03),
           ],
           enabled: enabled,
           initialValue: model?.lastUrination,
         ),
         IRadioGroup(
           name: HydrationFields.skinTurgor.name,
-          label: 'Skin turgor?',
-          answer: const ['Normal', 'Somewhat decreased', 'Severely decreased'],
+          label: loc.skinTurgorQ,
+          answer: <Tuple>[
+            Tuple('skinTurgor-01-Normal', loc.skinTurgor01),
+            Tuple('skinTurgor-02-SomewhatDecreased', loc.skinTurgor02),
+            Tuple('skinTurgor-03-SeverelyDecreased', loc.skinTurgor03),
+          ],
           enabled: enabled,
           initialValue: model?.skinTurgor,
         ),
         IRadioGroup(
           name: HydrationFields.crying.name,
-          label: 'Crying?',
-          answer: const [
-            'Doesn\'t cry',
-            'Normal, bold crying',
-            'Continuous with unusually high pitch',
-            'Weak'
+          label: loc.cryingQ,
+          answer: <Tuple>[
+            Tuple('crying-01-DoesntCry', loc.crying01),
+            Tuple('crying-02-NormalBoldCrying', loc.crying02),
+            Tuple('crying-03-ContinuousWithUnusuallyHighPitch', loc.crying03),
+            Tuple('crying-04-Weak', loc.crying04)
           ],
           enabled: enabled,
           initialValue: model?.crying,
           onChanged: (value) {
-            if (value != 'Doesn\'t cry') {
+            if (value != 'crying-01-DoesntCry') {
               setState(() {
                 showCryingQ = true;
               });
@@ -373,41 +418,52 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
           visible: showCryingQ,
           child: IRadioGroup(
             name: HydrationFields.tearsWhenCrying.name,
-            label: 'Tears when crying?',
-            answer: const ['Yes', 'Not so much', 'No'],
+            label: loc.tearsWhenCryingQ,
+            answer: <Tuple>[
+              Tuple('tearsWhenCrying-01-Yes', loc.tearsWhenCrying01),
+              Tuple('tearsWhenCrying-02-NotSoMuch', loc.tearsWhenCrying02),
+              Tuple('tearsWhenCrying-03-No', loc.tearsWhenCrying03),
+            ],
             enabled: enabled,
             initialValue: model?.tearsWhenCrying,
           ),
         ),
         IRadioGroup(
           name: HydrationFields.tongue.name,
-          label: 'Tongue?',
-          answer: const ['Wet', 'Dry'],
+          label: loc.tongueQ,
+          answer: <Tuple>[
+            Tuple('tongue-01-Wet', loc.tongue01),
+            Tuple('tongue-02-Dry', loc.tongue02),
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.tongue,
         ),
         IRadioGroup(
           name: HydrationFields.drinking.name,
-          label: 'Drinking?',
-          answer: const [
-            'As much as normally or more',
-            'Less than normal',
-            'Nothing in the last 12 hours'
+          label: loc.drinkingQ,
+          answer: <Tuple>[
+            Tuple('drinking-01-Normal', loc.drinking01),
+            Tuple('drinking-02-LessThanNormal', loc.drinking02),
+            Tuple('drinking-03-NotFor12Hours', loc.drinking03),
           ],
           enabled: enabled,
           initialValue: model?.drinking,
         ),
         IRadioGroup(
           name: HydrationFields.diarrhea.name,
-          label: 'Diarrhea for more than 12 hours?',
-          answer: const ['No or slight', 'Frequent', 'Frequent and bloody'],
+          label: loc.diarrheaQ,
+          answer: <Tuple>[
+            Tuple('diarrhea-01-NoOrSlight', loc.diarrhea01),
+            Tuple('diarrhea-02-Frequent', loc.diarrhea02),
+            Tuple('diarrhea-03-FrequentAndBloody', loc.diarrhea03),
+          ],
           enabled: enabled,
           initialValue: model?.diarrhea,
         ),
         ICheckbox(
           name: 'vomit_logic',
-          label: 'Vomiting?',
+          label: loc.vomitQ,
           enabled: enabled,
           initialValue:
               model != null && model.vomit != null && model.vomit!.isNotEmpty,
@@ -427,15 +483,16 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
           visible: showVomitQ,
           child: ICheckboxGroup(
             name: HydrationFields.vomit.name,
-            label: 'Vomiting?',
+            label: loc.vomitQ,
             enabled: enabled,
             initialValue: model?.vomit,
-            answer: const [
+            answer: <Tuple>[
               // * notice the answer 'No' has been replaced by a checkbox
-              'Slight',
-              'Frequent',
-              'Yellow',
-              'Repeatedly for more than 5 hours'
+              // This causes the shift in numbers
+              Tuple('vomit-02-Slight', loc.vomit01),
+              Tuple('vomit-03-Frequent', loc.vomit02),
+              Tuple('vomit-04-Yellow', loc.vomit03),
+              Tuple('vomit-05-5<hours', loc.vomit04),
             ],
             isRequired: showVomitQ,
           ),
@@ -466,12 +523,13 @@ class _RespirationSectionFormState extends State<RespirationSectionForm> {
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.respirationSectionModel;
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         INumberInputField(
           name: RespirationFields.respiratoryRate.name,
-          label: 'Respiratory rate?',
+          label: loc.respiratoryRateQ,
           min: RRATE_MIN,
           max: RRATE_MAX,
           enabled: enabled,
@@ -481,19 +539,25 @@ class _RespirationSectionFormState extends State<RespirationSectionForm> {
         ),
         IRadioGroup(
           name: RespirationFields.wheezing.name,
-          label: 'Nature of breathing',
-          answer: const [
-            'Normal',
-            'Slightly wheezing',
-            'Strong wheezing (stridor)'
+          label: loc.wheezingQ,
+          answer: <Tuple>[
+            Tuple('wheezing-01-No', loc.wheezing01),
+            Tuple('wheezing-02-SomewhatYes', loc.wheezing02),
+            Tuple('wheezing-03-Stridor', loc.wheezing03),
           ],
           enabled: enabled,
           initialValue: model?.wheezing,
         ),
         IRadioGroup(
           name: RespirationFields.dyspnea.name,
-          label: 'Dyspnea?',
-          answer: const ['1', '2', '3', '4', '5'],
+          label: loc.dyspneaQ,
+          answer: <Tuple>[
+            Tuple('dyspnea-01-1', loc.dyspnea01),
+            Tuple('dyspnea-02-2', loc.dyspnea02),
+            Tuple('dyspnea-03-3', loc.dyspnea03),
+            Tuple('dyspnea-04-4', loc.dyspnea04),
+            Tuple('dyspnea-05-5', loc.dyspnea05),
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.dyspnea,
@@ -525,40 +589,44 @@ class _SkinSectionFormState extends State<SkinSectionForm> {
   @override
   void initState() {
     super.initState();
-    showRashQ = widget.skinSectionModel?.rash == 'Yes';
+    showRashQ = widget.skinSectionModel?.rash == 'rash-02-Yes';
   }
 
   @override
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.skinSectionModel;
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         IRadioGroup(
           name: SkinFields.skinColor.name,
-          label: 'Skin color?',
-          answer: const [
-            'Normal or slightly pale',
-            'Pale',
-            'Grey, bluish, purplish'
+          label: loc.skinColorQ,
+          answer: <Tuple>[
+            Tuple('skinColor-01-NormalSlightlyPale', loc.skinColor01),
+            Tuple('skinColor-02-Pale', loc.skinColor02),
+            Tuple('skinColor-03-GreyBlueCyanotic', loc.skinColor03),
           ],
           enabled: enabled,
           initialValue: model?.skinColor,
         ),
         IRadioGroup(
           name: SkinFields.rash.name,
-          label: 'Rash?',
-          answer: const ['No', 'Yes'],
+          label: loc.rashQ,
+          answer: <Tuple>[
+            Tuple('rash-01-No', loc.no),
+            Tuple('rash-02-Yes', loc.yes),
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.rash,
           onChanged: (value) {
-            if (value == 'Yes' && !showRashQ) {
+            if (value == 'rash-02-Yes' && !showRashQ) {
               setState(() {
                 showRashQ = true;
               });
-            } else if (value == 'No' && showRashQ) {
+            } else if (value == 'rash-01-No' && showRashQ) {
               setState(() {
                 showRashQ = false;
               });
@@ -571,11 +639,10 @@ class _SkinSectionFormState extends State<SkinSectionForm> {
             name: SkinFields.glassTest.name,
             enabled: enabled,
             initialValue: model?.glassTest,
-            label:
-                'Glass Test: when pressing on the rash with a transparent object like glass.',
-            answer: const [
-              'The red disappears on pressure seen through the glass',
-              'The red remains clearly demarcated and string on pressure seen through the glass'
+            label: loc.glassTestQ,
+            answer: <Tuple>[
+              Tuple('glassTest-01-RedDisappears', loc.glassTest01),
+              Tuple('glassTest-02-RedRemains', loc.glassTest02),
             ],
             isRequired: showRashQ,
           ),
@@ -606,12 +673,13 @@ class _PulseSectionFormState extends State<PulseSectionForm> {
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.pulseSectionModel;
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         INumberInputField(
           name: PulseFields.pulse.name,
-          label: 'Pulse rate?',
+          label: loc.pulseQ,
           min: PULSE_MIN,
           max: PULSE_MAX,
           enabled: enabled,
@@ -645,6 +713,7 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.generalSectionModel;
+    final loc = AppLocalizations.of(context)!;
 
     final patientProvider = Provider.of<PatientProvider>(context);
     final daysOld =
@@ -655,27 +724,33 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
       children: [
         IRadioGroup(
           name: GeneralFields.lastTimeEating.name,
-          label: 'Last time eating?',
-          answer: const [
-            'Less than 12 hours ago',
-            'More than 12, but less than 24 hours ago',
-            'More than 24 hours ago'
+          label: loc.lastTimeEatingQ,
+          answer: <Tuple>[
+            Tuple('lastTimeEating-01-<12hours', loc.lastTimeEating01),
+            Tuple('lastTimeEating-02-12<=<24hours', loc.lastTimeEating02),
+            Tuple('lastTimeEating-03->24hours', loc.lastTimeEating03),
           ],
           enabled: enabled,
           initialValue: model?.lastTimeEating,
         ),
         IRadioGroup(
           name: GeneralFields.painfulUrination.name,
-          label: 'Painful urination?',
-          answer: const ['No', 'Yes'],
+          label: loc.painfulUrinationQ,
+          answer: <Tuple>[
+            Tuple('painfulUrination-01-No', loc.no),
+            Tuple('painfulUrination-02-Yes', loc.yes),
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.painfulUrination,
         ),
         IRadioGroup(
           name: GeneralFields.smellyUrine.name,
-          label: 'Smelly urine?',
-          answer: const ['No', 'Yes'],
+          label: loc.smellyUrineQ,
+          answer: <Tuple>[
+            Tuple('smellyUrine-01-No', loc.no),
+            Tuple('smellyUrine-02-Yes', loc.yes),
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.smellyUrine,
@@ -684,8 +759,11 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
           visible: !olderThan18M,
           child: IRadioGroup(
             name: GeneralFields.bulgingFontanelleMax18MOld.name,
-            label: 'Bulging fontanelle?',
-            answer: const ['No', 'Yes'],
+            label: loc.bulgingFontanelleMax18MOldQ,
+            answer: <Tuple>[
+              Tuple('bulgingFontanelleMax18MOld-01-No', loc.no),
+              Tuple('bulgingFontanelleMax18MOld-02-Yes', loc.yes),
+            ],
             orientation: OptionsOrientation.horizontal,
             enabled: enabled,
             initialValue: model?.bulgingFontanelleMax18MOld,
@@ -693,21 +771,37 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
         ),
         IRadioGroup(
           name: GeneralFields.awareness.name,
-          label: 'Awareness?',
-          answer: const [
-            'Normal',
-            'Sleepy, odd for more than 5 hours, or having feverish nightmares',
-            'No reactions, no awareness'
+          label: loc.awarenessQ,
+          answer: <Tuple>[
+            Tuple('awareness-01-Normal', loc.awareness01),
+            Tuple(
+                'awareness-02-SleepyOddOrFeverishNightmares', loc.awareness02),
+            Tuple('awareness-03-NoReactionsNoAwareness', loc.awareness03)
           ],
           enabled: enabled,
           initialValue: model?.awareness,
         ),
         IRadioGroup(
           name: GeneralFields.vaccinationIn14days.name,
-          label: 'Vacination within 14 days?',
-          answer: const ['No', 'Yes'],
+          label: loc.vaccinationIn14daysQ,
+          answer: <Tuple>[
+            Tuple('vaccinationIn14days-01-No', loc.no),
+            Tuple('vaccinationIn14days-02-Yes', loc.yes),
+          ],
           enabled: enabled,
           initialValue: model?.vaccinationIn14days,
+          onChanged: (value) {
+            if (value == 'vaccinationIn14days-02-Yes' && !showVaccinationQs) {
+              setState(() {
+                showVaccinationQs = true;
+              });
+            } else if (value == 'vaccinationIn14days-01-No' &&
+                showVaccinationQs) {
+              setState(() {
+                showVaccinationQs = false;
+              });
+            }
+          },
         ),
         Visibility(
           visible: showVaccinationQs,
@@ -715,15 +809,20 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
             children: [
               IRadioGroup(
                 name: GeneralFields.vaccinationHowManyHoursAgo.name,
-                label: 'How many hours ago?',
-                answer: const ['Within 48', 'Beyond 48 hours'],
+                label: loc.vaccinationHowManyHoursAgoQ,
+                answer: <Tuple>[
+                  Tuple('vaccinationsHowManyHoursAgo-01-Within48h',
+                      loc.vaccinationHowManyHoursAgo01),
+                  Tuple('vaccinationsHowManyHoursAgo-02-Beyond48h',
+                      loc.vaccinationHowManyHoursAgo02),
+                ],
                 isRequired: showVaccinationQs,
                 enabled: enabled,
                 initialValue: model?.vaccinationHowManyHoursAgo,
               ),
               ITextField(
                 name: GeneralFields.vaccinationWhat.name,
-                label: 'What is the name of the vaccination?',
+                label: loc.vaccinationWhatQ,
                 isRequired: showVaccinationQs,
                 enabled: enabled,
                 initialValue: model?.vaccinationWhat,
@@ -733,37 +832,46 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
         ),
         IRadioGroup(
           name: GeneralFields.exoticTrip.name,
-          label: 'Exotic trip in the past 12 months?',
+          label: loc.exoticTripQ,
           orientation: OptionsOrientation.horizontal,
-          answer: const ['No', 'Yes'],
+          answer: <Tuple>[
+            Tuple('exoticTrip-01-No', loc.no),
+            Tuple('exoticTrip-02-Yes', loc.yes),
+          ],
           enabled: enabled,
           initialValue: model?.exoticTrip,
         ),
         IRadioGroup(
           name: GeneralFields.seizure.name,
-          label: 'Feverish seizure',
-          answer: const ['No', 'Yes'],
+          label: loc.seizureQ,
+          answer: <Tuple>[
+            Tuple('seizure-01-No', loc.no),
+            Tuple('seizure-02-Yes', loc.yes),
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.seizure,
         ),
         IRadioGroup(
           name: GeneralFields.wryNeck.name,
-          label: 'Stiff neck?',
-          answer: const ['No', 'Yes'],
+          label: loc.wryNeckQ,
+          answer: <Tuple>[
+            Tuple('wryNeck-01-No', loc.no),
+            Tuple('wryNeck-02-Yes', loc.yes),
+          ],
           orientation: OptionsOrientation.horizontal,
           enabled: enabled,
           initialValue: model?.wryNeck,
         ),
         ICheckboxGroup(
           name: GeneralFields.pain.name,
-          label: 'Pain?',
-          answer: const [
-            'No',
-            'Feeling bad, general discomfort, muscle pain',
-            'Headache',
-            'Swollen, painful bodyparts, patient is trying to protect it',
-            'Strong belly pain for more than 12 hours'
+          label: loc.painQ,
+          answer: <Tuple>[
+            Tuple('pain-01-No', loc.pain01),
+            Tuple('pain-02-FeelingBad', loc.pain02),
+            Tuple('pain-03-Headache', loc.pain03),
+            Tuple('pain-04-SwollenPainful', loc.pain04),
+            Tuple('pain-05-StrongBellyacheAche', loc.pain05),
           ],
           enabled: enabled,
           initialValue: model?.pain,
@@ -794,32 +902,41 @@ class _CaregiverSectionFormState extends State<CaregiverSectionForm> {
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.caregiverSectionModel;
+    final loc = AppLocalizations.of(context)!;
 
     return Column(
       children: [
         IRadioGroup(
           name: CaregiverFields.caregiverFeel.name,
-          label: 'How do you feel about the progress of your patient\'s fever?',
-          answer: const ['Optimal', 'Not sure', 'Very worried'],
+          label: loc.caregiverFeelQ,
+          answer: <Tuple>[
+            Tuple('caregiverFeel-01-Optimal', loc.caregiverFeel01),
+            Tuple('caregiverFeel-02-NotSure', loc.caregiverFeel02),
+            Tuple('caregiverFeel-03-VeryWorried', loc.caregiverFeel03),
+          ],
           enabled: enabled,
           initialValue: model?.caregiverFeel,
         ),
         IRadioGroup(
           name: CaregiverFields.caregiverThink.name,
-          label: 'How severe do you think your patient\' condition is?',
-          answer: const ['Not severe', 'Somewhat severe', 'Very severe'],
+          label: loc.caregiverThinkQ,
+          answer: <Tuple>[
+            Tuple('caregiverThink-01-NotSevere', loc.caregiverThink01),
+            Tuple('caregiverThink-02-SomewhatSevere', loc.caregiverThink02),
+            Tuple('caregiverThink-03-VerySever', loc.caregiverThink03),
+          ],
           enabled: enabled,
           initialValue: model?.caregiverThink,
         ),
         IRadioGroup(
           name: CaregiverFields.caregiverConfident.name,
-          label:
-              'How confident do you feel yourselves in managing the patient\'s feverish illness?',
-          answer: const [
-            'Completely',
-            'Somewhat confident',
-            'Not really',
-            'Not at all'
+          label: loc.caregiverConfidentQ,
+          answer: <Tuple>[
+            Tuple('caregiverConfident-01-Completely', loc.caregiverConfident01),
+            Tuple('caregiverConfident-02-SomewhatConfident',
+                loc.caregiverConfident02),
+            Tuple('caregiverConfident-03-NotReally', loc.caregiverConfident03),
+            Tuple('caregiverConfident-04-NotAtAll', loc.caregiverConfident04),
           ],
           enabled: enabled,
           initialValue: model?.caregiverConfident,

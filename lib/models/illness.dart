@@ -60,7 +60,7 @@ class Illness {
   /// or if the illness has been updated in the last 48 hours
   bool get isActive =>
       closedAt == null &&
-      ((createdAt.difference(DateTime.now()).inHours < 48) ||
+      ((createdAt.difference(DateTime.now()).inHours.abs() < 48) ||
           (updatedAt != null &&
-              updatedAt!.difference(DateTime.now()).inHours < 48));
+              updatedAt!.difference(DateTime.now()).inHours.abs() < 48));
 }

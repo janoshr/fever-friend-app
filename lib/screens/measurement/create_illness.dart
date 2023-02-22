@@ -1,6 +1,7 @@
 import 'package:fever_friend_app/screens/measurement/sections.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/models.dart';
+import 'package:fever_friend_app/services/model_server.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/services/firestore.dart';
 import 'package:flutter/material.dart'
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart'
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../ui/widgets/stepper.dart';
 
 class ICreateMeasurementScreen extends StatefulWidget {
@@ -77,6 +79,11 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
             patient,
           );
 
+          final modelService = getIt.get<ModelService>();
+          final patientState = await modelService.getPatientState(measurement);
+          debugPrint('Model service reponded with $patientState');
+          measurement.data.patientState = patientState;
+
           if (illness != null) {
             db.addMeasurement(measurement, patient.id, illness);
           } else {
@@ -108,14 +115,15 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
   Widget build(BuildContext context) {
     final patient = Provider.of<PatientProvider>(context).patient;
     final illnessArg = ModalRoute.of(context)!.settings.arguments as Illness?;
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         centerTitle: true,
         title: illnessArg != null
-            ? const Text('Add Measurement')
-            : const Text('New Illness'),
+            ? Text(loc.addMeasurement)
+            : Text(loc.newIllness),
       ),
       body: SafeArea(
         child: FormBuilder(
@@ -134,13 +142,13 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                   OutlinedButton(
                     onPressed:
                         details.currentStep == 0 ? null : details.onStepCancel,
-                    child: const Text('Back'),
+                    child: Text(loc.back),
                   ),
                   ElevatedButton(
                     onPressed: details.currentStep == upperBound - 1
                         ? null
                         : details.onStepContinue,
-                    child: const Text('Next'),
+                    child: Text(loc.next),
                   )
                 ],
               );
@@ -150,14 +158,14 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                 isActive: activeStep == MeasurementSections.fever.index,
                 state: getStepState(
                     MeasurementSections.fever.index, FeverFields.values),
-                title: const Text('Fever'),
+                title: Text(loc.fever),
                 content: FeverSectionForm(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.medication.index,
                 state: getStepState(MeasurementSections.medication.index,
                     MedicationFields.values),
-                title: const Text('Medication'),
+                title: Text(loc.medication),
                 content:
                     MedicationSectionForm(formState: _formKey.currentState),
               ),
@@ -165,14 +173,14 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                 isActive: activeStep == MeasurementSections.hydration.index,
                 state: getStepState(MeasurementSections.hydration.index,
                     HydrationFields.values),
-                title: const Text('Hydration'),
+                title: Text(loc.hydration),
                 content: HydrationSectionForm(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.respiration.index,
                 state: getStepState(MeasurementSections.respiration.index,
                     RespirationFields.values),
-                title: const Text('Respiration'),
+                title: Text(loc.respiration),
                 content:
                     RespirationSectionForm(formState: _formKey.currentState),
               ),
@@ -180,33 +188,33 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                 isActive: activeStep == MeasurementSections.skin.index,
                 state: getStepState(
                     MeasurementSections.skin.index, SkinFields.values),
-                title: const Text('Skin condition'),
+                title: Text(loc.skin),
                 content: SkinSectionForm(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.pulse.index,
                 state: getStepState(
                     MeasurementSections.pulse.index, PulseFields.values),
-                title: const Text('Pulse'),
+                title: Text(loc.pulse),
                 content: PulseSectionForm(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.general.index,
                 state: getStepState(
                     MeasurementSections.general.index, GeneralFields.values),
-                title: const Text('General condition'),
+                title: Text(loc.general),
                 content: GeneralSectionForm(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.caregiver.index,
                 state: getStepState(MeasurementSections.caregiver.index,
                     CaregiverFields.values),
-                title: const Text('caregiver'),
+                title: Text(loc.caregiver),
                 content: CaregiverSectionForm(formState: _formKey.currentState),
               ),
               Step(
                 isActive: activeStep == 8,
-                title: const Text('Overview'),
+                title: Text(loc.overview),
                 content: Column(
                   children: [
                     ElevatedButton(
@@ -214,13 +222,13 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                         patient!,
                         illnessArg,
                         error: () => ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Something went wrong')),
+                          SnackBar(content: Text(loc.somethingWentWrong)),
                         ),
                         success: () {
                           Navigator.of(context).pop();
                         },
                       ),
-                      child: const Text('Submit'),
+                      child: Text(loc.submit),
                     )
                   ],
                 ),

@@ -4,6 +4,7 @@ import 'package:fever_friend_app/ui/shared/constants.dart';
 import 'package:fever_friend_app/ui/shared/utils.dart';
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/illness.dart';
 
 class IllnessScreen extends StatefulWidget {
@@ -28,6 +29,8 @@ class _IllnessScreenState extends State<IllnessScreen> {
   ExpansionPanel buildPanel(MapEntry<int, MeasurementModel> entry) {
     final measurement = entry.value;
     final i = entry.key;
+
+    final loc = AppLocalizations.of(context);
 
     return ExpansionPanel(
       isExpanded: expanded[i],
@@ -57,24 +60,24 @@ class _IllnessScreenState extends State<IllnessScreen> {
       body: Column(
         children: [
           ListTile(
-            title: Text('Sections'),
+            title: Text(loc!.sections),
             subtitle: Wrap(
               alignment: WrapAlignment.start,
               children: [
                 if (measurement.data.feverSection != null)
-                  const SmallChip(text: 'Fever'),
+                  SmallChip(text: loc.fever),
                 if (measurement.data.medicationSection != null)
-                  const SmallChip(text: 'Medication'),
+                  SmallChip(text: loc.medication),
                 if (measurement.data.hydrationSection != null)
-                  const SmallChip(text: 'Hydration'),
+                  SmallChip(text: loc.hydration),
                 if (measurement.data.respirationSection != null)
-                  const SmallChip(text: 'Respiration'),
+                  SmallChip(text: loc.respiration),
                 if (measurement.data.skinSection != null)
-                  const SmallChip(text: 'Skin'),
+                  SmallChip(text: loc.skin),
                 if (measurement.data.generalSection != null)
-                  const SmallChip(text: 'General'),
+                  SmallChip(text: loc.general),
                 if (measurement.data.caregiverSection != null)
-                  const SmallChip(text: 'Caregiver'),
+                  SmallChip(text: loc.caregiver),
               ],
             ),
           ),
@@ -85,7 +88,7 @@ class _IllnessScreenState extends State<IllnessScreen> {
                   builder: (_) =>
                       ViewMeasurement(measurementModel: entry.value)));
             },
-            child: const Text('View'),
+            child: Text(loc.view),
           ),
         ],
       ),
@@ -94,9 +97,11 @@ class _IllnessScreenState extends State<IllnessScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Illness history'),
+        title: Text(loc!.illnessHistory),
       ),
       body: Column(
         children: [

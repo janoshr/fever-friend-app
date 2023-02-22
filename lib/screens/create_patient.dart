@@ -10,6 +10,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
+
 class ICreatePatientScreen extends StatefulWidget {
   const ICreatePatientScreen({Key? key}) : super(key: key);
 
@@ -24,10 +26,12 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('New Patient'),
+        title: Text(loc.newPatient),
       ),
       body: SafeArea(
         child: FormBuilder(
@@ -44,16 +48,16 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                         TextStyle(color: Theme.of(context).colorScheme.error),
                   )
                 ],
-                const ITextField(
+                ITextField(
                   name: 'name',
-                  label: 'Name *',
+                  label: loc.name,
                   prefixIcon: Icon(Icons.face),
                   isRequired: true,
                 ),
                 const SizedBox(height: 12),
                 IDatePicker(
                   name: 'dateOfBirth',
-                  label: 'Date of Birth *',
+                  label: loc.dateOfBirth,
                   isRequired: true,
                   pastOnly: true,
                   prefixIcon: const Icon(Icons.cake),
@@ -62,7 +66,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                 const SizedBox(height: 12),
                 INumberInputField(
                   name: 'height',
-                  label: 'Height *',
+                  label: loc.height,
                   isRequired: true,
                   prefixIcon: const Icon(Icons.height),
                   unit: 'cm',
@@ -72,7 +76,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                 const SizedBox(height: 12),
                 INumberInputField(
                   name: 'weight',
-                  label: 'Weight *',
+                  label: loc.weight,
                   max: WEIGHT_MAX,
                   min: WEIGHT_MIN,
                   isRequired: true,
@@ -87,16 +91,21 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                   selectedColor: Theme.of(context).primaryColor,
                   alignment: WrapAlignment.spaceAround,
                   labelPadding: const EdgeInsets.fromLTRB(0, 8, 16, 8),
-                  options: const [
+                  options: [
                     FormBuilderChipOption(
                       value: 'male',
                       avatar: Icon(Icons.male),
-                      child: Text('Male'),
+                      child: Text(loc.male),
                     ),
                     FormBuilderChipOption(
                       value: 'female',
                       avatar: Icon(Icons.female),
-                      child: Text('Female'),
+                      child: Text(loc.female),
+                    ),
+                    FormBuilderChipOption(
+                      value: 'other',
+                      avatar: Icon(Icons.transgender),
+                      child: Text(loc.otherGender),
                     )
                   ],
                   validator: FormBuilderValidators.required(),
@@ -125,7 +134,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                     height: 44,
                     borderRadius: 22,
                     heading: Text(
-                      'Select color',
+                      loc.selectColor,
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ),
@@ -139,7 +148,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/', (route) => false);
                   }),
-                  child: const Text('Create Patient'),
+                  child: Text(loc.createPatient),
                 )
               ],
             ),

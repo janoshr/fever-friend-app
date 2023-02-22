@@ -1,3 +1,4 @@
+import 'package:fever_friend_app/l10n/app_localizations.dart';
 import 'package:fever_friend_app/screens/illness.dart';
 import 'package:fever_friend_app/ui/widgets/pulse_icon.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class IllnessCard extends StatelessWidget {
     final temperatureString = illness
         .feverMeasurements.first.data.feverSection?.temperature
         ?.toStringAsFixed(1);
+    final loc = AppLocalizations.of(context)!;
 
     return Card(
       elevation: 3,
@@ -31,9 +33,9 @@ class IllnessCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              title: const Text(
-                'Ongoing Illness',
-                style: TextStyle(
+              title: Text(
+                loc.ongoingIllness,
+                style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
                 ),
@@ -48,13 +50,13 @@ class IllnessCard extends StatelessWidget {
               ),
             ),
             ListTile(
-              subtitle: const Text('Temperature'),
+              subtitle: Text(loc.temperature),
               title: Text(
                   temperatureString != null ? '$temperatureString °C' : 'n/a'),
               leading: const Icon(Icons.thermostat),
             ),
             ListTile(
-              subtitle: const Text('Measurements'),
+              subtitle: Text(loc.measurements),
               leading: const Icon(Icons.numbers),
               title: Row(
                   children: illness.feverMeasurements.map((m) {

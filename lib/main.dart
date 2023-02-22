@@ -4,6 +4,7 @@ import 'package:fever_friend_app/models/illness.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/notification.dart';
 import 'package:fever_friend_app/models/patient.dart';
+import 'package:fever_friend_app/services/model_server.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/routes.dart';
 import 'package:fever_friend_app/services/firestore.dart';
@@ -13,8 +14,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import './l10n/app_localizations.dart';
 import 'screens/screen_definition.dart';
 import 'screens/screens.dart';
 import 'firebase_options.dart';
@@ -189,6 +192,8 @@ class AppWidget extends StatelessWidget {
           )),
       initialRoute: initialRoute,
       routes: appRoutes,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }
