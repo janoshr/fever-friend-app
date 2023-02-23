@@ -311,10 +311,9 @@ List<num> encodeMeasurement(MeasurementModelData modelData) {
     throw Exception('Model error: missing pulse');
   }
   Map<String, num> ordinalMapping = {
-    'ageInMonths': 0,
     'feverDuration': _ordinalEncoder(_OrdinalCategories.feverDuration,
         modelData.feverSection?.feverDuration),
-    'temperature': modelData.feverSection!.temperature!,
+    'temperature': modelData.feverSection!.temperatureAdjusted!,
     'antibiotics': _ordinalEncoder(_OrdinalCategories.antibiotics,
         modelData.medicationSection?.antibiotics),
     'antibioticsHowMany': modelData.medicationSection?.antibioticsHowMany ?? 0,

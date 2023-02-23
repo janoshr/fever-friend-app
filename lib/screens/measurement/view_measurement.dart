@@ -8,42 +8,34 @@ const formActionState = FormActionState.view;
 
 Map<MeasurementSections, Widget Function(dynamic)> formTypes = {
   MeasurementSections.fever: (model) => FeverSectionForm(
-        formState: null,
         feverSectionModel: model,
         formActionState: formActionState,
       ),
   MeasurementSections.medication: (model) => MedicationSectionForm(
-        formState: null,
         medicationSectionModel: model,
         formActionState: formActionState,
       ),
   MeasurementSections.hydration: (model) => HydrationSectionForm(
-        formState: null,
         hydrationSectionModel: model,
         formActionState: formActionState,
       ),
   MeasurementSections.respiration: (model) => RespirationSectionForm(
-        formState: null,
         respirationSectionModel: model,
         formActionState: formActionState,
       ),
   MeasurementSections.skin: (model) => SkinSectionForm(
-        formState: null,
         skinSectionModel: model,
         formActionState: formActionState,
       ),
   MeasurementSections.pulse: (model) => PulseSectionForm(
-        formState: null,
         pulseSectionModel: model,
         formActionState: formActionState,
       ),
   MeasurementSections.general: (model) => GeneralSectionForm(
-        formState: null,
         generalSectionModel: model,
         formActionState: formActionState,
       ),
   MeasurementSections.caregiver: (model) => CaregiverSectionForm(
-        formState: null,
         caregiverSectionModel: model,
         formActionState: formActionState,
       ),
