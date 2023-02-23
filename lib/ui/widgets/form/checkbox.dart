@@ -8,7 +8,7 @@ class ICheckboxGroup extends StatelessWidget {
   final String label;
   final List<Tuple> answer;
   final bool isRequired;
-  final void Function(List<Tuple>?)? onChanged;
+  final void Function(List<String>?)? onChanged;
   final bool enabled;
   final List<String>? initialValue;
 
@@ -24,8 +24,8 @@ class ICheckboxGroup extends StatelessWidget {
   }) : super(key: key);
 
   void changeHandler(List<dynamic>? vals) {
-    if (onChanged != null) {
-      onChanged!(vals as List<Tuple>?);
+    if (onChanged != null && vals != null) {
+      onChanged!(List<String>.from(vals));
     }
   }
 

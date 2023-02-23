@@ -166,7 +166,7 @@ class MeasurementModelData {
   Map<String, dynamic> toJson() => _$MeasurementModelDataToJson(this);
 
   List<num> get modelData {
-    //  'ageInMonths', 'feverDuration', 'temperature', 'antibiotics',
+    //  'feverDuration', 'temperature', 'antibiotics',
     //  'antibioticsHowMany', 'antibioticsHowMuch', 'antipyretic',
     //  'antipyreticHowMany', 'antipyreticHowMuch', 'crying', 'diarrhea',
     //  'drinking', 'lastUrination', 'skinTurgor', 'tearsWhenCrying', 'tongue',

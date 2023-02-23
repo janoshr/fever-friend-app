@@ -67,13 +67,11 @@ Map<MeasurementSections, SectionConfig> sectionConfigMap(BuildContext context) {
 }
 
 class FeverSectionForm extends StatefulWidget {
-  final FormBuilderState? formState;
   final FeverSectionModel? feverSectionModel;
   final FormActionState formActionState;
 
   const FeverSectionForm({
     Key? key,
-    required this.formState,
     this.feverSectionModel,
     this.formActionState = FormActionState.create,
   }) : super(key: key);
@@ -83,11 +81,16 @@ class FeverSectionForm extends StatefulWidget {
 }
 
 class _FeverSectionFormState extends State<FeverSectionForm> {
+  List<String> disabledMeasurementLocations = [
+    'measurementLocation-01-Forehead'
+  ];
+
   @override
   Widget build(BuildContext context) {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.feverSectionModel;
     final loc = AppLocalizations.of(context)!;
+    final formState = FormBuilder.of(context);
 
     return Column(
       children: [
@@ -102,24 +105,50 @@ class _FeverSectionFormState extends State<FeverSectionForm> {
           ],
           isRequired: true,
           enabled: enabled,
+          disabled: const ['thermometerUsed-04-Other'],
           initialValue: model?.thermometerUsed,
+          onChanged: (value) {
+            List<String> disabledList;
+            if (value == 'thermometerUsed-01-Digital' ||
+                value == 'thermometerUsed-02-Chemical') {
+              disabledList = [
+                'measurementLocation-01-Forehead',
+                'measurementLocation-02-Ear'
+              ];
+            } else if (value == 'thermometerUsed-03-Infra') {
+              disabledList = [
+                'measurementLocation-01-Forehead',
+                'measurementLocation-03-Rectal',
+                'measurementLocation-04-Oral',
+                'measurementLocation-05-Armpit',
+              ];
+            } else {
+              disabledList = [
+                'measurementLocation-01-Forehead',
+              ];
+            }
+            final measurementLocationRef =
+                formState?.fields[FeverFields.measurementLocation.name];
+            if (disabledList.contains(measurementLocationRef?.value)) {
+              measurementLocationRef?.reset();
+            }
+            setState(() {
+              disabledMeasurementLocations = disabledList;
+            });
+          },
         ),
         IRadioGroup(
           name: FeverFields.measurementLocation.name,
           label: loc.measurementLocationQ,
           answer: <Tuple<String, String>>[
-            Tuple('feverMeasurementLocation-01-Forehead',
-                loc.measurementLocation01),
-            Tuple('feverMeasurementLocation-02-Ear', loc.measurementLocation02),
-            Tuple('feverMeasurementLocation-03-Rectal',
-                loc.measurementLocation03),
-            Tuple(
-                'feverMeasurementLocation-04-Oral', loc.measurementLocation04),
-            Tuple('feverMeasurementLocation-05-Armpit',
-                loc.measurementLocation05),
+            Tuple('measurementLocation-01-Forehead', loc.measurementLocation01),
+            Tuple('measurementLocation-02-Ear', loc.measurementLocation02),
+            Tuple('measurementLocation-03-Rectal', loc.measurementLocation03),
+            Tuple('measurementLocation-04-Oral', loc.measurementLocation04),
+            Tuple('measurementLocation-05-Armpit', loc.measurementLocation05),
           ],
           isRequired: true,
-          disabled: const ['feverMeasurementLocation-01-Forehead'],
+          disabled: disabledMeasurementLocations,
           enabled: enabled,
           initialValue: model?.feverMeasurementLocation,
         ),
@@ -150,13 +179,11 @@ class _FeverSectionFormState extends State<FeverSectionForm> {
 }
 
 class MedicationSectionForm extends StatefulWidget {
-  final FormBuilderState? formState;
   final MedicationSectionModel? medicationSectionModel;
   final FormActionState formActionState;
 
   const MedicationSectionForm({
     Key? key,
-    required this.formState,
     this.medicationSectionModel,
     this.formActionState = FormActionState.create,
   }) : super(key: key);
@@ -183,6 +210,7 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.medicationSectionModel;
     final loc = AppLocalizations.of(context)!;
+    final formState = FormBuilder.of(context);
 
     return Column(
       children: [
@@ -202,6 +230,14 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
                 showAntipyreticQs = true;
               });
             } else if (val == 'antipyretic-01-No' && showAntipyreticQs) {
+              // Resetting fields
+              final fields = formState?.fields;
+
+              fields?[MedicationFields.antipyreticHowMany.name]?.reset();
+              fields?[MedicationFields.antipyreticHowMuch.name]?.reset();
+              fields?[MedicationFields.antipyreticReason.name]?.reset();
+              fields?[MedicationFields.antipyreticWhat.name]?.reset();
+
               setState(() {
                 showAntipyreticQs = false;
               });
@@ -284,6 +320,13 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
                 showAntibioticQs = true;
               });
             } else if (value == 'antibiotics-01-No' && showAntibioticQs) {
+              // Resetting fields
+              final fields = formState?.fields;
+
+              fields?[MedicationFields.antibioticsHowMany.name]?.reset();
+              fields?[MedicationFields.antibioticsHowMuch.name]?.reset();
+              fields?[MedicationFields.antibioticsWhat.name]?.reset();
+
               setState(() {
                 showAntibioticQs = false;
               });
@@ -333,13 +376,11 @@ class _MedicationSectionFormState extends State<MedicationSectionForm> {
 }
 
 class HydrationSectionForm extends StatefulWidget {
-  final FormBuilderState? formState;
   final HydrationSectionModel? hydrationSectionModel;
   final FormActionState formActionState;
 
   const HydrationSectionForm({
     Key? key,
-    required this.formState,
     this.hydrationSectionModel,
     this.formActionState = FormActionState.create,
   }) : super(key: key);
@@ -366,6 +407,7 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.hydrationSectionModel;
     final loc = AppLocalizations.of(context)!;
+    final formState = FormBuilder.of(context);
 
     return Column(
       children: [
@@ -403,11 +445,12 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
           enabled: enabled,
           initialValue: model?.crying,
           onChanged: (value) {
-            if (value != 'crying-01-DoesntCry') {
+            if (value != 'crying-01-DoesntCry' && !showCryingQ) {
               setState(() {
                 showCryingQ = true;
               });
-            } else if (showCryingQ) {
+            } else if (value == 'crying-01-DoesntCry' && showCryingQ) {
+              formState?.fields[HydrationFields.tearsWhenCrying.name]?.reset();
               setState(() {
                 showCryingQ = false;
               });
@@ -473,6 +516,8 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
                 showVomitQ = true;
               });
             } else if (!val && showVomitQ) {
+              formState?.fields[HydrationFields.vomit.name]?.reset();
+
               setState(() {
                 showVomitQ = false;
               });
@@ -503,13 +548,11 @@ class _HydrationSectionFormState extends State<HydrationSectionForm> {
 }
 
 class RespirationSectionForm extends StatefulWidget {
-  final FormBuilderState? formState;
   final RespirationSectionModel? respirationSectionModel;
   final FormActionState formActionState;
 
   const RespirationSectionForm({
     Key? key,
-    required this.formState,
     this.respirationSectionModel,
     this.formActionState = FormActionState.create,
   }) : super(key: key);
@@ -524,6 +567,7 @@ class _RespirationSectionFormState extends State<RespirationSectionForm> {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.respirationSectionModel;
     final loc = AppLocalizations.of(context)!;
+    final formState = FormBuilder.of(context);
 
     return Column(
       children: [
@@ -568,13 +612,11 @@ class _RespirationSectionFormState extends State<RespirationSectionForm> {
 }
 
 class SkinSectionForm extends StatefulWidget {
-  final FormBuilderState? formState;
   final SkinSectionModel? skinSectionModel;
   final FormActionState formActionState;
 
   const SkinSectionForm({
     Key? key,
-    required this.formState,
     this.skinSectionModel,
     this.formActionState = FormActionState.create,
   }) : super(key: key);
@@ -597,6 +639,7 @@ class _SkinSectionFormState extends State<SkinSectionForm> {
     bool enabled = widget.formActionState != FormActionState.view;
     final model = widget.skinSectionModel;
     final loc = AppLocalizations.of(context)!;
+    final formState = FormBuilder.of(context);
 
     return Column(
       children: [
@@ -627,6 +670,8 @@ class _SkinSectionFormState extends State<SkinSectionForm> {
                 showRashQ = true;
               });
             } else if (value == 'rash-01-No' && showRashQ) {
+              formState?.fields[SkinFields.glassTest.name]?.reset();
+
               setState(() {
                 showRashQ = false;
               });
@@ -653,13 +698,11 @@ class _SkinSectionFormState extends State<SkinSectionForm> {
 }
 
 class PulseSectionForm extends StatefulWidget {
-  final FormBuilderState? formState;
   final PulseSectionModel? pulseSectionModel;
   final FormActionState formActionState;
 
   const PulseSectionForm({
     Key? key,
-    required this.formState,
     this.pulseSectionModel,
     this.formActionState = FormActionState.create,
   }) : super(key: key);
@@ -691,13 +734,11 @@ class _PulseSectionFormState extends State<PulseSectionForm> {
 }
 
 class GeneralSectionForm extends StatefulWidget {
-  final FormBuilderState? formState;
   final GeneralSectionModel? generalSectionModel;
   final FormActionState formActionState;
 
   const GeneralSectionForm({
     Key? key,
-    required this.formState,
     this.generalSectionModel,
     this.formActionState = FormActionState.create,
   }) : super(key: key);
@@ -719,6 +760,10 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
     final daysOld =
         patientProvider.patient?.dateOfBirth.difference(DateTime.now()).inDays;
     bool olderThan18M = daysOld == null ? false : daysOld / 30 > 18;
+
+    final formState = FormBuilder.of(context);
+
+    debugPrint(olderThan18M.toString());
 
     return Column(
       children: [
@@ -797,6 +842,10 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
               });
             } else if (value == 'vaccinationIn14days-01-No' &&
                 showVaccinationQs) {
+              formState?.fields[GeneralFields.vaccinationHowManyHoursAgo.name]
+                  ?.reset();
+              formState?.fields[GeneralFields.vaccinationWhat.name]?.reset();
+
               setState(() {
                 showVaccinationQs = false;
               });
@@ -875,6 +924,20 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
           ],
           enabled: enabled,
           initialValue: model?.pain,
+          onChanged: (values) {
+            // Assuming the order of values is the order of selection
+            if (values != null &&
+                values.last == 'pain-01-No' &&
+                values.length > 1) {
+              formState?.fields[GeneralFields.pain.name]
+                  ?.didChange(['pain-01-No']);
+            } else if (values != null &&
+                values.contains('pain-01-No') &&
+                values.last != 'pain-01-No') {
+              values.remove('pain-01-No');
+              formState?.fields[GeneralFields.pain.name]?.didChange(values);
+            }
+          },
         ),
       ],
     );
@@ -882,13 +945,11 @@ class _GeneralSectionFormState extends State<GeneralSectionForm> {
 }
 
 class CaregiverSectionForm extends StatefulWidget {
-  final FormBuilderState? formState;
   final CaregiverSectionModel? caregiverSectionModel;
   final FormActionState formActionState;
 
   const CaregiverSectionForm({
     Key? key,
-    required this.formState,
     this.caregiverSectionModel,
     this.formActionState = FormActionState.create,
   }) : super(key: key);

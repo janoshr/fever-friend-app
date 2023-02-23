@@ -74,14 +74,20 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
         _formKey.currentState!.saveAndValidate();
         if (_formKey.currentState!.isValid) {
           final db = getIt.get<FirestoreService>();
+          final modelService = getIt.get<ModelService>();
+
           final measurement = MeasurementModel.fromFormBuilder(
             _formKey.currentState!,
             patient,
           );
 
-          final modelService = getIt.get<ModelService>();
+          measurement.data.feverSection!.temperatureAdjusted =
+              handleTemperatureAdjustment();
+
           final patientState = await modelService.getPatientState(measurement);
+
           debugPrint('Model service reponded with $patientState');
+
           measurement.data.patientState = patientState;
 
           if (illness != null) {
@@ -109,6 +115,16 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
     }
 
     return StepState.indexed;
+  }
+
+  double handleTemperatureAdjustment() {
+    final value = _formKey.currentState!.value;
+    if (value[FeverFields.measurementLocation.name] ==
+        'measurementLocation-05-Armpit') {
+      return value[FeverFields.temperature.name] + 0.5;
+    }
+
+    return value[FeverFields.temperature.name];
   }
 
   @override
@@ -159,58 +175,56 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                 state: getStepState(
                     MeasurementSections.fever.index, FeverFields.values),
                 title: Text(loc.fever),
-                content: FeverSectionForm(formState: _formKey.currentState),
+                content: const FeverSectionForm(),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.medication.index,
                 state: getStepState(MeasurementSections.medication.index,
                     MedicationFields.values),
                 title: Text(loc.medication),
-                content:
-                    MedicationSectionForm(formState: _formKey.currentState),
+                content: MedicationSectionForm(),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.hydration.index,
                 state: getStepState(MeasurementSections.hydration.index,
                     HydrationFields.values),
                 title: Text(loc.hydration),
-                content: HydrationSectionForm(formState: _formKey.currentState),
+                content: const HydrationSectionForm(),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.respiration.index,
                 state: getStepState(MeasurementSections.respiration.index,
                     RespirationFields.values),
                 title: Text(loc.respiration),
-                content:
-                    RespirationSectionForm(formState: _formKey.currentState),
+                content: const RespirationSectionForm(),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.skin.index,
                 state: getStepState(
                     MeasurementSections.skin.index, SkinFields.values),
                 title: Text(loc.skin),
-                content: SkinSectionForm(formState: _formKey.currentState),
+                content: const SkinSectionForm(),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.pulse.index,
                 state: getStepState(
                     MeasurementSections.pulse.index, PulseFields.values),
                 title: Text(loc.pulse),
-                content: PulseSectionForm(formState: _formKey.currentState),
+                content: const PulseSectionForm(),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.general.index,
                 state: getStepState(
                     MeasurementSections.general.index, GeneralFields.values),
                 title: Text(loc.general),
-                content: GeneralSectionForm(formState: _formKey.currentState),
+                content: const GeneralSectionForm(),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.caregiver.index,
                 state: getStepState(MeasurementSections.caregiver.index,
                     CaregiverFields.values),
                 title: Text(loc.caregiver),
-                content: CaregiverSectionForm(formState: _formKey.currentState),
+                content: const CaregiverSectionForm(),
               ),
               Step(
                 isActive: activeStep == 8,
