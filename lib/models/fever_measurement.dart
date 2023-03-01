@@ -16,11 +16,13 @@ class MeasurementModel {
 
   MeasurementModelMeta meta;
   MeasurementModelData data;
+  MeasurementModelState? state;
 
   MeasurementModel({
     required this.id,
     required this.data,
     required this.meta,
+    this.state,
   });
 
   factory MeasurementModel.fromJson(Map<String, dynamic> json) =>
@@ -66,6 +68,36 @@ class MeasurementModel {
   Map<String, dynamic> toJson() => _$MeasurementModelToJson(this);
 
   static toNull(_) => null;
+}
+
+@JsonSerializable()
+class MeasurementModelState {
+  PatientState? patientState;
+  PatientState? feverState;
+  PatientState? medicationState;
+  PatientState? hydrationState;
+  PatientState? respirationState;
+  PatientState? skinState;
+  PatientState? pulseState;
+  PatientState? generalState;
+  PatientState? caregiverState;
+
+  MeasurementModelState({
+    this.caregiverState,
+    this.feverState,
+    this.generalState,
+    this.hydrationState,
+    this.medicationState,
+    this.patientState,
+    this.pulseState,
+    this.skinState,
+    this.respirationState,
+  });
+
+  Map<String, dynamic> toJson() => _$MeasurementModelStateToJson(this);
+
+  factory MeasurementModelState.fromJson(Map<String, dynamic> json) =>
+      _$MeasurementModelStateFromJson(json);
 }
 
 @JsonSerializable()
@@ -132,8 +164,6 @@ class MeasurementModelData {
   @JsonKey(includeIfNull: false)
   CaregiverSectionModel? caregiverSection;
 
-  PatientState? patientState;
-
   MeasurementModelData({
     this.feverSection,
     this.medicationSection,
@@ -143,7 +173,6 @@ class MeasurementModelData {
     this.pulseSection,
     this.generalSection,
     this.caregiverSection,
-    this.patientState,
   });
 
   int get sectionCount => sectionMap.entries
@@ -165,7 +194,7 @@ class MeasurementModelData {
 
   Map<String, dynamic> toJson() => _$MeasurementModelDataToJson(this);
 
-  List<num> get modelData {
+  Map<String, num> get modelData {
     //  'feverDuration', 'temperature', 'antibiotics',
     //  'antibioticsHowMany', 'antibioticsHowMuch', 'antipyretic',
     //  'antipyreticHowMany', 'antipyreticHowMuch', 'crying', 'diarrhea',

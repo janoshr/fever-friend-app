@@ -29,6 +29,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
 
   void nextButton() {
     _formKey.currentState?.saveAndValidate();
+    FocusManager.instance.primaryFocus?.unfocus();
     if (activeStep < upperBound) {
       int nextStep = activeStep + 1;
       scrollToStep(nextStep);
@@ -41,6 +42,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
   void prevButton() {
     if (activeStep > 0) {
       int nextStep = activeStep - 1;
+      FocusManager.instance.primaryFocus?.unfocus();
       scrollToStep(nextStep);
       setState(() {
         activeStep = nextStep;
@@ -50,6 +52,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
 
   void stepTapped(int step) {
     scrollToStep(step);
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       activeStep = step;
     });
@@ -84,11 +87,13 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
           measurement.data.feverSection!.temperatureAdjusted =
               handleTemperatureAdjustment();
 
-          final patientState = await modelService.getPatientState(measurement);
+          final measurementState =
+              await modelService.getPatientState(patient, measurement);
 
-          debugPrint('Model service reponded with $patientState');
+          debugPrint(
+              'Model service reponded with ${measurementState.toString()}');
 
-          measurement.data.patientState = patientState;
+          measurement.state = measurementState;
 
           if (illness != null) {
             db.addMeasurement(measurement, patient.id, illness);
@@ -121,7 +126,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
     final value = _formKey.currentState!.value;
     if (value[FeverFields.measurementLocation.name] ==
         'measurementLocation-05-Armpit') {
-      return value[FeverFields.temperature.name] + 0.5;
+      return double.parse(value[FeverFields.temperature.name]) + 0.5;
     }
 
     return value[FeverFields.temperature.name];

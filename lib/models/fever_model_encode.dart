@@ -266,28 +266,28 @@ const _oneHotCategories = {
   ]
 };
 
-List<num> _oneHotEncoder(_OneHotCategories category, String? data) {
-  final res = <num>[];
+Map<String, num> _oneHotEncoder(_OneHotCategories category, String? data) {
+  final res = <String, num>{};
   final cols = _oneHotCategories[category];
   for (final col in cols!) {
-    res.add(col == data ? 1 : 0);
+    res[col] = col == data ? 1 : 0;
   }
-  if (res.every((element) => element == 0)) {
+  if (res.values.every((element) => element == 0)) {
     // setting default if all are null
-    res[0] = 1;
+    res[cols.first] = 1;
   }
   return res;
 }
 
-List<num> _oneHotArrayEncoder(_OneHotCategories category, List<String>? data) {
-  final res = <num>[];
+Map<String, num> _oneHotArrayEncoder(_OneHotCategories category, List<String>? data) {
+  final res = <String, num>{};
   final cols = _oneHotCategories[category];
   for (final col in cols!) {
     final has = data?.contains(col);
-    res.add(has != null && has ? 1 : 0);
+    res[col] = has != null && has ? 1 : 0;
   }
-  if (res.every((element) => element == 0) || data == null) {
-    res[0] = 1;
+  if (res.values.every((element) => element == 0) || data == null) {
+    res[cols.first] = 1;
   }
   return res;
 }
@@ -301,8 +301,8 @@ int _ordinalEncoder(_OrdinalCategories category, String? data) {
   }
 }
 
-List<num> encodeMeasurement(MeasurementModelData modelData) {
-  List<num> res = [];
+Map<String, num> encodeMeasurement(MeasurementModelData modelData) {
+  Map<String, num> res = {};
   if (modelData.respirationSection == null ||
       modelData.respirationSection!.respiratoryRate == null) {
     throw Exception('Model error: missing respiratory rate');
@@ -371,14 +371,14 @@ List<num> encodeMeasurement(MeasurementModelData modelData) {
     'wryNeck': _ordinalEncoder(
         _OrdinalCategories.wryNeck, modelData.generalSection?.wryNeck),
   };
-  res = [
-    ...ordinalMapping.values,
+  res = {
+    ...ordinalMapping,
     ..._oneHotArrayEncoder(
         _OneHotCategories.pain, modelData.generalSection?.pain),
     ..._oneHotEncoder(
         _OneHotCategories.awareness, modelData.generalSection?.awareness),
     ..._oneHotArrayEncoder(
         _OneHotCategories.vomit, modelData.hydrationSection?.vomit),
-  ];
+  };
   return res;
 }
