@@ -61,6 +61,9 @@ class Patient {
     return _$PatientFromJson(data);
   }
 
+  double get ageInMonths =>
+      dateOfBirth.difference(DateTime.now()).inDays.abs() / 30;
+
   Map<String, dynamic> toJson() => _$PatientToJson(this);
 
   @override

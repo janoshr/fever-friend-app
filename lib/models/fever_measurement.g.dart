@@ -12,6 +12,10 @@ MeasurementModel _$MeasurementModelFromJson(Map json) => MeasurementModel(
           Map<String, dynamic>.from(json['data'] as Map)),
       meta: MeasurementModelMeta.fromJson(
           Map<String, dynamic>.from(json['meta'] as Map)),
+      state: json['state'] == null
+          ? null
+          : MeasurementModelState.fromJson(
+              Map<String, dynamic>.from(json['state'] as Map)),
     );
 
 Map<String, dynamic> _$MeasurementModelToJson(MeasurementModel instance) {
@@ -26,8 +30,50 @@ Map<String, dynamic> _$MeasurementModelToJson(MeasurementModel instance) {
   writeNotNull('id', MeasurementModel.toNull(instance.id));
   val['meta'] = instance.meta.toJson();
   val['data'] = instance.data.toJson();
+  val['state'] = instance.state?.toJson();
   return val;
 }
+
+MeasurementModelState _$MeasurementModelStateFromJson(Map json) =>
+    MeasurementModelState(
+      caregiverState:
+          $enumDecodeNullable(_$PatientStateEnumMap, json['caregiverState']),
+      feverState:
+          $enumDecodeNullable(_$PatientStateEnumMap, json['feverState']),
+      generalState:
+          $enumDecodeNullable(_$PatientStateEnumMap, json['generalState']),
+      hydrationState:
+          $enumDecodeNullable(_$PatientStateEnumMap, json['hydrationState']),
+      medicationState:
+          $enumDecodeNullable(_$PatientStateEnumMap, json['medicationState']),
+      patientState:
+          $enumDecodeNullable(_$PatientStateEnumMap, json['patientState']),
+      pulseState:
+          $enumDecodeNullable(_$PatientStateEnumMap, json['pulseState']),
+      skinState: $enumDecodeNullable(_$PatientStateEnumMap, json['skinState']),
+      respirationState:
+          $enumDecodeNullable(_$PatientStateEnumMap, json['respirationState']),
+    );
+
+Map<String, dynamic> _$MeasurementModelStateToJson(
+        MeasurementModelState instance) =>
+    <String, dynamic>{
+      'patientState': _$PatientStateEnumMap[instance.patientState],
+      'feverState': _$PatientStateEnumMap[instance.feverState],
+      'medicationState': _$PatientStateEnumMap[instance.medicationState],
+      'hydrationState': _$PatientStateEnumMap[instance.hydrationState],
+      'respirationState': _$PatientStateEnumMap[instance.respirationState],
+      'skinState': _$PatientStateEnumMap[instance.skinState],
+      'pulseState': _$PatientStateEnumMap[instance.pulseState],
+      'generalState': _$PatientStateEnumMap[instance.generalState],
+      'caregiverState': _$PatientStateEnumMap[instance.caregiverState],
+    };
+
+const _$PatientStateEnumMap = {
+  PatientState.good: 'good',
+  PatientState.caution: 'caution',
+  PatientState.danger: 'danger',
+};
 
 MeasurementModelMeta _$MeasurementModelMetaFromJson(Map json) =>
     MeasurementModelMeta(
@@ -93,8 +139,6 @@ MeasurementModelData _$MeasurementModelDataFromJson(Map json) =>
           ? null
           : CaregiverSectionModel.fromJson(
               Map<String, dynamic>.from(json['caregiverSection'] as Map)),
-      patientState:
-          $enumDecodeNullable(_$PatientStateEnumMap, json['patientState']),
     );
 
 Map<String, dynamic> _$MeasurementModelDataToJson(
@@ -115,15 +159,8 @@ Map<String, dynamic> _$MeasurementModelDataToJson(
   writeNotNull('pulseSection', instance.pulseSection?.toJson());
   writeNotNull('generalSection', instance.generalSection?.toJson());
   writeNotNull('caregiverSection', instance.caregiverSection?.toJson());
-  val['patientState'] = _$PatientStateEnumMap[instance.patientState];
   return val;
 }
-
-const _$PatientStateEnumMap = {
-  PatientState.good: 'good',
-  PatientState.caution: 'caution',
-  PatientState.danger: 'danger',
-};
 
 FeverSectionModel _$FeverSectionModelFromJson(Map json) => FeverSectionModel(
       thermometerUsed: json['thermometerUsed'] as String?,

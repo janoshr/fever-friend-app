@@ -46,7 +46,7 @@ class IllnessCard extends StatelessWidget {
               ),
               leading: IPulseIcon(
                 stateColor: stateToColor(
-                    illness.feverMeasurements.first.data.patientState),
+                    illness.feverMeasurements.first.state?.patientState),
               ),
             ),
             ListTile(
@@ -63,7 +63,7 @@ class IllnessCard extends StatelessWidget {
                 return Icon(
                   Icons.circle,
                   size: 16,
-                  color: stateToColor(m.data.patientState),
+                  color: stateToColor(m.state?.patientState),
                 );
               }).toList()),
             )

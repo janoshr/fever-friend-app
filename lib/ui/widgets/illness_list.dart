@@ -45,7 +45,7 @@ class IllnessList extends StatelessWidget {
                 return Icon(
                   Icons.circle,
                   size: 14,
-                  color: stateToColor(m.data.patientState),
+                  color: stateToColor(m.state?.patientState),
                 );
               }).toList()),
             ),

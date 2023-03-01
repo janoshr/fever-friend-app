@@ -38,7 +38,7 @@ class _IllnessScreenState extends State<IllnessScreen> {
         return ListTile(
           leading: Icon(
             Icons.circle,
-            color: stateToColor(measurement.data.patientState),
+            color: stateToColor(measurement.state?.patientState),
           ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
