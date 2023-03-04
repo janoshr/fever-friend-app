@@ -94,6 +94,22 @@ class MeasurementModelState {
     this.respirationState,
   });
 
+  Map<String, PatientState?> toMap() => {
+        'caregiverState': caregiverState,
+        'feverState': feverState,
+        'generalState': generalState,
+        'hydrationState': hydrationState,
+        'medicationState': medicationState,
+        'patientState': patientState,
+        'pulseState': pulseState,
+        'skinState': skinState,
+        'respirationState': respirationState,
+      };
+
+  // PatientState? operator [](String value) {
+  //   return toMap()[value];
+  // }
+
   Map<String, dynamic> toJson() => _$MeasurementModelStateToJson(this);
 
   factory MeasurementModelState.fromJson(Map<String, dynamic> json) =>

@@ -14,6 +14,8 @@ IUser _$IUserFromJson(Map json) {
   return IUser(
     email: json['email'] as String,
     id: json['id'] as String,
+    createdAt: fromTimestampToDate(json['createdAt'] as Timestamp),
+    updatedAt: fromTimestampToDateNullable(json['updatedAt'] as Timestamp?),
     lang: json['lang'] as String? ?? 'en',
     participateInResearch: json['participateInResearch'] as bool? ?? true,
   );
@@ -32,5 +34,7 @@ Map<String, dynamic> _$IUserToJson(IUser instance) {
   val['email'] = instance.email;
   val['lang'] = instance.lang;
   val['participateInResearch'] = instance.participateInResearch;
+  val['createdAt'] = fromDateToTimestamp(instance.createdAt);
+  val['updatedAt'] = fromDateToTimestampNullable(instance.updatedAt);
   return val;
 }

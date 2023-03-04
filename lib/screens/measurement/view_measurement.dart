@@ -1,8 +1,8 @@
 import 'package:fever_friend_app/models/models.dart';
-import 'package:fever_friend_app/screens/measurement/sections.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
+import 'sections/sections.dart';
 
 const formActionState = FormActionState.view;
 

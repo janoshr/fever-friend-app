@@ -1,3 +1,4 @@
+import 'package:fever_friend_app/services/advice_service.dart';
 import 'package:fever_friend_app/services/model_server.dart';
 import 'package:get_it/get_it.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -11,4 +12,5 @@ void setupGetIt() {
   getIt.registerSingletonAsync<PackageInfo>(
       () async => PackageInfo.fromPlatform());
   getIt.registerLazySingleton<ModelService>(() => ModelService());
+  getIt.registerSingletonAsync<AdviceKnowledgeBase>(() => AdviceKnowledgeBase.create());
 }
