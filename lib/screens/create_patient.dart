@@ -1,6 +1,5 @@
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/patient.dart';
-import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/services/firestore.dart';
 import 'package:fever_friend_app/ui/shared/constants.dart';
 import 'package:fever_friend_app/ui/widgets/form/form.dart';
@@ -8,7 +7,6 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
 
@@ -51,7 +49,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                 ITextField(
                   name: 'name',
                   label: loc.name,
-                  prefixIcon: Icon(Icons.face),
+                  prefixIcon: const Icon(Icons.face),
                   isRequired: true,
                 ),
                 const SizedBox(height: 12),
@@ -99,12 +97,12 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                     ),
                     FormBuilderChipOption(
                       value: 'female',
-                      avatar: Icon(Icons.female),
+                      avatar: const Icon(Icons.female),
                       child: Text(loc.female),
                     ),
                     FormBuilderChipOption(
                       value: 'other',
-                      avatar: Icon(Icons.transgender),
+                      avatar: const Icon(Icons.transgender),
                       child: Text(loc.otherGender),
                     )
                   ],

@@ -12,8 +12,8 @@ class Patient {
   String id;
 
   String name;
-  String weight;
-  String height;
+  double weight;
+  double height;
   String gender;
 
   @JsonKey(fromJson: fromTimestampToDate, toJson: fromDateToTimestamp)

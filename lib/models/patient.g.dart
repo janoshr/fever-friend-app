@@ -12,8 +12,8 @@ Patient _$PatientFromJson(Map json) => Patient(
       createdAt: fromTimestampToDate(json['createdAt'] as Timestamp),
       dateOfBirth: fromTimestampToDate(json['dateOfBirth'] as Timestamp),
       gender: json['gender'] as String,
-      height: json['height'] as String,
-      weight: json['weight'] as String,
+      height: (json['height'] as num).toDouble(),
+      weight: (json['weight'] as num).toDouble(),
       chronicDiseases: (json['chronicDiseases'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??

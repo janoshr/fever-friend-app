@@ -1,4 +1,3 @@
-import 'package:fever_friend_app/screens/measurement/sections.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/services/model_server.dart';
@@ -11,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../ui/widgets/stepper.dart';
+import 'sections/sections.dart';
 
 class ICreateMeasurementScreen extends StatefulWidget {
   const ICreateMeasurementScreen({Key? key}) : super(key: key);

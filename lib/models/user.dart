@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fever_friend_app/models/util.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
@@ -15,9 +16,19 @@ class IUser {
 
   bool participateInResearch;
 
+  @JsonKey(fromJson: fromTimestampToDate, toJson: fromDateToTimestamp)
+  DateTime createdAt;
+
+  @JsonKey(
+      fromJson: fromTimestampToDateNullable,
+      toJson: fromDateToTimestampNullable)
+  DateTime? updatedAt;
+
   IUser({
     required this.email,
     required this.id,
+    required this.createdAt,
+    this.updatedAt,
     this.lang = 'en',
     this.participateInResearch = true,
   });

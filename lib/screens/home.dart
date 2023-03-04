@@ -1,7 +1,6 @@
 import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/models/notification.dart';
 import 'package:fever_friend_app/screens/screen_definition.dart';
-import 'package:fever_friend_app/services/firestore.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/ui/widgets/illness_list.dart';
 import 'package:fever_friend_app/ui/widgets/speed_dial.dart';
@@ -9,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
-import '../services/get_it.dart';
 import '../ui/layout/drawer_menu.dart';
 import '../ui/widgets/illness_card.dart';
 

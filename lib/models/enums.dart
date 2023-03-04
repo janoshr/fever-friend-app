@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:json_annotation/json_annotation.dart';
 
 enum MeasurementSections {
@@ -102,4 +104,34 @@ enum PatientState {
   caution,
   @JsonValue('danger')
   danger,
+}
+
+extension on PatientState {
+  bool operator <(Enum other) {
+    return index < other.index;
+  }
+
+  bool operator <=(Enum other) {
+    return index <= other.index;
+  }
+
+  bool operator >(Enum other) {
+    return index > other.index;
+  }
+
+  bool operator >=(Enum other) {
+    return index >= other.index;
+  }
+}
+
+enum FormActionState {
+  edit,
+  create,
+  view,
+}
+
+enum ServiceStatus {
+  loading,
+  ready,
+  error,
 }

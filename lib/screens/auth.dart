@@ -15,7 +15,10 @@ final userCreatedAction =
   }
   final db = getIt.get<FirestoreService>();
   final user = IUser(
-      email: state.credential.user!.email!, id: state.credential.user!.uid);
+    email: state.credential.user!.email!,
+    id: state.credential.user!.uid,
+    createdAt: DateTime.now(),
+  );
 
   await db.createUser(user);
 }));
