@@ -17,12 +17,14 @@ class MeasurementModel {
   MeasurementModelMeta meta;
   MeasurementModelData data;
   MeasurementModelState? state;
+  List<String> adviceKeys;
 
   MeasurementModel({
     required this.id,
     required this.data,
     required this.meta,
     this.state,
+    this.adviceKeys = const [],
   });
 
   factory MeasurementModel.fromJson(Map<String, dynamic> json) =>
@@ -95,15 +97,15 @@ class MeasurementModelState {
   });
 
   Map<String, PatientState?> toMap() => {
-        'caregiverState': caregiverState,
-        'feverState': feverState,
-        'generalState': generalState,
-        'hydrationState': hydrationState,
-        'medicationState': medicationState,
         'patientState': patientState,
-        'pulseState': pulseState,
-        'skinState': skinState,
+        'feverState': feverState,
+        'medicationState': medicationState,
+        'hydrationState': hydrationState,
         'respirationState': respirationState,
+        'skinState': skinState,
+        'pulseState': pulseState,
+        'generalState': generalState,
+        'caregiverState': caregiverState,
       };
 
   // PatientState? operator [](String value) {
@@ -114,6 +116,11 @@ class MeasurementModelState {
 
   factory MeasurementModelState.fromJson(Map<String, dynamic> json) =>
       _$MeasurementModelStateFromJson(json);
+
+  @override
+  String toString() {
+    return 'MeasurementModelState<${toMap().toString()}>';
+  }
 }
 
 @JsonSerializable()
@@ -157,7 +164,7 @@ class MeasurementModelMeta {
 @JsonSerializable()
 class MeasurementModelData {
   @JsonKey(includeIfNull: false)
-  FeverSectionModel? feverSection;
+  FeverSectionModel feverSection;
 
   @JsonKey(includeIfNull: false)
   MedicationSectionModel? medicationSection;
@@ -181,7 +188,7 @@ class MeasurementModelData {
   CaregiverSectionModel? caregiverSection;
 
   MeasurementModelData({
-    this.feverSection,
+    required this.feverSection,
     this.medicationSection,
     this.hydrationSection,
     this.respirationSection,
@@ -233,23 +240,24 @@ class FeverSectionModel {
   String? feverDuration;
   String? feverMeasurementLocation;
 
-  double? temperature;
+  double temperature;
   double? temperatureAdjusted;
 
   String? thermometerUsed;
 
   FeverSectionModel({
+    required this.temperature,
     this.thermometerUsed,
     this.feverDuration,
     this.feverMeasurementLocation,
-    this.temperature,
     this.temperatureAdjusted,
   });
 
-  static FeverSectionModel? fromFormBuilder(FormBuilderState formState) {
+  static FeverSectionModel fromFormBuilder(FormBuilderState formState) {
     if (FeverFields.values
         .every((element) => formState.value[element.name] == null)) {
-      return null;
+      throw Exception(
+          'FeverSectionModel.fromFormBuilder: Fever section is empty');
     }
     return FeverSectionModel(
       feverDuration: formState.value[FeverFields.feverDuration.name],

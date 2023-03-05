@@ -3,7 +3,7 @@
 import 'package:fever_friend_app/models/models.dart';
 import 'package:flutter/material.dart';
 
-Color COLOR_GOOD = Colors.lightGreenAccent[400]!;
+Color COLOR_GOOD = Colors.green[400]!;
 Color COLOR_CAUTION = Colors.amber[800]!;
 Color COLOR_DANGER = Colors.red;
 Color COLOR_NEUTRAL = Colors.blueGrey[100]!;

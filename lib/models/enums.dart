@@ -106,24 +106,6 @@ enum PatientState {
   danger,
 }
 
-extension on PatientState {
-  bool operator <(Enum other) {
-    return index < other.index;
-  }
-
-  bool operator <=(Enum other) {
-    return index <= other.index;
-  }
-
-  bool operator >(Enum other) {
-    return index > other.index;
-  }
-
-  bool operator >=(Enum other) {
-    return index >= other.index;
-  }
-}
-
 enum FormActionState {
   edit,
   create,

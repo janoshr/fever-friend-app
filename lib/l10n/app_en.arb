@@ -53,6 +53,14 @@
   "@notifications": {
     "description": "Notification screen title"
   },
+  "adviceScreenTitle": "Advices",
+  "@adviceScreenTitle": {
+    "description": "Advice screen title"
+  },
+  "emptyAdvice": "Unfortunately, there is no advice matching this condition",
+  "@emptyAdvice": {
+    "description": "msg when there are no matching advice for the specific condition"
+  },
   "emptyNoti": "No notifications for now",
   "@emptyNoti": {
     "description": "msg when there are no notifications"

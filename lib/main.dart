@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:fever_friend_app/models/illness.dart';
+import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/notification.dart';
-import 'package:fever_friend_app/models/patient.dart';
+import 'package:fever_friend_app/services/illness_provider.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/routes.dart';
 import 'package:fever_friend_app/services/firestore.dart';
@@ -130,17 +130,27 @@ class _MyAppState extends State<MyApp> {
                   return PatientProvider(value);
                 },
                 update: (context, value, previous) {
-                  if (previous == null) PatientProvider(value);
-                  return previous!.updatePatientList(value);
+                  if (previous == null) return PatientProvider(value);
+                  return previous.updatePatientList(value);
                 },
                 child: Consumer<PatientProvider>(
-                  builder: (context, patientProvider, _) {
-                    return FutureProvider<List<Illness>>.value(
-                      value: db.getIllnesses(patientProvider.patient?.id),
-                      initialData: const [],
-                      child: AppWidget(initialRoute: initialRoute),
-                    );
-                  },
+                  builder: (context, patientProvider, _) =>
+                      FutureProvider<List<Illness>>.value(
+                    value: db.getIllnesses(patientProvider.patient?.id),
+                    initialData: const [],
+                    child: Consumer<List<Illness>>(
+                      builder: (context, illnesses, _) =>
+                          ChangeNotifierProxyProvider<List<Illness>,
+                              IllnessProvider>(
+                        update: (context, value, previous) {
+                          if (previous == null) return IllnessProvider(value);
+                          return previous.updateIllnessList(value);
+                        },
+                        create: (context) => IllnessProvider(illnesses),
+                        child: AppWidget(initialRoute: initialRoute),
+                      ),
+                    ),
+                  ),
                 ),
               );
             },

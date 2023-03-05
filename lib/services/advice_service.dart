@@ -7,6 +7,25 @@ import 'package:flutter/services.dart' show rootBundle;
 import '../models/advice_model.dart';
 import '../models/patient.dart';
 
+extension on PatientState {
+  bool operator <(PatientState other) {
+    return index < other.index;
+  }
+
+  bool operator <=(PatientState other) {
+    return index <= other.index;
+  }
+
+  bool operator >(PatientState other) {
+    return index > other.index;
+  }
+
+  bool operator >=(PatientState other) {
+    return index >= other.index;
+  }
+}
+
+const List<String> kNumericFields = ['ageInMonths', 'temperature'];
 
 class AdviceKnowledgeBase {
   ServiceStatus status = ServiceStatus.loading;
@@ -26,15 +45,24 @@ class AdviceKnowledgeBase {
     return res;
   }
 
+  /// Retrieves a single advice given its key
   AdviceModel? getAdvice(String key) {
     return _knowledgeBase.firstWhere((element) => element.key == key);
   }
 
+  /// Retrieves a list of advice given their keys
+  List<AdviceModel> getAdviceList(List<String> keys) {
+    final list =
+        _knowledgeBase.where((element) => keys.contains(element.key)).toList();
+    list.sort((a, b) => b.importance - a.importance);
+    return list;
+  }
+
   /// Given the patient and the measurement state it returns all relevant advices
   /// sorted descending by the importance value
-  List<AdviceModel> getRelevantAdviceList(
+  List<String> getRelevantAdviceList(
       Patient patient, MeasurementModelState modelState, double temperature) {
-    Map<String, dynamic> modelMap = modelState.toMap();
+    Map<String, dynamic> modelMap = Map.from(modelState.toMap());
     modelMap['ageInMonths'] = patient.ageInMonths;
     modelMap['temperature'] = temperature;
 
@@ -42,67 +70,109 @@ class AdviceKnowledgeBase {
         .where(
           (advice) => advice.conditions.every(
             (condition) {
-              dynamic currentState, conditionValue;
-              if (condition.field == 'ageInMonths' ||
-                  condition.field == 'temperature') {
-                // set numeric values
-                currentState = modelMap[condition.field];
-                conditionValue = double.parse(condition.value);
-              } else {
-                // set state values
-                currentState = modelMap[condition.field];
-                conditionValue = PatientState.values.byName(condition.value);
-              }
-              if (currentState == null) {
-                // early exit
+              if (condition.value == null ||
+                  modelMap[condition.field] == null) {
                 return false;
               }
               try {
-                switch (condition.op) {
-                  case '==':
-                    {
-                      return currentState == conditionValue;
-                    }
-                  case '>':
-                    {
-                      return currentState > conditionValue;
-                    }
-                  case '<':
-                    {
-                      return currentState < conditionValue;
-                    }
-                  case '>=':
-                    {
-                      return currentState >= conditionValue;
-                    }
-                  case '<=':
-                    {
-                      return currentState <= conditionValue;
-                    }
-                  case '!=':
-                    {
-                      return currentState != conditionValue;
-                    }
-                  default:
-                    {
-                      throw Exception(
-                          'Condition operation ${condition.op} is not recognized');
-                    }
+                if (kNumericFields.contains(condition.field)) {
+                  num currentState = modelMap[condition.field];
+                  num conditionValue = condition.value;
+                  return _compareNumeric(
+                      condition.op, currentState, conditionValue);
+                } else {
+                  PatientState currentState = modelMap[condition.field];
+                  PatientState conditionValue =
+                      PatientState.values.byName(condition.value);
+                  return _compareState(
+                      condition.op, currentState, conditionValue);
                 }
               } catch (e) {
                 debugPrint(
-                    'ERROR: condition checking failed with value: $currentState for condition: ${condition.toString()}');
+                    'ERROR: condition checking failed with value: ${modelMap[condition.field]} for condition: ${condition.toString()}');
                 debugPrint(e.toString());
+                if (e is Error) {
+                  debugPrintStack(stackTrace: e.stackTrace);
+                }
                 return false;
               }
             },
           ),
         )
         .toList();
-    res.sort(
-      (a, b) => b.importance - a.importance,
-    );
-    return res.toList();
+
+    res.sort((a, b) => b.importance - a.importance);
+
+    return res.map((e) => e.key).toList();
+  }
+
+  /// Comparing numeric values given a String operator `op`
+  bool _compareNumeric(String op, num currentState, num conditionValue) {
+    switch (op) {
+      case '==':
+        {
+          return currentState == conditionValue;
+        }
+      case '>':
+        {
+          return currentState > conditionValue;
+        }
+      case '<':
+        {
+          return currentState < conditionValue;
+        }
+      case '>=':
+        {
+          return currentState >= conditionValue;
+        }
+      case '<=':
+        {
+          return currentState <= conditionValue;
+        }
+      case '!=':
+        {
+          return currentState != conditionValue;
+        }
+      default:
+        {
+          throw Exception('Condition operator $op is not recognized');
+        }
+    }
+  }
+
+  /// Comparing `PatientState` values given a String operator `op`
+  bool _compareState(
+      String op, PatientState currentState, PatientState conditionValue) {
+    switch (op) {
+      case '==':
+        {
+          return currentState == conditionValue;
+        }
+      case '>':
+        {
+          return Enum.compareByIndex(currentState, conditionValue) > 0;
+        }
+      case '<':
+        {
+          return Enum.compareByIndex(currentState, conditionValue) < 0;
+        }
+      case '>=':
+        {
+          return Enum.compareByIndex(currentState, conditionValue) >= 0;
+        }
+      case '<=':
+        {
+          return Enum.compareByIndex(currentState, conditionValue) <= 0;
+        }
+      case '!=':
+        {
+          return currentState != conditionValue;
+        }
+      default:
+        {
+          throw Exception('Condition operator $op is not recognized');
+        }
+    }
   }
 
   /// Initialize the class by loading the knowledge base from csv files
@@ -158,6 +228,9 @@ class AdviceKnowledgeBase {
     }
   }
 
+  /// Parse csv String to a list of maps.
+  /// Each row is a map entry in the list where the header is determined by the
+  /// first row of the csv.
   Future<List<Map<String, dynamic>>> _parseCSV(String data) async {
     // separate full text into rows
     final rows = const CsvToListConverter().convert(data);

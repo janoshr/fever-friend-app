@@ -3,7 +3,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fever_friend_app/models/models.dart';
 import 'package:fever_friend_app/models/notification.dart';
+import 'package:fever_friend_app/services/advice_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+import 'get_it.dart';
+import 'model_service.dart';
 
 const String USERS = 'users';
 const String PATIENTS = 'patients';
@@ -48,8 +53,24 @@ class FirestoreService {
         .add(patient.toJson());
   }
 
-  Future createFeverMeasurement(
-      MeasurementModel measurement, String patientId) async {
+  Future<Illness> createFeverMeasurement(
+      Patient patient, MeasurementModel measurement, String patientId) async {
+    final modelService = getIt.get<ModelService>();
+    final adviceService = getIt.get<AdviceKnowledgeBase>();
+
+    final measurementState =
+        await modelService.getPatientState(patient, measurement);
+
+    debugPrint('Model service reponded with ${measurementState.toString()}');
+
+    measurement.state = measurementState;
+
+    measurement.adviceKeys = adviceService.getRelevantAdviceList(
+      patient,
+      measurementState,
+      measurement.data.feverSection.temperature,
+    );
+
     final res = await _db.runTransaction((transaction) async {
       // First create an illness
       final illnessRef = _db
@@ -75,14 +96,35 @@ class FirestoreService {
       transaction.set(measurementRef, measurement.toJson());
       measurement.id = measurementRef.id;
 
-      return [illness, measurement];
+      illness.feverMeasurements = [measurement, ...illness.feverMeasurements];
+
+      return illness;
     });
 
     return res;
   }
 
-  Future addMeasurement(MeasurementModel measurementModel, String patientId,
+  Future<Illness> addMeasurement(
+      Patient patient,
+      MeasurementModel measurementModel,
+      String patientId,
       Illness illness) async {
+    final modelService = getIt.get<ModelService>();
+    final adviceService = getIt.get<AdviceKnowledgeBase>();
+
+    final measurementState =
+        await modelService.getPatientState(patient, measurementModel);
+
+    debugPrint('Model service reponded with ${measurementState.toString()}');
+
+    measurementModel.state = measurementState;
+
+    measurementModel.adviceKeys = adviceService.getRelevantAdviceList(
+      patient,
+      measurementState,
+      measurementModel.data.feverSection.temperature,
+    );
+
     if (!illness.isActive) {
       throw InactiveIllnessException('in addMeasurement');
     }

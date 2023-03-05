@@ -31,6 +31,7 @@ class _IllnessScreenState extends State<IllnessScreen> {
     final i = entry.key;
 
     final loc = AppLocalizations.of(context);
+    final states = measurement.state;
 
     return ExpansionPanel(
       isExpanded: expanded[i],
@@ -65,19 +66,45 @@ class _IllnessScreenState extends State<IllnessScreen> {
               alignment: WrapAlignment.start,
               children: [
                 if (measurement.data.feverSection != null)
-                  SmallChip(text: loc.fever),
+                  SmallChip(
+                    text: loc.fever,
+                    color: stateToColor(states?.feverState),
+                  ),
                 if (measurement.data.medicationSection != null)
-                  SmallChip(text: loc.medication),
+                  SmallChip(
+                    text: loc.medication,
+                    color: stateToColor(states?.medicationState),
+                  ),
                 if (measurement.data.hydrationSection != null)
-                  SmallChip(text: loc.hydration),
+                  SmallChip(
+                    text: loc.hydration,
+                    color: stateToColor(states?.hydrationState),
+                  ),
                 if (measurement.data.respirationSection != null)
-                  SmallChip(text: loc.respiration),
+                  SmallChip(
+                    text: loc.respiration,
+                    color: stateToColor(states?.respirationState),
+                  ),
                 if (measurement.data.skinSection != null)
-                  SmallChip(text: loc.skin),
+                  SmallChip(
+                    text: loc.skin,
+                    color: stateToColor(states?.skinState),
+                  ),
+                if (measurement.data.pulseSection != null)
+                  SmallChip(
+                    text: loc.pulse,
+                    color: stateToColor(states?.pulseState),
+                  ),
                 if (measurement.data.generalSection != null)
-                  SmallChip(text: loc.general),
+                  SmallChip(
+                    text: loc.general,
+                    color: stateToColor(states?.generalState),
+                  ),
                 if (measurement.data.caregiverSection != null)
-                  SmallChip(text: loc.caregiver),
+                  SmallChip(
+                    text: loc.caregiver,
+                    color: stateToColor(states?.caregiverState),
+                  ),
               ],
             ),
           ),
@@ -129,18 +156,16 @@ class _IllnessScreenState extends State<IllnessScreen> {
 
 class SmallChip extends StatelessWidget {
   final String text;
+  final Color color;
 
-  const SmallChip({
-    super.key,
-    required this.text,
-  });
+  const SmallChip({super.key, required this.text, this.color = Colors.black54});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2),
       child: Chip(
-        shape: const StadiumBorder(side: BorderSide(color: Colors.black54)),
+        shape: StadiumBorder(side: BorderSide(color: color)),
         backgroundColor: Colors.white,
         label: Text(text),
         labelStyle: const TextStyle(fontSize: 12, color: Colors.black54),
