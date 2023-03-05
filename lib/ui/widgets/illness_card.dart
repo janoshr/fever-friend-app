@@ -17,8 +17,8 @@ class IllnessCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final temperatureString = illness
-        .feverMeasurements.first.data.feverSection?.temperature
-        ?.toStringAsFixed(1);
+        .feverMeasurements.first.data.feverSection.temperature
+        .toStringAsFixed(1);
     final loc = AppLocalizations.of(context)!;
 
     return Card(
@@ -51,8 +51,7 @@ class IllnessCard extends StatelessWidget {
             ),
             ListTile(
               subtitle: Text(loc.temperature),
-              title: Text(
-                  temperatureString != null ? '$temperatureString °C' : 'n/a'),
+              title: Text('$temperatureString °C'),
               leading: const Icon(Icons.thermostat),
             ),
             ListTile(
