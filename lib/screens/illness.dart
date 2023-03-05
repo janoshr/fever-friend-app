@@ -2,6 +2,8 @@ import 'package:fever_friend_app/models/fever_measurement.dart';
 import 'package:fever_friend_app/screens/measurement/view_measurement.dart';
 import 'package:fever_friend_app/ui/shared/constants.dart';
 import 'package:fever_friend_app/ui/shared/utils.dart';
+import 'package:fever_friend_app/ui/widgets/line_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
@@ -45,10 +47,8 @@ class _IllnessScreenState extends State<IllnessScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(dateFMMMDDHmm.format(measurement.meta.createdAt)),
-              Text(measurement.data.feverSection != null &&
-                      measurement.data.feverSection!.temperature != null
-                  ? '${measurement.data.feverSection!.temperature!.toStringAsFixed(1)} °C'
-                  : 'n/a'),
+              Text(
+                  '${measurement.data.feverSection.temperature.toStringAsFixed(1)} °C'),
             ],
           ),
           onTap: () {
@@ -65,11 +65,10 @@ class _IllnessScreenState extends State<IllnessScreen> {
             subtitle: Wrap(
               alignment: WrapAlignment.start,
               children: [
-                if (measurement.data.feverSection != null)
-                  SmallChip(
-                    text: loc.fever,
-                    color: stateToColor(states?.feverState),
-                  ),
+                SmallChip(
+                  text: loc.fever,
+                  color: stateToColor(states?.feverState),
+                ),
                 if (measurement.data.medicationSection != null)
                   SmallChip(
                     text: loc.medication,
@@ -126,12 +125,31 @@ class _IllnessScreenState extends State<IllnessScreen> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
+    final firstCreatedAt =
+        widget.illness.feverMeasurements.first.meta.createdAt;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(loc!.illnessHistory),
       ),
       body: Column(
         children: [
+          ILineChart(
+            title: 'Temperature over time',
+            data: widget.illness.feverMeasurements
+                .map((e) => FlSpot(
+                      e.meta.createdAt
+                              .difference(firstCreatedAt)
+                              .inMinutes
+                              .abs() /
+                          60,
+                      e.data.feverSection.temperature,
+                    ))
+                .toList(),
+          ),
+          const Divider(
+            height: 12,
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: ExpansionPanelList(
