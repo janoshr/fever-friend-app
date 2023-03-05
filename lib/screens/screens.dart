@@ -6,3 +6,4 @@ export 'splash.dart';
 export 'settings.dart';
 export 'measurement/create_illness.dart';
 export 'screen_definition.dart';
+export 'advice_screen.dart';

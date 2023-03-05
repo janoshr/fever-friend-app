@@ -1,6 +1,7 @@
+import 'package:fever_friend_app/screens/screens.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/models.dart';
-import 'package:fever_friend_app/services/model_server.dart';
+import 'package:fever_friend_app/services/illness_provider.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/services/firestore.dart';
 import 'package:flutter/material.dart'
@@ -68,8 +69,13 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
     }
   }
 
-  void Function() onSubmit(Patient patient, Illness? illness,
-          {required Function() error, required Function() success}) =>
+  void Function() onSubmit(
+    IllnessProvider illnessProvider,
+    Patient patient,
+    Illness? illness, {
+    required Function() error,
+    required Function(MeasurementModel) success,
+  }) =>
       () async {
         if (_formKey.currentState == null) {
           error.call();
@@ -77,31 +83,28 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
         _formKey.currentState!.saveAndValidate();
         if (_formKey.currentState!.isValid) {
           final db = getIt.get<FirestoreService>();
-          final modelService = getIt.get<ModelService>();
 
           final measurement = MeasurementModel.fromFormBuilder(
             _formKey.currentState!,
             patient,
           );
 
-          measurement.data.feverSection!.temperatureAdjusted =
+          measurement.data.feverSection.temperatureAdjusted =
               handleTemperatureAdjustment();
 
-          final measurementState =
-              await modelService.getPatientState(patient, measurement);
-
-          debugPrint(
-              'Model service reponded with ${measurementState.toString()}');
-
-          measurement.state = measurementState;
+          Illness illnessRes;
 
           if (illness != null) {
-            db.addMeasurement(measurement, patient.id, illness);
+            illnessRes = await db.addMeasurement(
+                patient, measurement, patient.id, illness);
+            illnessProvider.addMeasurement(illnessRes.feverMeasurements.last);
           } else {
-            db.createFeverMeasurement(measurement, patient.id);
+            illnessRes = await db.createFeverMeasurement(
+                patient, measurement, patient.id);
+            illnessProvider.addIllness(illnessRes);
           }
 
-          success.call();
+          success.call(illnessRes.feverMeasurements.first);
         }
       };
 
@@ -129,7 +132,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
       return double.parse(value[FeverFields.temperature.name]) + 0.5;
     }
 
-    return value[FeverFields.temperature.name];
+    return double.parse(value[FeverFields.temperature.name]);
   }
 
   @override
@@ -137,6 +140,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
     final patient = Provider.of<PatientProvider>(context).patient;
     final illnessArg = ModalRoute.of(context)!.settings.arguments as Illness?;
     final loc = AppLocalizations.of(context)!;
+    final illnessProvider = Provider.of<IllnessProvider>(context);
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -187,7 +191,7 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                 state: getStepState(MeasurementSections.medication.index,
                     MedicationFields.values),
                 title: Text(loc.medication),
-                content: MedicationSectionForm(),
+                content: const MedicationSectionForm(),
               ),
               Step(
                 isActive: activeStep == MeasurementSections.hydration.index,
@@ -238,13 +242,17 @@ class _ICreateMeasurementScreenState extends State<ICreateMeasurementScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: onSubmit(
+                        illnessProvider,
                         patient!,
                         illnessArg,
                         error: () => ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(loc.somethingWentWrong)),
                         ),
-                        success: () {
-                          Navigator.of(context).pop();
+                        success: (MeasurementModel measurementModel) {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => AdviceScreen(
+                                      measurementModel: measurementModel)));
                         },
                       ),
                       child: Text(loc.submit),

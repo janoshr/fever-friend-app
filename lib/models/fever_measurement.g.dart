@@ -16,6 +16,10 @@ MeasurementModel _$MeasurementModelFromJson(Map json) => MeasurementModel(
           ? null
           : MeasurementModelState.fromJson(
               Map<String, dynamic>.from(json['state'] as Map)),
+      adviceKeys: (json['adviceKeys'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$MeasurementModelToJson(MeasurementModel instance) {
@@ -31,6 +35,7 @@ Map<String, dynamic> _$MeasurementModelToJson(MeasurementModel instance) {
   val['meta'] = instance.meta.toJson();
   val['data'] = instance.data.toJson();
   val['state'] = instance.state?.toJson();
+  val['adviceKeys'] = instance.adviceKeys;
   return val;
 }
 
@@ -107,10 +112,8 @@ Map<String, dynamic> _$MeasurementModelMetaToJson(
 
 MeasurementModelData _$MeasurementModelDataFromJson(Map json) =>
     MeasurementModelData(
-      feverSection: json['feverSection'] == null
-          ? null
-          : FeverSectionModel.fromJson(
-              Map<String, dynamic>.from(json['feverSection'] as Map)),
+      feverSection: FeverSectionModel.fromJson(
+          Map<String, dynamic>.from(json['feverSection'] as Map)),
       medicationSection: json['medicationSection'] == null
           ? null
           : MedicationSectionModel.fromJson(
@@ -143,7 +146,9 @@ MeasurementModelData _$MeasurementModelDataFromJson(Map json) =>
 
 Map<String, dynamic> _$MeasurementModelDataToJson(
     MeasurementModelData instance) {
-  final val = <String, dynamic>{};
+  final val = <String, dynamic>{
+    'feverSection': instance.feverSection.toJson(),
+  };
 
   void writeNotNull(String key, dynamic value) {
     if (value != null) {
@@ -151,7 +156,6 @@ Map<String, dynamic> _$MeasurementModelDataToJson(
     }
   }
 
-  writeNotNull('feverSection', instance.feverSection?.toJson());
   writeNotNull('medicationSection', instance.medicationSection?.toJson());
   writeNotNull('hydrationSection', instance.hydrationSection?.toJson());
   writeNotNull('respirationSection', instance.respirationSection?.toJson());
@@ -163,10 +167,10 @@ Map<String, dynamic> _$MeasurementModelDataToJson(
 }
 
 FeverSectionModel _$FeverSectionModelFromJson(Map json) => FeverSectionModel(
+      temperature: (json['temperature'] as num).toDouble(),
       thermometerUsed: json['thermometerUsed'] as String?,
       feverDuration: json['feverDuration'] as String?,
       feverMeasurementLocation: json['feverMeasurementLocation'] as String?,
-      temperature: (json['temperature'] as num?)?.toDouble(),
       temperatureAdjusted: (json['temperatureAdjusted'] as num?)?.toDouble(),
     );
 
