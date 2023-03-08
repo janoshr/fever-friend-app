@@ -108,6 +108,17 @@ class MeasurementModelState {
         'caregiverState': caregiverState,
       };
 
+  Map<MeasurementSections, PatientState?> get sectionMap => {
+        MeasurementSections.fever: feverState,
+        MeasurementSections.medication: medicationState,
+        MeasurementSections.hydration: hydrationState,
+        MeasurementSections.respiration: respirationState,
+        MeasurementSections.skin: skinState,
+        MeasurementSections.pulse: pulseState,
+        MeasurementSections.general: generalState,
+        MeasurementSections.caregiver: caregiverState,
+      };
+
   // PatientState? operator [](String value) {
   //   return toMap()[value];
   // }
