@@ -1,9 +1,9 @@
 import 'package:fever_friend_app/screens/illness.dart';
-import 'package:fever_friend_app/ui/shared/constants.dart';
-import 'package:fever_friend_app/ui/shared/utils.dart';
+import 'package:fever_friend_app/shared/constants.dart';
+import 'package:fever_friend_app/shared/utils.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/illness.dart';
+import '../models/illness.dart';
 
 class IllnessList extends StatelessWidget {
   final List<Illness> illnessList;

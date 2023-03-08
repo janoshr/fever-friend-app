@@ -7,7 +7,7 @@ import 'package:fever_friend_app/services/illness_provider.dart';
 import 'package:fever_friend_app/services/patient_provider.dart';
 import 'package:fever_friend_app/routes.dart';
 import 'package:fever_friend_app/services/firestore.dart';
-import 'package:fever_friend_app/ui/shared/utils.dart';
+import 'package:fever_friend_app/shared/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

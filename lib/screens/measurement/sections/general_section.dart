@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../models/models.dart';
-import '../../../ui/widgets/form/form.dart';
+import '../../../widgets/form/form.dart';
 
 
 class GeneralSectionForm extends StatefulWidget {

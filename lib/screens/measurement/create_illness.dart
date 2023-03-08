@@ -10,7 +10,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../ui/widgets/stepper.dart';
+import '../../widgets/stepper.dart';
 import 'sections/sections.dart';
 
 class ICreateMeasurementScreen extends StatefulWidget {

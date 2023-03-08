@@ -4,7 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../models/models.dart';
-import '../../../ui/widgets/form/form.dart';
+import '../../../widgets/form/form.dart';
 
 
 class MedicationSectionForm extends StatefulWidget {

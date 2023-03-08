@@ -1,10 +1,10 @@
 import 'package:fever_friend_app/l10n/app_localizations.dart';
 import 'package:fever_friend_app/screens/illness.dart';
-import 'package:fever_friend_app/ui/widgets/pulse_icon.dart';
+import 'package:fever_friend_app/widgets/pulse_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:fever_friend_app/ui/shared/utils.dart';
+import 'package:fever_friend_app/shared/utils.dart';
 
-import '../../models/illness.dart';
+import '../models/illness.dart';
 import '../shared/constants.dart';
 
 class IllnessCard extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'package:fever_friend_app/models/fever_measurement.dart';
 import 'package:fever_friend_app/screens/measurement/view_measurement.dart';
-import 'package:fever_friend_app/ui/shared/constants.dart';
-import 'package:fever_friend_app/ui/shared/utils.dart';
-import 'package:fever_friend_app/ui/widgets/line_chart.dart';
+import 'package:fever_friend_app/shared/constants.dart';
+import 'package:fever_friend_app/shared/utils.dart';
+import 'package:fever_friend_app/widgets/line_chart.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
