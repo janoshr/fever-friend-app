@@ -1,5 +1,8 @@
 import 'package:fever_friend_app/models/fever_measurement.dart';
+import 'package:fever_friend_app/models/models.dart';
+import 'package:fever_friend_app/screens/measurement/sections/sections.dart';
 import 'package:fever_friend_app/screens/measurement/view_measurement.dart';
+import 'package:fever_friend_app/screens/screens.dart';
 import 'package:fever_friend_app/shared/constants.dart';
 import 'package:fever_friend_app/shared/utils.dart';
 import 'package:fever_friend_app/widgets/line_chart.dart';
@@ -32,8 +35,7 @@ class _IllnessScreenState extends State<IllnessScreen> {
     final measurement = entry.value;
     final i = entry.key;
 
-    final loc = AppLocalizations.of(context);
-    final states = measurement.state;
+    final loc = AppLocalizations.of(context)!;
 
     return ExpansionPanel(
       isExpanded: expanded[i],
@@ -60,62 +62,41 @@ class _IllnessScreenState extends State<IllnessScreen> {
       },
       body: Column(
         children: [
-          ListTile(
-            title: Text(loc!.sections),
-            subtitle: Wrap(
-              alignment: WrapAlignment.start,
-              children: [
-                SmallChip(
-                  text: loc.fever,
-                  color: stateToColor(states?.feverState),
+          for (final section in measurement.data.sectionMap.entries)
+            if (section.value != null)
+              ListTile(
+                dense: true,
+                title: Text(
+                  sectionConfigMap(context)[section.key]!.title,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                if (measurement.data.medicationSection != null)
-                  SmallChip(
-                    text: loc.medication,
-                    color: stateToColor(states?.medicationState),
-                  ),
-                if (measurement.data.hydrationSection != null)
-                  SmallChip(
-                    text: loc.hydration,
-                    color: stateToColor(states?.hydrationState),
-                  ),
-                if (measurement.data.respirationSection != null)
-                  SmallChip(
-                    text: loc.respiration,
-                    color: stateToColor(states?.respirationState),
-                  ),
-                if (measurement.data.skinSection != null)
-                  SmallChip(
-                    text: loc.skin,
-                    color: stateToColor(states?.skinState),
-                  ),
-                if (measurement.data.pulseSection != null)
-                  SmallChip(
-                    text: loc.pulse,
-                    color: stateToColor(states?.pulseState),
-                  ),
-                if (measurement.data.generalSection != null)
-                  SmallChip(
-                    text: loc.general,
-                    color: stateToColor(states?.generalState),
-                  ),
-                if (measurement.data.caregiverSection != null)
-                  SmallChip(
-                    text: loc.caregiver,
-                    color: stateToColor(states?.caregiverState),
-                  ),
-              ],
-            ),
-          ),
+                leading: sectionConfigMap(context)[section.key]!.icon,
+                iconColor:
+                    stateToColor(measurement.state?.sectionMap[section.key]),
+              ),
           const SizedBox(height: 12),
-          OutlinedButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) =>
-                      ViewMeasurement(measurementModel: entry.value)));
-            },
-            child: Text(loc.view),
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) =>
+                          ViewMeasurement(measurementModel: entry.value)));
+                },
+                child: Text(loc.view),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) =>
+                          AdviceScreen(measurementModel: entry.value)));
+                },
+                child: Text(loc.adviceScreenTitle),
+              ),
+            ],
+          )
         ],
       ),
     );
