@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../models/models.dart';
-import '../../../ui/widgets/form/form.dart';
+import '../../../widgets/form/form.dart';
 
 class CaregiverSectionForm extends StatefulWidget {
   final CaregiverSectionModel? caregiverSectionModel;

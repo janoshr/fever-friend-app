@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fever_friend_app/models/notification.dart';
-import 'package:fever_friend_app/ui/shared/utils.dart';
+import 'package:fever_friend_app/shared/utils.dart';
 
 import '../l10n/app_localizations.dart';
 

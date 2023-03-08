@@ -17,5 +17,5 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Generate
 
-- Localizations: `flutter gen-l10`
+- Localizations: `flutter gen-l10n`
 - JSON serialization: `build_runner.sh`

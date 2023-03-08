@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fever_friend_app/ui/shared/constants.dart';
+import 'package:fever_friend_app/shared/constants.dart';
 import 'package:fever_friend_app/utils/tuple.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../models/models.dart';
-import '../../../ui/widgets/form/form.dart';
+import '../../../widgets/form/form.dart';
 
 class FeverSectionForm extends StatefulWidget {
   final FeverSectionModel? feverSectionModel;
