@@ -9,7 +9,8 @@ final userCreatedAction =
     AuthStateChangeAction<UserCreated>(((context, state) async {
   if (!state.credential.user!.emailVerified) {
     // TODO: change to verify
-    Navigator.pushNamed(context, ScreenDefinition.root);
+    // Navigator.pushNamed(context, ScreenDefinition.home);
+    Navigator.pushReplacementNamed(context, ScreenDefinition.createPatient);
   } else {
     Navigator.pushReplacementNamed(context, ScreenDefinition.createPatient);
   }
@@ -33,9 +34,9 @@ class ISignInScreen extends StatelessWidget {
         AuthStateChangeAction<SignedIn>(((context, state) {
           if (!state.user!.emailVerified) {
             // TODO: change to verify
-            Navigator.pushNamed(context, ScreenDefinition.root);
+            Navigator.pushNamed(context, ScreenDefinition.home);
           } else {
-            Navigator.pushReplacementNamed(context, ScreenDefinition.root);
+            Navigator.pushReplacementNamed(context, ScreenDefinition.home);
           }
         })),
         ForgotPasswordAction(((context, email) {
@@ -73,7 +74,7 @@ class IVerifyEmailScreen extends StatelessWidget {
     return EmailVerificationScreen(
       actions: [
         EmailVerifiedAction((() {
-          Navigator.pushReplacementNamed(context, ScreenDefinition.root);
+          Navigator.pushReplacementNamed(context, ScreenDefinition.home);
         })),
         AuthCancelledAction(((context) {
           FirebaseUIAuth.signOut(context: context);

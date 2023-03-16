@@ -106,8 +106,7 @@ class _IllnessScreenState extends State<IllnessScreen> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
 
-    final firstCreatedAt =
-        widget.illness.feverMeasurements.first.meta.createdAt;
+    final firstCreatedAt = widget.illness.feverMeasurements.last.meta.createdAt;
 
     return Scaffold(
       appBar: AppBar(
@@ -117,16 +116,13 @@ class _IllnessScreenState extends State<IllnessScreen> {
         children: [
           ILineChart(
             title: 'Temperature over time',
-            data: widget.illness.feverMeasurements
-                .map((e) => FlSpot(
-                      e.meta.createdAt
-                              .difference(firstCreatedAt)
-                              .inMinutes
-                              .abs() /
-                          60,
-                      e.data.feverSection.temperature,
-                    ))
-                .toList(),
+            data: widget.illness.feverMeasurements.reversed.map((e) {
+              return FlSpot(
+                e.meta.createdAt.difference(firstCreatedAt).inMinutes.abs() /
+                    60,
+                e.data.feverSection.temperature,
+              );
+            }).toList(),
           ),
           const Divider(
             height: 12,

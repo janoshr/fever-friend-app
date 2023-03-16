@@ -1,3 +1,4 @@
+import 'package:fever_friend_app/screens/screen_definition.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -71,7 +72,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                   onPressed: () => onSubmit(context, () {
                     Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/', (route) => false);
+                        .pushNamedAndRemoveUntil(ScreenDefinition.home, (route) => false);
                   }),
                   child: Text(loc.saveSettings),
                 )

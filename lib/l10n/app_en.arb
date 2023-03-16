@@ -7,7 +7,7 @@
   "addPatient": "Add Patient",
   "settings": "Settings",
   "aboutApp": "About app",
-  "homeTitle": "CS310 Fever Friend App",
+  "homeTitle": "Warwick Fever App",
   "@homeTitle": {
     "description": "Title of the home page"
   },

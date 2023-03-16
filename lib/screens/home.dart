@@ -36,7 +36,7 @@ class _IHomeScreenState extends State<IHomeScreen> {
         title: Text(loc!.homeTitle),
         actions: <Widget>[
           Badge(
-            label: Text(notis.length.toString()),
+            // label: Text(notis.length.toString()),
             alignment: AlignmentDirectional.topEnd,
             child: IconButton(
               onPressed: () => Navigator.of(context)

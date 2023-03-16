@@ -1,4 +1,5 @@
 import 'package:fever_friend_app/models/models.dart';
+import 'package:flutter/material.dart';
 
 enum _OrdinalCategories {
   antibiotics,
@@ -29,6 +30,9 @@ enum _OrdinalCategories {
   vaccinationHowManyHoursAgo,
   wheezing,
   wryNeck,
+  caregiverConfident,
+  caregiverFeel,
+  caregiverThink,
 }
 
 const _ordinalCategories = {
@@ -160,7 +164,7 @@ const _ordinalCategories = {
     'lastUrination-01-6>hours': 0,
     'lastUrination-02-6<=hours<12': 6,
     'lastUrination-03-12<hours':
-        12, // ! error corrected in key was `lastUrination-01-12<hours`
+        12, // * error corrected in key was `lastUrination-01-12<hours`
   },
   _OrdinalCategories.painfulUrination: {
     'painfulUrination': 0,
@@ -220,6 +224,25 @@ const _ordinalCategories = {
     'wryNeck': 0,
     'wryNeck-01-No': 0,
     'wryNeck-02-Yes': 1,
+  },
+  _OrdinalCategories.caregiverConfident: {
+    'caregiverConfident': 0,
+    'caregiverConfident-01-Completely': 0,
+    'caregiverConfident-02-SomewhatConfident': 1,
+    'caregiverConfident-03-NotReally': 2,
+    'caregiverConfident-04-NotAtAll': 3,
+  },
+  _OrdinalCategories.caregiverFeel: {
+    'caregiverFeel': 0,
+    'caregiverFeel-01-Optimal': 0,
+    'caregiverFeel-02-NotSure': 1,
+    'caregiverFeel-03-VeryWorried': 2,
+  },
+  _OrdinalCategories.caregiverThink: {
+    'caregiverThink': 0,
+    'caregiverThink-01-NotSevere': 0,
+    'caregiverThink-02-SomewhatSevere': 1,
+    'caregiverThink-03-VerySever': 2,
   }
 };
 
@@ -279,7 +302,8 @@ Map<String, num> _oneHotEncoder(_OneHotCategories category, String? data) {
   return res;
 }
 
-Map<String, num> _oneHotArrayEncoder(_OneHotCategories category, List<String>? data) {
+Map<String, num> _oneHotArrayEncoder(
+    _OneHotCategories category, List<String>? data) {
   final res = <String, num>{};
   final cols = _oneHotCategories[category];
   for (final col in cols!) {
@@ -294,10 +318,15 @@ Map<String, num> _oneHotArrayEncoder(_OneHotCategories category, List<String>? d
 
 int _ordinalEncoder(_OrdinalCategories category, String? data) {
   final vals = _ordinalCategories[category]!;
-  if (vals.containsKey(data)) {
-    return vals[data]!;
-  } else {
-    return vals[category.name]!;
+  try {
+    if (vals.containsKey(data)) {
+      return vals[data]!;
+    } else {
+      return vals[category.name]!;
+    }
+  } catch (e) {
+    debugPrint({'vals': vals, 'data': data}.toString());
+    rethrow;
   }
 }
 
@@ -311,65 +340,118 @@ Map<String, num> encodeMeasurement(MeasurementModelData modelData) {
     throw Exception('Model error: missing pulse');
   }
   Map<String, num> ordinalMapping = {
-    'feverDuration': _ordinalEncoder(_OrdinalCategories.feverDuration,
-        modelData.feverSection?.feverDuration),
-    'temperature': modelData.feverSection!.temperatureAdjusted!,
-    'antibiotics': _ordinalEncoder(_OrdinalCategories.antibiotics,
-        modelData.medicationSection?.antibiotics),
+    'feverDuration': _ordinalEncoder(
+      _OrdinalCategories.feverDuration,
+      modelData.feverSection.feverDuration,
+    ),
+    'temperature': modelData.feverSection.temperatureAdjusted!,
+    'antibiotics': _ordinalEncoder(
+      _OrdinalCategories.antibiotics,
+      modelData.medicationSection?.antibiotics,
+    ),
     'antibioticsHowMany': modelData.medicationSection?.antibioticsHowMany ?? 0,
     'antibioticsHowMuch': modelData.medicationSection?.antibioticsHowMuch ?? 0,
-    'antipyretic': _ordinalEncoder(_OrdinalCategories.antipyretic,
-        modelData.medicationSection?.antipyretic),
+    'antipyretic': _ordinalEncoder(
+      _OrdinalCategories.antipyretic,
+      modelData.medicationSection?.antipyretic,
+    ),
     'antipyreticHowMany': modelData.medicationSection?.antipyreticHowMany ?? 0,
     'antipyreticHowMuch': modelData.medicationSection?.antipyreticHowMuch ?? 0,
     'crying': _ordinalEncoder(
-        _OrdinalCategories.crying, modelData.hydrationSection?.crying),
+      _OrdinalCategories.crying,
+      modelData.hydrationSection?.crying,
+    ),
     'diarrhea': _ordinalEncoder(
-        _OrdinalCategories.diarrhea, modelData.hydrationSection?.diarrhea),
+      _OrdinalCategories.diarrhea,
+      modelData.hydrationSection?.diarrhea,
+    ),
     'drinking': _ordinalEncoder(
-        _OrdinalCategories.drinking, modelData.hydrationSection?.drinking),
-    'lastUrination': _ordinalEncoder(_OrdinalCategories.lastUrination,
-        modelData.hydrationSection?.lastUrination),
+      _OrdinalCategories.drinking,
+      modelData.hydrationSection?.drinking,
+    ),
+    'lastUrination': _ordinalEncoder(
+      _OrdinalCategories.lastUrination,
+      modelData.hydrationSection?.lastUrination,
+    ),
     'skinTurgor': _ordinalEncoder(
-        _OrdinalCategories.skinTurgor, modelData.hydrationSection?.skinTurgor),
-    'tearsWhenCrying': _ordinalEncoder(_OrdinalCategories.tearsWhenCrying,
-        modelData.hydrationSection?.tearsWhenCrying),
+      _OrdinalCategories.skinTurgor,
+      modelData.hydrationSection?.skinTurgor,
+    ),
+    'tearsWhenCrying': _ordinalEncoder(
+      _OrdinalCategories.tearsWhenCrying,
+      modelData.hydrationSection?.tearsWhenCrying,
+    ),
     'tongue': _ordinalEncoder(
-        _OrdinalCategories.tongue, modelData.hydrationSection?.tongue),
+      _OrdinalCategories.tongue,
+      modelData.hydrationSection?.tongue,
+    ),
     'dyspnea': _ordinalEncoder(
-        _OrdinalCategories.dyspnea, modelData.respirationSection?.dyspnea),
+      _OrdinalCategories.dyspnea,
+      modelData.respirationSection?.dyspnea,
+    ),
     'respiratoryRate':
         modelData.respirationSection!.respiratoryRate!, // throws if missing
     'wheezing': _ordinalEncoder(
-        _OrdinalCategories.wheezing, modelData.respirationSection?.wheezing),
+      _OrdinalCategories.wheezing,
+      modelData.respirationSection?.wheezing,
+    ),
     'glassTest': _ordinalEncoder(
-        _OrdinalCategories.glassTest, modelData.skinSection?.glassTest),
-    'rash':
-        _ordinalEncoder(_OrdinalCategories.rash, modelData.skinSection?.rash),
+      _OrdinalCategories.glassTest,
+      modelData.skinSection?.glassTest,
+    ),
+    'rash': _ordinalEncoder(
+      _OrdinalCategories.rash,
+      modelData.skinSection?.rash,
+    ),
     'skinColor': _ordinalEncoder(
-        _OrdinalCategories.skinColor, modelData.skinSection?.skinColor),
+      _OrdinalCategories.skinColor,
+      modelData.skinSection?.skinColor,
+    ),
     'pulse': modelData.pulseSection!.pulse!, // throws if missing
     'bulgingFontanelleMax18MOld': _ordinalEncoder(
-        _OrdinalCategories.bulgingFontanelleMax18MOld,
-        modelData.generalSection?.bulgingFontanelleMax18MOld),
+      _OrdinalCategories.bulgingFontanelleMax18MOld,
+      modelData.generalSection?.bulgingFontanelleMax18MOld,
+    ),
     'exoticTrip': _ordinalEncoder(
-        _OrdinalCategories.exoticTrip, modelData.generalSection?.exoticTrip),
-    'lastTimeEating': _ordinalEncoder(_OrdinalCategories.lastTimeEating,
-        modelData.generalSection?.lastTimeEating),
-    'painfulUrination': _ordinalEncoder(_OrdinalCategories.painfulUrination,
-        modelData.generalSection?.painfulUrination),
+      _OrdinalCategories.exoticTrip,
+      modelData.generalSection?.exoticTrip,
+    ),
+    'lastTimeEating': _ordinalEncoder(
+      _OrdinalCategories.lastTimeEating,
+      modelData.generalSection?.lastTimeEating,
+    ),
+    'painfulUrination': _ordinalEncoder(
+      _OrdinalCategories.painfulUrination,
+      modelData.generalSection?.painfulUrination,
+    ),
     'seizure': _ordinalEncoder(
         _OrdinalCategories.seizure, modelData.generalSection?.seizure),
     'smellyUrine': _ordinalEncoder(
-        _OrdinalCategories.smellyUrine, modelData.generalSection?.smellyUrine),
+      _OrdinalCategories.smellyUrine,
+      modelData.generalSection?.smellyUrine,
+    ),
     'vaccinationIn14days': _ordinalEncoder(
-        _OrdinalCategories.vaccinationIn14days,
-        modelData.generalSection?.vaccinationIn14days),
+      _OrdinalCategories.vaccinationIn14days,
+      modelData.generalSection?.vaccinationIn14days,
+    ),
     'vaccinationHowManyHoursAgo': _ordinalEncoder(
-        _OrdinalCategories.vaccinationHowManyHoursAgo,
-        modelData.generalSection?.vaccinationHowManyHoursAgo),
+      _OrdinalCategories.vaccinationHowManyHoursAgo,
+      modelData.generalSection?.vaccinationHowManyHoursAgo,
+    ),
     'wryNeck': _ordinalEncoder(
         _OrdinalCategories.wryNeck, modelData.generalSection?.wryNeck),
+    'caregiverConfident': _ordinalEncoder(
+      _OrdinalCategories.caregiverConfident,
+      modelData.caregiverSection?.caregiverConfident,
+    ),
+    'caregiverFeel': _ordinalEncoder(
+      _OrdinalCategories.caregiverFeel,
+      modelData.caregiverSection?.caregiverFeel,
+    ),
+    'caregiverThink': _ordinalEncoder(
+      _OrdinalCategories.caregiverThink,
+      modelData.caregiverSection?.caregiverThink,
+    ),
   };
   res = {
     ...ordinalMapping,

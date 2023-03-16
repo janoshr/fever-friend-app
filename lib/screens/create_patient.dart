@@ -1,3 +1,4 @@
+import 'package:fever_friend_app/screens/screen_definition.dart';
 import 'package:fever_friend_app/services/get_it.dart';
 import 'package:fever_friend_app/models/patient.dart';
 import 'package:fever_friend_app/services/firestore.dart';
@@ -144,7 +145,7 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
                   ),
                   onPressed: () => onSubmit(context, (Patient patient) {
                     Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/', (route) => false);
+                        .pushNamedAndRemoveUntil(ScreenDefinition.home, (route) => false);
                   }),
                   child: Text(loc.createPatient),
                 )
@@ -171,8 +172,8 @@ class _ICreatePatientScreenState extends State<ICreatePatientScreen> {
           createdAt: DateTime.now(),
           dateOfBirth: fields['dateOfBirth']!.value,
           gender: fields['gender']!.value,
-          height: fields['height']!.value,
-          weight: fields['weight']!.value,
+          height: double.parse(fields['height']!.value),
+          weight: double.parse(fields['weight']!.value),
           color: screenPickerColor,
         );
         await db.createPatient(patient);

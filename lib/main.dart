@@ -103,8 +103,9 @@ class _MyAppState extends State<MyApp> {
         String initialRoute = !snapshot.hasData
             ? ScreenDefinition.splash
             : !snapshot.data!.emailVerified
-                ? ScreenDefinition.verify
-                : ScreenDefinition.root;
+                // ? ScreenDefinition.verify
+                ? ScreenDefinition.home
+                : ScreenDefinition.home;
 
         final db = getIt.get<FirestoreService>();
         return MultiProvider(
@@ -176,7 +177,7 @@ class AppWidget extends StatelessWidget {
         patientProvider.patient != null &&
                 patientProvider.patient!.color != null
             ? patientProvider.patient!.color!
-            : Colors.orange);
+            : Colors.teal);
 
     return MaterialApp(
       title: 'CS310 The Fever Friend App',
