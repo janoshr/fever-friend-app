@@ -11,50 +11,59 @@ class ISplashScreen extends StatelessWidget {
     final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 32),
-            child: Text(
-              loc.homeTitle,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const Icon(
-            Icons.abc,
-            size: 120.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Spacer(),
+            Column(
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: OutlinedButton(
-                      onPressed: (() {
-                        Navigator.pushNamed(context, ScreenDefinition.login);
-                      }),
-                      child: Text(loc.signIn),
-                    ),
-                  ),
+                Text(
+                  loc.homeTitle,
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall!
+                      .copyWith(color: Colors.teal),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ElevatedButton(
-                      onPressed: (() {
-                        Navigator.pushNamed(context, ScreenDefinition.register);
-                      }),
-                      child: Text(loc.signUp),
-                    ),
-                  ),
+                Text(
+                  'App for Fever management',
+                  style: Theme.of(context).textTheme.titleMedium,
                 )
               ],
             ),
-          )
-        ],
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: OutlinedButton(
+                        onPressed: (() {
+                          Navigator.pushNamed(context, ScreenDefinition.login);
+                        }),
+                        child: Text(loc.signIn),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        onPressed: (() {
+                          Navigator.pushNamed(
+                              context, ScreenDefinition.register);
+                        }),
+                        child: Text(loc.signUp),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

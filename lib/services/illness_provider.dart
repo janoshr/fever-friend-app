@@ -20,7 +20,7 @@ class IllnessProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  IllnessProvider updateIllnessList(List<Illness> list) {
+  IllnessProvider updateIllnessList(List<Illness>? list) {
     _illnesses = list;
     notifyListeners();
     return this;

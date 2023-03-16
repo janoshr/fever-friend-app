@@ -209,7 +209,14 @@ class FirestoreService {
       final measurements = await _getMeasurements(patientId, il.id);
       il.feverMeasurements = measurements;
       return il;
-    }).toList());
+    }).toList())
+        .catchError((error) {
+      debugPrint(error.toString());
+      if (error is Error) {
+        debugPrintStack(stackTrace: error.stackTrace);
+      }
+      return <Illness>[];
+    });
   }
 
   Future<List<MeasurementModel>> _getMeasurements(

@@ -1,5 +1,5 @@
 class ScreenDefinition {
-  static const String root = '/';
+  static const String home = '/home';
   static const String splash = '/splash';
   static const String register = '/auth/register';
   static const String login = '/auth/login';
