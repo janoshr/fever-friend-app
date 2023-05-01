@@ -7,7 +7,7 @@
   "addPatient": "Add Patient",
   "settings": "Settings",
   "aboutApp": "About app",
-  "homeTitle": "Warwick Fever App",
+  "homeTitle": "FeverFellow",
   "@homeTitle": {
     "description": "Title of the home page"
   },
